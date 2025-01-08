@@ -46,7 +46,7 @@ function App() {
       <AppBar position="static" sx={{ backgroundColor: '#1976d2', marginBottom: 4 }}>
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Gohan Treinamentos
+            Gohan Treinamentos! 2025
           </Typography>
           <IconButton color="inherit" onClick={handleRefresh}>
             <RefreshIcon />
