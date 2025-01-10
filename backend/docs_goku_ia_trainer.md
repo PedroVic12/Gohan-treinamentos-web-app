@@ -1,41 +1,115 @@
-🎯 O que o sistema faz?
+# Documentação do Sistema de Rastreamento e Análise de Movimentos Corporais
 
-    Rastreamento de Movimentos Corporais: Usando a tecnologia MediaPipe, o sistema rastreia e mapeia os pontos-chave do corpo humano (como articulações) em vídeos, permitindo identificar a postura e o movimento em tempo real.
+## Introdução
 
-    Análise de Ângulos Articulares: Com base no rastreamento, o sistema calcula os ângulos das articulações e fornece insights biomecânicos, o que pode ajudar a melhorar a técnica e prevenir lesões.
+Este sistema realiza o rastreamento e análise dos movimentos corporais utilizando a tecnologia MediaPipe. Ele permite a visualização dos ângulos articulares em tempo real, oferecendo feedback imediato sobre a postura e técnica de movimentos realizados em atividades físicas e esportes, como flexões, exercícios de barra e artes marciais (por exemplo, karatê). A aplicação é construída utilizando as bibliotecas OpenCV, MediaPipe e Python.
+Tecnologias Utilizadas
 
-    Aplicação Multidisciplinar: Este sistema é versátil e pode ser aplicado tanto em atividades de treino físico (exercícios de força) quanto em esportes como artes marciais (karatê, por exemplo).
+    Python: Linguagem de programação utilizada para integrar e orquestrar as bibliotecas.
+    MediaPipe: Biblioteca do Google para o rastreamento de pontos-chave do corpo humano.
+    OpenCV: Biblioteca de visão computacional para manipulação de imagens e vídeos.
+    Inteligência Artificial (Deep Learning): Modelos de aprendizado de máquina para rastreamento de movimentos e cálculo de ângulos.
 
-💡 Por que essa tecnologia é relevante?
+Dependências
 
-    Personalização do Treino: O sistema atua como um "personal trainer digital", fornecendo análise detalhada dos movimentos, o que permite ajustes imediatos para otimizar o desempenho e evitar erros que poderiam causar lesões.
+Antes de rodar o sistema, certifique-se de ter as seguintes bibliotecas instaladas:
 
-    Feedback Imediato e Acessibilidade: Ele permite que o feedback seja dado em tempo real e de forma acessível, tornando a análise de movimentos profissionais mais econômica e disponível para qualquer pessoa com um dispositivo.
+pip install mediapipe opencv-python
 
-    Rastreamento de Pontos-chave: O sistema é capaz de identificar e rastrear pontos-chave no corpo humano (articulações, etc) em tempo real. Essas informações são representadas por círculos coloridos (vermelhos, azuis) sobrepostos ao vídeo.
+Arquitetura do Sistema
 
-    Medição de Ângulos: Além do rastreamento, o sistema calcula ângulos entre as articulações, exibindo esses valores em tempo real. Isso é particularmente útil para atividades esportivas e de treinamento físico.
+O sistema é composto por duas partes principais:
 
-    Exemplos de Aplicação:
+    Rastreamento de Movimento Corporal:
+        A partir de vídeos em tempo real, o sistema utiliza o MediaPipe para identificar e rastrear os pontos-chave do corpo humano, como ombro, cotovelo, joelho, tornozelo, etc. Estes pontos são representados visualmente como círculos coloridos em vídeos.
+    Cálculo de Ângulos Articulares:
+        Após o rastreamento, o sistema calcula os ângulos formados entre os pontos-chave do corpo para analisar o movimento das articulações (como o ângulo do cotovelo durante flexões ou o ângulo da perna durante um chute). Esse valor é exibido em tempo real no vídeo.
 
-        Flexões: O primeiro vídeo mostra a análise do movimento de flexões, com o sistema contando as repetições. Isso mostra como o sistema pode auxiliar na correção da postura.
+Como Funciona
 
-        Exercícios em Barra: O segundo vídeo demonstra a análise de movimentos realizados em uma barra fixa, mostrando a versatilidade do sistema para diferentes atividades.
+    Captura de Vídeo: O sistema captura o vídeo da câmera (ou de um arquivo de vídeo) e processa os quadros individualmente.
+    Rastreamento de Pontos-chave: O MediaPipe analisa cada quadro para identificar e rastrear os pontos-chave do corpo humano.
+    Cálculo dos Ângulos: Utilizando os pontos-chave identificados, o sistema calcula os ângulos articulares entre os pontos de interesse.
+    Exibição de Feedback: O feedback (como os ângulos e as repetições) é exibido em tempo real no vídeo, fornecendo uma análise precisa da postura e movimento.
 
-        Artes Marciais: A série de vídeos seguintes mostra a análise de chutes e golpes em karatê, calculando ângulos de perna e braço para avaliar a técnica.
+Estrutura do Código
 
+Aqui está um esboço básico do código que foi utilizado para implementar o sistema:
+1. Importação das Bibliotecas
 
+import cv2
+import mediapipe as mp
+import math
 
-    Tecnologias Envolvidas: A análise indica o uso de:
+2. Inicialização do MediaPipe e OpenCV
 
-        Visão Computacional: A base do sistema é a identificação e análise de imagens e vídeos.
+# Inicialização do MediaPipe para rastreamento de pontos-chave
+mp_drawing = mp.solutions.drawing_utils
+mp_pose = mp.solutions.pose
 
-        OpenCV: Uma biblioteca popular para visão computacional, utilizada para processamento de imagens e vídeos.
+# Inicialização do OpenCV para captura de vídeo
+cap = cv2.VideoCapture(0)  # ou caminho para um arquivo de vídeo
 
-        Inteligência Artificial (IA): Os modelos utilizados para o rastreamento e análise de movimentos, geralmente são modelos de IA pré-treinados, ou seja, deeplearning.
+3. Função de Rastreamento e Cálculo de Ângulos
 
-    Python: Utilizei minha experiência com Python para integrar diferentes bibliotecas e criar um sistema robusto e eficiente.
+def calcular_angulo(ponto1, ponto2, ponto3):
+    # Cálculo de ângulo entre três pontos
+    angulo = math.degrees(
+        math.atan2(ponto3[1] - ponto2[1], ponto3[0] - ponto2[0]) -
+        math.atan2(ponto1[1] - ponto2[1], ponto1[0] - ponto2[0])
+    )
+    return angulo
 
-    OpenCV: Apliquei OpenCV para manipulação e análise de vídeos, com destaque para a detecção e rastreamento de movimentos corporais em tempo real.
+# Captura dos quadros de vídeo
+with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
+    while cap.isOpened():
+        ret, frame = cap.read()
+        if not ret:
+            break
 
-    MediaPipe: Usei MediaPipe para rastreamento de pontos-chave do corpo humano, oferecendo uma análise precisa e rápida dos movimentos.
+        # Conversão para RGB
+        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        resultado = pose.process(frame_rgb)
+
+        # Desenho dos pontos-chave e cálculo de ângulos
+        if resultado.pose_landmarks:
+            mp_drawing.draw_landmarks(frame, resultado.pose_landmarks, mp_pose.POSE_CONNECTIONS)
+
+            # Exemplo de cálculo de ângulo de flexão de braço
+            ponto1 = resultado.pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_SHOULDER]
+            ponto2 = resultado.pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_ELBOW]
+            ponto3 = resultado.pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_WRIST]
+            angulo = calcular_angulo((ponto1.x, ponto1.y), (ponto2.x, ponto2.y), (ponto3.x, ponto3.y))
+
+            # Exibindo o ângulo calculado
+            cv2.putText(frame, f'Angulo: {int(angulo)}', (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+        
+        # Exibição do vídeo
+        cv2.imshow('Rastreamento de Movimentos', frame)
+
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+cap.release()
+cv2.destroyAllWindows()
+
+4. Feedback Visual e Interatividade
+
+O sistema exibe o ângulo de cada articulação e permite a análise em tempo real. O feedback pode ser fornecido de forma contínua durante o treino ou exercício, com indicadores visuais de performance (ângulos, repetições, etc.).
+Exemplos de Aplicação
+
+    Flexões: O sistema calcula o ângulo entre ombro, cotovelo e punho, ajudando a corrigir a postura durante o movimento de flexão.
+    Exercícios de Barra: O sistema rastreia o movimento da barra fixa e fornece análise sobre a posição do corpo.
+    Artes Marciais: O sistema analisa os movimentos de chutes e golpes, fornecendo feedback sobre a precisão dos ângulos das articulações.
+
+Como Rodar o Sistema
+
+    Instalar Dependências:
+        Utilize o comando pip install mediapipe opencv-python para instalar as bibliotecas necessárias.
+
+    Executar o Código:
+        Execute o código principal, que abrirá a webcam ou o arquivo de vídeo para análise.
+        O feedback visual será exibido diretamente no vídeo, com ângulos calculados e pontos-chave destacados.
+
+    Personalizar e Testar:
+        Experimente diferentes tipos de exercícios e movimentos para observar a precisão e a utilidade do feedback gerado.
