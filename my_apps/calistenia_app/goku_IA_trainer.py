@@ -1,397 +1,256 @@
-import os
 import cv2
 import numpy as np
 import mediapipe as mp
-from datetime import datetime
-import google.generativeai as genai
-from dotenv import load_dotenv
 import time
+from typing import Dict, List, Tuple, Optional
+import os
 
-load_dotenv()
-
-
-class VideoAnalyzer:
-    def __init__(self, gemini_api_key):
-        genai.configure(api_key=gemini_api_key)
-        self.model = genai.GenerativeModel("gemini-pro-vision")
-
-    def analyze_video_frame(self, frame):
-        _, buffer = cv2.imencode(".jpg", frame)
-        image_bytes = buffer.tobytes()
-
-        response = self.model.generate_content(
-            [
-                "Analyze this image and list the objects, people, and actions you can see. Format as a comma-separated list.",
-                image_bytes,
-            ]
-        )
-        return response.text
-
-
-class CapturaDeVideo:
-    def __init__(self, video_path=None):
-        self.video_path = video_path
-        self.mp_drawing = mp.solutions.drawing_utils
+class PoseDetector:
+    def __init__(self, video_sources: List[str], num_people: int = 1, focus_side: str = "direita", video_index: int = 0):
+        """Initialize pose detector with a list of video sources."""
         self.mp_pose = mp.solutions.pose
+        self.mp_draw = mp.solutions.drawing_utils
         self.pose = self.mp_pose.Pose(
-            min_detection_confidence=0.7, min_tracking_confidence=0.5
+            min_detection_confidence=0.7,
+            min_tracking_confidence=0.5,
+            model_complexity=1  # Reduzido para melhorar o FPS
         )
 
-    def calc_angle(self, a, b, c):
-        a = np.array([a.x, a.y])
-        b = np.array([b.x, b.y])
-        c = np.array([c.x, c.y])
+        # Lista de fontes de vídeo
+        self.video_sources = video_sources
+        self.video_index = video_index
 
-        ab = np.subtract(a, b)
-        bc = np.subtract(b, c)
+        # Configuração do vídeo
+        self.cap = None
+        self.set_video_source(video_index)
 
-        theta = np.arccos(
-            np.dot(ab, bc) / np.multiply(np.linalg.norm(ab), np.linalg.norm(bc))
+        # Configuração inicial das dimensões (valores padrão para 16:9)
+        self.frame_width = 1500  # Largura padrão
+        self.frame_height = int(self.frame_width * 9 / 16)  # Altura proporcional
+
+        self.num_people = num_people
+        self.focus_side = focus_side
+        self.start_time = time.time()
+        self.frame_count = 0
+
+    def set_video_source(self, index: int):
+        """Configura a fonte de vídeo de acordo com o índice."""
+        if index < 0 or index >= len(self.video_sources):
+            raise ValueError("Índice de vídeo fora do intervalo.")
+        self.video_index = index
+        self.cap = cv2.VideoCapture(self.video_sources[index])
+        if not self.cap.isOpened():
+            raise RuntimeError(f"Não foi possível abrir o vídeo: {self.video_sources[index]}")
+
+        # Atualizar as dimensões do vídeo
+        self.frame_width = int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        self.frame_height = int(self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+
+        # Ajustar para manter a proporção 16:9
+        if self.frame_width / self.frame_height != 16 / 9:
+            self.frame_height = int(self.frame_width * 9 / 16)
+
+    def calculate_angle(self, point1: np.ndarray, point2: np.ndarray, point3: np.ndarray) -> float:
+        """Calcula o ângulo entre três pontos."""
+        a = np.array([point1.x, point1.y])
+        b = np.array([point2.x, point2.y])
+        c = np.array([point3.x, point3.y])
+
+        radians = np.arctan2(c[1] - b[1], c[0] - b[0]) - np.arctan2(a[1] - b[1], a[0] - b[0])
+        angle = np.abs(radians * 180.0 / np.pi)
+
+        if angle > 180.0:
+            angle = 360 - angle
+
+        return angle
+
+    def get_pose_angles(self, landmarks) -> Dict[str, float]:
+        """Calcula os ângulos principais da pose."""
+        angles = {}
+
+        if self.focus_side == "direita":
+            print("pegando pessoa da direita...")
+        else:
+            print("pegando a pessoa na esquerda...")
+
+        angles['right_elbow'] = self.calculate_angle(
+            landmarks[self.mp_pose.PoseLandmark.RIGHT_SHOULDER.value],
+            landmarks[self.mp_pose.PoseLandmark.RIGHT_ELBOW.value],
+            landmarks[self.mp_pose.PoseLandmark.RIGHT_WRIST.value]
         )
-        theta = 180 - 180 * theta / 3.14
-        return np.round(theta, 2)
+        angles['right_knee'] = self.calculate_angle(
+            landmarks[self.mp_pose.PoseLandmark.RIGHT_HIP.value],
+            landmarks[self.mp_pose.PoseLandmark.RIGHT_KNEE.value],
+            landmarks[self.mp_pose.PoseLandmark.RIGHT_ANKLE.value]
+        )
+        angles['left_elbow'] = self.calculate_angle(
+            landmarks[self.mp_pose.PoseLandmark.LEFT_SHOULDER.value],
+            landmarks[self.mp_pose.PoseLandmark.LEFT_ELBOW.value],
+            landmarks[self.mp_pose.PoseLandmark.LEFT_WRIST.value]
+        )
+        angles['left_knee'] = self.calculate_angle(
+            landmarks[self.mp_pose.PoseLandmark.LEFT_HIP.value],
+            landmarks[self.mp_pose.PoseLandmark.LEFT_KNEE.value],
+            landmarks[self.mp_pose.PoseLandmark.LEFT_ANKLE.value]
+        )
 
-    def iniciar_captura_separada(self, video_analyzer, iniciar_analise):
-        if self.video_path:
-            cap = cv2.VideoCapture(self.video_path)
-        else:
-            cap = cv2.VideoCapture(0)
+        return angles
 
-        # Reduzir a resolução do vídeo para aumentar a taxa de quadros
-        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+    def draw_angles(self, image: np.ndarray, landmarks, angles: Dict[str, float]) -> np.ndarray:
+        """Desenha os ângulos na imagem."""
+        h, w = image.shape[:2]
+        for joint, angle in angles.items():
+            landmark_map = {
+                'left_elbow': self.mp_pose.PoseLandmark.LEFT_ELBOW.value,
+                'right_elbow': self.mp_pose.PoseLandmark.RIGHT_ELBOW.value,
+                'left_knee': self.mp_pose.PoseLandmark.LEFT_KNEE.value,
+                'right_knee': self.mp_pose.PoseLandmark.RIGHT_KNEE.value
+            }
 
-        prev_frame_time = 0
+            if joint in landmark_map:
+                landmark = landmarks[landmark_map[joint]]
+                position = tuple(np.multiply([landmark.x, landmark.y], [w, h]).astype(int))
+                joint_name = "Cotovelo Direito" if joint == 'right_elbow' else "Cotovelo Esquerdo" if joint == 'left_elbow' else "Joelho Direito" if joint == 'right_knee' else "Joelho Esquerdo"
+                
+                cv2.putText(image, f'{int(angle)}', position, cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
 
-        while cap.isOpened():
-            ret, frame = cap.read()
-            if not ret:
-                break
+        return image
 
-            new_frame_time = time.time()
-            fps = 1 / (new_frame_time - prev_frame_time)
-            prev_frame_time = new_frame_time
+    def black_box(self, frame, angles):
+        """Adiciona caixa preta com informações dos ângulos no canto inferior esquerdo."""
+        if angles:
+            box_x = 0  # Posição X no inicio
+            box_y = frame.shape[0] - 150  # Posição Y da caixa
 
-            image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            image.flags.writeable = False
+            box_w = 350  # Largura da caixa
+            box_h = 200  # Altura da caixa
 
-            resultados = self.pose.process(image)
+            cv2.rectangle(frame, (box_x, box_y), (box_x + box_w, box_y + box_h), (0, 0, 0), -1)  # Caixa preta
+            text = (f"Angulos detectados:\n\n"
+                    f"Cotovelo Esquerdo: {int(angles.get('left_elbow', 'N/A'))} graus\n"
+                    f"Cotovelo Direito: {int(angles.get('right_elbow', 'N/A'))} graus\n\n"
+                    f"Joelho Esquerdo: {int(angles.get('left_knee', 'N/A'))} graus\n"
+                    f"Joelho Direito: {int(angles.get('right_knee', 'N/A'))} graus")
 
-            image.flags.writeable = True
-            image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+            for i, line in enumerate(text.split('\n')):
+                cv2.putText(frame, line, (box_x + 5, box_y + 20 + i * 20), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
 
-            try:
-                if resultados.pose_landmarks:
-                    landmarks = resultados.pose_landmarks.landmark
-                    left_shoulder = landmarks[
-                        self.mp_pose.PoseLandmark.LEFT_SHOULDER.value
-                    ]
-                    left_elbow = landmarks[self.mp_pose.PoseLandmark.LEFT_ELBOW.value]
-                    left_wrist = landmarks[self.mp_pose.PoseLandmark.LEFT_WRIST.value]
-                    right_shoulder = landmarks[
-                        self.mp_pose.PoseLandmark.RIGHT_SHOULDER.value
-                    ]
-                    right_elbow = landmarks[self.mp_pose.PoseLandmark.RIGHT_ELBOW.value]
-                    right_wrist = landmarks[self.mp_pose.PoseLandmark.RIGHT_WRIST.value]
-                    left_hip = landmarks[self.mp_pose.PoseLandmark.LEFT_HIP.value]
-                    left_knee = landmarks[self.mp_pose.PoseLandmark.LEFT_KNEE.value]
-                    left_ankle = landmarks[self.mp_pose.PoseLandmark.LEFT_ANKLE.value]
-                    right_hip = landmarks[self.mp_pose.PoseLandmark.RIGHT_HIP.value]
-                    right_knee = landmarks[self.mp_pose.PoseLandmark.RIGHT_KNEE.value]
-                    right_ankle = landmarks[self.mp_pose.PoseLandmark.RIGHT_ANKLE.value]
+        return frame
 
-                    left_elbow_angle = self.calc_angle(
-                        left_shoulder, left_elbow, left_wrist
-                    )
-                    right_elbow_angle = self.calc_angle(
-                        right_shoulder, right_elbow, right_wrist
-                    )
-                    left_knee_angle = self.calc_angle(left_hip, left_knee, left_ankle)
-                    right_knee_angle = self.calc_angle(
-                        right_hip, right_knee, right_ankle
-                    )
+    def process_frame(self) -> Optional[Tuple[np.ndarray, Dict[str, float]]]:
+        """Processa um frame e retorna a imagem anotada com ângulos."""
+        if not self.cap.isOpened():
+            return None
 
-                    cv2.putText(
-                        image,
-                        str(left_elbow_angle),
-                        tuple(
-                            np.multiply(
-                                [left_elbow.x, left_elbow.y], [640, 480]
-                            ).astype(int)
-                        ),
-                        cv2.FONT_HERSHEY_SIMPLEX,
-                        0.5,
-                        (255, 255, 255),
-                        2,
-                        cv2.LINE_AA,
-                    )
-                    cv2.putText(
-                        image,
-                        str(right_elbow_angle),
-                        tuple(
-                            np.multiply(
-                                [right_elbow.x, right_elbow.y], [640, 480]
-                            ).astype(int)
-                        ),
-                        cv2.FONT_HERSHEY_SIMPLEX,
-                        0.5,
-                        (255, 255, 255),
-                        2,
-                        cv2.LINE_AA,
-                    )
-                    cv2.putText(
-                        image,
-                        str(left_knee_angle),
-                        tuple(
-                            np.multiply([left_knee.x, left_knee.y], [640, 480]).astype(
-                                int
-                            )
-                        ),
-                        cv2.FONT_HERSHEY_SIMPLEX,
-                        0.5,
-                        (255, 255, 255),
-                        2,
-                        cv2.LINE_AA,
-                    )
-                    cv2.putText(
-                        image,
-                        str(right_knee_angle),
-                        tuple(
-                            np.multiply(
-                                [right_knee.x, right_knee.y], [640, 480]
-                            ).astype(int)
-                        ),
-                        cv2.FONT_HERSHEY_SIMPLEX,
-                        0.5,
-                        (255, 255, 255),
-                        2,
-                        cv2.LINE_AA,
-                    )
+        success, frame = self.cap.read()
+        if not success:
+            return None
 
-                    if iniciar_analise:
-                        print("Analisando frame... com gemini vision ")
-                        # resultado_analise = video_analyzer.analyze_video_frame(frame)
-                        # print(f"Análise do frame: {resultado_analise}")
+        frame = cv2.resize(frame, (self.frame_width, self.frame_height))
+        rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        rgb_frame.flags.writeable = False
 
-                        # # Adicionar a análise como legenda no frame
-                        # cv2.putText(
-                        #     image,
-                        #     resultado_analise,
-                        #     (10, 450),
-                        #     cv2.FONT_HERSHEY_SIMPLEX,
-                        #     0.5,
-                        #     (0, 255, 0),
-                        #     2,
-                        #     cv2.LINE_AA,
-                        # )
+        results = self.pose.process(rgb_frame)
+        rgb_frame.flags.writeable = True
+        frame = cv2.cvtColor(rgb_frame, cv2.COLOR_RGB2BGR)
 
-            except Exception as e:
-                print(f"Erro durante a análise do frame: {e}")
-
-            self.mp_drawing.draw_landmarks(
-                image, resultados.pose_landmarks, self.mp_pose.POSE_CONNECTIONS
+        angles = {}
+        if results.pose_landmarks:
+            self.mp_draw.draw_landmarks(
+                frame,
+                results.pose_landmarks,
+                self.mp_pose.POSE_CONNECTIONS,
+                self.mp_draw.DrawingSpec(color=(245, 117, 66), thickness=2, circle_radius=2),
+                self.mp_draw.DrawingSpec(color=(245, 66, 230), thickness=2, circle_radius=2)
             )
+            angles = self.get_pose_angles(results.pose_landmarks.landmark)
+            frame = self.draw_angles(frame, results.pose_landmarks.landmark, angles)
+            frame = self.black_box(frame, angles)  # Adiciona a caixa preta com ângulos
 
-            # Adicionar FPS no canto da tela do MediaPipe
-            cv2.putText(
-                image,
-                f"FPS: {int(fps)}",
-                (10, 30),
-                cv2.FONT_HERSHEY_SIMPLEX,
-                1,
-                (0, 255, 0),
-                2,
-                cv2.LINE_AA,
-            )
+        self.frame_count += 1
+        current_time = time.time()
+        if current_time - self.start_time >= 1.0:
+            fps = self.frame_count
+            self.frame_count = 0
+            self.start_time = current_time
+            cv2.putText(frame, f'FPS: {fps}', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
-            # Concatenar os dois frames (original e com legendas) lado a lado
-            combined_frame = np.hstack((frame, image))
+        return frame, angles
 
-            cv2.imshow("MediaPipe feed", combined_frame)
-
-            k = cv2.waitKey(1) & 0xFF
-            if k == 27:
-                break
-
-        cap.release()
+    def release(self):
+        """Libera os recursos."""
+        self.cap.release()
         cv2.destroyAllWindows()
 
-    def show_video_trainer(self, video_analyzer):
-        if self.video_path:
-            cap = cv2.VideoCapture(self.video_path)
-        else:
-            cap = cv2.VideoCapture(0)
+    def save_video(self, output_filename: str):
+        """Salva os frames processados em um arquivo de vídeo .mp4."""
+        fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # Codec para .mp4
+        out = cv2.VideoWriter(output_filename, fourcc, 20.0, (self.frame_width, self.frame_height))
 
-        # Reduzir a resolução do vídeo para aumentar a taxa de quadros
-        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-
-        prev_frame_time = 0
-
-        while cap.isOpened():
-            ret, frame = cap.read()
-            if not ret:
+        while True:
+            frame_data = self.process_frame()
+            if frame_data is None:
                 break
 
-            new_frame_time = time.time()
-            fps = 1 / (new_frame_time - prev_frame_time)
-            prev_frame_time = new_frame_time
+            frame, angles = frame_data
+            out.write(frame)  # Escreve o frame no arquivo de vídeo
+            frame = cv2.resize(frame, (self.frame_width, self.frame_height))
 
-            image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            image.flags.writeable = False
+            cv2.imshow("Pose Detection 2", frame)
 
-            resultados = self.pose.process(image)
+            # Impressão dos ângulos
+            if angles:
+                print(f"Ângulos detectados - Cotovelo Esquerdo: {angles.get('left_elbow', 'N/A')}°, "
+                      f"Cotovelo Direito: {angles.get('right_elbow', 'N/A')}°, "
+                      f"Joelho Esquerdo: {angles.get('left_knee', 'N/A')}°, "
+                      f"Joelho Direito: {angles.get('right_knee', 'N/A')}°")
 
-            image.flags.writeable = True
-            image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-
-            try:
-                if resultados.pose_landmarks:
-                    landmarks = resultados.pose_landmarks.landmark
-                    left_shoulder = landmarks[self.mp_pose.PoseLandmark.LEFT_SHOULDER.value]
-                    left_elbow = landmarks[self.mp_pose.PoseLandmark.LEFT_ELBOW.value]
-                    left_wrist = landmarks[self.mp_pose.PoseLandmark.LEFT_WRIST.value]
-                    right_shoulder = landmarks[self.mp_pose.PoseLandmark.RIGHT_SHOULDER.value]
-                    right_elbow = landmarks[self.mp_pose.PoseLandmark.RIGHT_ELBOW.value]
-                    right_wrist = landmarks[self.mp_pose.PoseLandmark.RIGHT_WRIST.value]
-                    left_hip = landmarks[self.mp_pose.PoseLandmark.LEFT_HIP.value]
-                    left_knee = landmarks[self.mp_pose.PoseLandmark.LEFT_KNEE.value]
-                    left_ankle = landmarks[self.mp_pose.PoseLandmark.LEFT_ANKLE.value]
-                    right_hip = landmarks[self.mp_pose.PoseLandmark.RIGHT_HIP.value]
-                    right_knee = landmarks[self.mp_pose.PoseLandmark.RIGHT_KNEE.value]
-                    right_ankle = landmarks[self.mp_pose.PoseLandmark.RIGHT_ANKLE.value]
-
-                    left_elbow_angle = self.calc_angle(left_shoulder, left_elbow, left_wrist)
-                    right_elbow_angle = self.calc_angle(right_shoulder, right_elbow, right_wrist)
-                    left_knee_angle = self.calc_angle(left_hip, left_knee, left_ankle)
-                    right_knee_angle = self.calc_angle(right_hip, right_knee, right_ankle)
-
-                    cv2.putText(image, str(left_elbow_angle),
-                                tuple(np.multiply([left_elbow.x, left_elbow.y], [640, 480]).astype(int)),
-                                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2, cv2.LINE_AA)
-
-                    cv2.putText(image, str(right_elbow_angle),
-                                tuple(np.multiply([right_elbow.x, right_elbow.y], [640, 480]).astype(int)),
-                                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2, cv2.LINE_AA)
-
-                    cv2.putText(image, str(left_knee_angle),
-                                tuple(np.multiply([left_knee.x, left_knee.y], [640, 480]).astype(int)),
-                                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2, cv2.LINE_AA)
-
-                    cv2.putText(image, str(right_knee_angle),
-                                tuple(np.multiply([right_knee.x, right_knee.y], [640, 480]).astype(int)),
-                                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2, cv2.LINE_AA)
-
-            except Exception as e:
-                print(f"Erro durante a análise do frame: {e}")
-
-            self.mp_drawing.draw_landmarks(image, resultados.pose_landmarks, self.mp_pose.POSE_CONNECTIONS)
-
-            # Adicionar FPS no canto da tela do MediaPipe
-            cv2.putText(image, f"FPS: {int(fps)}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
-
-            # Exibir apenas o frame do MediaPipe
-            #cv2.imshow("MediaPipe feed", image)
-
-            if cv2.waitKey(1) & 0xFF == 27:  # Pressione 'Esc' para sair
+            # Pressione 'q' para sair
+            if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
 
-        cap.release()
-        cv2.destroyAllWindows()
+        out.release()  # Libera o VideoWriter
+        self.release()  # Libera os recursos do vídeo
 
+    def run(self):
+        """Executa o detector e salva o vídeo."""
+        output_filename = "cv2_video.mp4"
+        fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # Codec para .mp4
+        out = cv2.VideoWriter(output_filename, fourcc, 20.0, (self.frame_width, self.frame_height))
 
-
-
-class FrameDisplay:
-    def __init__(self, video_path):
-        self.video_path = video_path
-
-    def display_video_goku(self, media_pipe_frame):
-        cap = cv2.VideoCapture(self.video_path)
-
-        while cap.isOpened():
-            ret, frame = cap.read()
-            if not ret:
-                cap.set(cv2.CAP_PROP_POS_FRAMES, 0)  # Reiniciar o vídeo
-                continue
-
-            # Redimensionar o frame do vídeo para a mesma altura do frame do MediaPipe
-            height, width, _ = media_pipe_frame.shape
-            frame_resized = cv2.resize(frame, (int(width * (frame.shape[0] / height)), height))
-
-            # Desenhar um retângulo na parte inferior do vídeo
-            start_point = (width // 2 - 50, height - 200)  # Ponto inicial do retângulo
-            end_point = (width // 2 + 50, height)  # Ponto final do retângulo
-            color = (255, 255, 255)  # Cor branca
-            thickness = -1  # Preencher o retângulo
-            cv2.rectangle(frame_resized, start_point, end_point, color, thickness)
-
-            # Adicionar texto dentro do retângulo
-            text = "hello world"
-            font = cv2.FONT_HERSHEY_SIMPLEX
-            font_scale = 1  # Escala da fonte
-            color_text = (0, 0, 0)  # Cor do texto (preto)
-            thickness_text = 2  # Espessura do texto
-            text_size = cv2.getTextSize(text, font, font_scale, thickness_text)[0]
-            text_x = start_point[0] + (end_point[0] - start_point[0]) // 2 - text_size[0] // 2
-            text_y = start_point[1] + (end_point[1] - start_point[1]) // 2 + text_size[1] // 2
-            cv2.putText(frame_resized, text, (text_x, text_y), font, font_scale, color_text, thickness_text)
-
-            # Exibir o frame do vídeo e o frame do MediaPipe lado a lado
-            combined_frame = np.hstack((frame_resized, media_pipe_frame))
-            cv2.imshow("Frame Separado e MediaPipe", combined_frame)
-
-            if cv2.waitKey(1) & 0xFF == 27:  # Pressione 'Esc' para sair
+        while True:
+            frame_data = self.process_frame()
+            if frame_data is None:
                 break
 
-        cap.release()
-        cv2.destroyAllWindows()
+            frame, angles = frame_data
+            out.write(frame)  # Escreve o frame no arquivo de vídeo
+            frame = cv2.resize(frame, (self.frame_width, self.frame_height))
 
+            cv2.imshow("GOKU IA PERSONAL TRAINER V3", frame)
 
-def main():
-    # genai config
-    api_key = os.getenv("GEMINI_API_KEY")
-    if not api_key:
-        raise ValueError("API key não configurada")
-    else:
-        video_analyzer = VideoAnalyzer(api_key)
+            # Impressão dos ângulos
+            if angles:
+                print(f"Ângulos detectados - Cotovelo Esquerdo: {angles.get('left_elbow', 'N/A')}°, "
+                      f"Cotovelo Direito: {angles.get('right_elbow', 'N/A')}°, "
+                      f"Joelho Esquerdo: {angles.get('left_knee', 'N/A')}°, "
+                      f"Joelho Direito: {angles.get('right_knee', 'N/A')}°")
 
-    # videos
-    escolha = input("Digite 0 para usar a webcam ou 1 para usar um vídeo: ").strip()
-    goku_video = "/home/pedrov12/Documentos/GitHub/mvp-projects-freelancer/Computer_Vision/opencv_modules/modules/video_analyser_IA/assets/gohan_treinador_SSJ.webm"
+            # Pressione 'q' para sair
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
 
-    if escolha == "1":
-        caminho_video = "/home/pedrov12/Documentos/GitHub/mvp-projects-freelancer/Computer_Vision/opencv_modules/modules/video_analyser_IA/assets/chute_karate.webm"
-    else:
-        caminho_video = None
+        out.release()  # Libera o VideoWriter
+        self.release()  # Libera os recursos do vídeo
 
-    # instancia classes
-    captura_de_video = CapturaDeVideo(caminho_video)
-    frame_display = FrameDisplay(goku_video)
+# Lista de vídeos e execução do detector
+files_path = "/home/pedrov12/Documentos/GitHub/mvp-projects-freelancer/pythonando/Computer_Vision/opencv_modules/modules/video_analyser_IA"
+videos = [
+    "/home/pedrov12/Documentos/GitHub/mvp-projects-freelancer/pythonando/Computer_Vision/opencv_modules/modules/video_analyser_IA/assets/datasets/mawashi_geri.mp4",
+    "/home/pedrov12/Documentos/GitHub/mvp-projects-freelancer/pythonando/Computer_Vision/opencv_modules/modules/video_analyser_IA/assets/datasets/chute_dataset.mp4",
+    "/home/pedrov12/Documentos/GitHub/mvp-projects-freelancer/pythonando/Computer_Vision/opencv_modules/modules/video_analyser_IA/assets/calistenia_1.mp4",
+    0  # Webcam
+]
 
-    while True:
-        # Captura o frame do MediaPipe
-        media_pipe_frame = captura_de_video.show_video_trainer(video_analyzer)
-
-        # Captura o frame do vídeo Goku
-        goku_frame = frame_display.display_video_goku(media_pipe_frame)
-
-        # Verifica se os frames foram capturados corretamente
-        if media_pipe_frame is not None and goku_frame is not None:
-            # Redimensiona o frame do Goku para a mesma altura do frame do MediaPipe
-            height, width, _ = media_pipe_frame.shape
-            goku_frame_resized = cv2.resize(goku_frame, (int(width * (goku_frame.shape[0] / height)), height))
-
-            # Exibir os frames lado a lado
-            combined_frame = np.hstack((media_pipe_frame, goku_frame_resized))
-            cv2.imshow("MediaPipe e Goku", combined_frame)
-
-        if cv2.waitKey(1) & 0xFF == 27:  # Pressione 'Esc' para sair
-            break
-
-    captura_de_video.release()
-    frame_display.release()
-    cv2.destroyAllWindows()
-
-if __name__ == "__main__":
-    main()
+detector = PoseDetector(video_sources=videos, focus_side="direita", video_index=0)  # Mudando para focar na pessoa da direita
+detector.run()
