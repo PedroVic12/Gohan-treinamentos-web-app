@@ -33,6 +33,18 @@ class PoseDetector:
         self.start_time = time.time()
         self.frame_count = 0
 
+    def calculate_fps(self):
+        """Calculates FPS dynamically based on elapsed time and frame count."""
+        self.frame_count += 1
+        current_time = time.time()
+        if current_time - self.start_time >= 1.0:
+            fps = self.frame_count
+            self.frame_count = 0
+            self.start_time = current_time
+            return fps
+        return 0
+
+    
     def set_video_source(self, index: int):
         """Configura a fonte de vídeo de acordo com o índice."""
         if index < 0 or index >= len(self.video_sources):
