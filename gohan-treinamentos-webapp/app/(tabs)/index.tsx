@@ -79,9 +79,10 @@ export default function HomeScreen() {
         />
       }>  
       <TitleSection />
+      <MeuComponente />
+      <ExploreSection />
       <TryItSection />
       <FreshStartSection />
-      <MeuComponente />
     </ParallaxScrollView>
   );
 }

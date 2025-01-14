@@ -7,6 +7,7 @@ import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import GohanTreinamentosPage from './GohanTreinamentosPage'; // Certifique-se de que o caminho está correto
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -14,27 +15,36 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarActiveTintColor: 'white', // Cor do texto ativo
+        tabBarStyle: {
+          backgroundColor: 'black', // Fundo preto
+        },
         headerShown: false,
         tabBarButton: HapticTab,
         tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
-          },
-          default: {},
-        }),
+        tabBarLabelStyle: {
+          color: 'white', // Cor do texto das abas
+        },
       }}>
+
       <Tabs.Screen
-        name="index"
+        name="GohanTreinamentosPage"
+        options={{
+          title: 'Gohan treinamentos',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="04.square.ar" color={color} />,
+        }}
+      />
+
+      <Tabs.Screen
+        name="Home"
         options={{
           title: 'Home',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
         }}
       />
+
       <Tabs.Screen
-        name="explore"
+        name="Explore"
         options={{
           title: 'Explore',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,

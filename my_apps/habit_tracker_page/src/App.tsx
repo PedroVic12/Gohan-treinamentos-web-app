@@ -60,7 +60,7 @@ function App() {
         </Typography>
         
         <Typography variant="subtitle1" align="center" gutterBottom color="textSecondary">
-          You Only Need 5 hobbies!
+          You Only Need 5 hobbies! Corpo x Mente x Espirito
         </Typography>
 
         <ProgressBar totalCount={totalCount} maxCount={maxWeeklyCount} />
