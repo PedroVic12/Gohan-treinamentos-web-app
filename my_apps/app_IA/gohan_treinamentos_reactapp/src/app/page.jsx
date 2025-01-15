@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState, useCallback } from "react";
 
 function MainComponent() {
   const [exercises, setExercises] = useState([

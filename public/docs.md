@@ -1,62 +1,158 @@
-1. Performance
-Flutter:
-Prós: Gera código nativo diretamente (não depende de uma camada de WebView). Excelente para apps com animações complexas ou interfaces pesadas.
-Contras: O tamanho inicial do app é maior. Web support ainda não é tão maduro quanto os rivais.
-React Native:
-Prós: Usa a ponte JavaScript para interagir com APIs nativas, o que resulta em boa performance para a maioria dos apps.
-Contras: Para apps com requisitos gráficos extremos, pode ser menos eficiente que Flutter.
-Ionic:
-Prós: Baseado em tecnologias Web (HTML, CSS, JS), facilita o uso em várias plataformas. Ideal para apps simples ou médios.
-Contras: Apps altamente dependentes de interações nativas (gráficos intensos ou tarefas pesadas) podem sofrer perda de performance, pois Ionic usa WebView.
-Resumo de Performance:
 
-Melhor performance nativa: Flutter > React Native > Ionic.
-Melhor para apps baseados na web: Ionic > React Native > Flutter.
-2. Deploy como Web App
-Se você quer fazer um Web App que pode ser instalado no Chrome, o Ionic é perfeito:
+https://www.youtube.com/watch?v=K7ghUiXLef8&t=11245s
 
-É projetado para apps híbridos, facilitando o deploy tanto para dispositivos móveis quanto para navegadores.
-Você pode usar o PWA (Progressive Web App) com Ionic Capacitor para empacotar como um Web App instalável.
-Como fazer deploy no Chrome com Ionic:
-Ative o suporte PWA:
-No capacitor.config.ts ou capacitor.config.json, configure:
-json
-Copiar código
-{
-  "webDir": "build",
-  "plugins": {
-    "PWA": {
-      "enabled": true
-    }
-  }
-}
-Construa o app:
-bash
-Copiar código
-npm run build
-Hospede o app em um serviço como Vercel, Netlify ou Firebase Hosting.
-Ao acessar no Chrome, aparecerá a opção para "Instalar app".
-3. Qual escolher?
-Ionic é o ideal para seu caso, especialmente se prefere modernidade, visual flexível e quer facilidade no deploy como Web App.
-React Native pode ser útil para demandas específicas de performance nativa, mas não é o foco ideal para Web.
-Flutter é poderoso, mas o suporte a Web Apps ainda é menos maduro.
+https://www.youtube.com/watch?v=JaUWIvu_Dyo&list=PLaeoIQ5GBVoq7s2j7WgyYYTd4MertwqRV&index=3
+
+# Guia de Frameworks Mobile
 
 
-Crie um projeto Ionic com React:
+## Iniciando com Ionic React
+---
 
-bash
-Copiar código
+1. Instalação e criação do projeto:
+
+```
 npm install -g @ionic/cli
 ionic start myApp blank --type=react
+```
+
+2. Configuração do projeto:
+
+```
 cd myApp
+npm install
+npm install @mui/material @emotion/styled @mui/icons-material
+npm install tailwindcss 
+
+```
+
+npm install @capacitor/core @capacitor/cli
+
 npm start
-Ative PWA no Ionic para deploy Web:
 
-Configure capacitor.config.ts ou capacitor.config.json.
-Hospede no Vercel, Netlify, ou Firebase Hosting.
-Escolha uma lib de gerenciamento de estado:
 
-Redux: Escalável para projetos grandes.
-Context API: Simples e nativo do React.
-Zustand: Leve e minimalista.
-Mestre Pedro Victor, vá com Ionic e brilhe nos Web Apps! 🚀
+---
+
+## Get started with React Native
+
+1. Install dependencies
+
+   ```bash
+   npm install
+
+   npm install @mui/material @emotion/styled @mui/icons-material
+
+
+   npx expo install expo-router react-native-safe-area-context react-native-screens expo-linking expo-constants expo-status-bar
+
+   npx expo install react-native-web react-dom
+
+
+   ```
+
+2. Start the app
+
+   ```bash
+    npx expo start
+   ```
+
+
+## 1. Análise de Performance
+
+### Flutter
+**Prós:**
+- Gera código nativo diretamente (não depende de WebView)
+- Excelente para apps com animações complexas
+- Ótimo desempenho em interfaces pesadas
+
+**Contras:**
+- Tamanho inicial do app maior
+- Suporte web ainda em amadurecimento
+
+### React Native
+**Prós:**
+- Usa ponte JavaScript para APIs nativas
+- Boa performance para maioria dos apps
+
+**Contras:**
+- Menor eficiência em apps com requisitos gráficos extremos
+
+### Ionic
+**Prós:**
+- Baseado em tecnologias Web (HTML, CSS, JS)
+- Fácil implementação multiplataforma
+- Ideal para apps simples e médios
+
+**Contras:**
+- Possível perda de performance em apps com interações nativas intensas
+- Dependência de WebView
+
+### Resumo Comparativo
+- **Performance Nativa:** Flutter > React Native > Ionic
+- **Apps Web:** Ionic > React Native > Flutter
+
+## 2. Deploy como Web App
+
+O Ionic se destaca para Web Apps instaláveis no Chrome:
+
+### Vantagens
+- Projetado para apps híbridos
+- Suporte nativo a PWA
+- Fácil deploy mobile e web
+
+### Configuração PWA
+1. Configure o arquivo `capacitor.config.ts` ou `capacitor.config.json`:
+
+
+
+json
+{
+"webDir": "build",
+"plugins": {
+"PWA": {
+"enabled": true
+}
+}
+}
+
+
+2. Build do projeto:
+
+```
+npm run build
+```
+
+3. Deploy do projeto:
+
+```
+npx cap run android
+```
+
+
+
+3. Hospedagem:
+- Vercel
+- Netlify
+- Firebase Hosting
+
+## 3. Escolha do Framework
+
+### Recomendação: Ionic
+- Ideal para Web Apps modernos
+- Visual customizável
+- Deploy simplificado
+
+
+
+
+
+### 4. Gerenciamento de Estado:
+- **Redux:** Para projetos grandes
+- **Context API:** Solução nativa React
+- **Zustand:** Alternativa leve
+
+---
+
+> 💡 **Dica:** Para Web Apps com foco em instalação via Chrome, o Ionic oferece a melhor experiência de desenvolvimento e deploy.
+
+
