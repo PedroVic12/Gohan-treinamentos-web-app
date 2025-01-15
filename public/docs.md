@@ -17,7 +17,7 @@ https://www.youtube.com/watch?v=IwHt_QpIa8A
 
 ```
 npm install -g @ionic/cli
-ionic start myApp blank --type=react
+ionic start myApp tabs --type=react
 ```
 
 2. Configuração do projeto:
