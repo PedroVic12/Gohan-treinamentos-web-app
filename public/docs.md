@@ -7,6 +7,9 @@ https://www.youtube.com/watch?v=JaUWIvu_Dyo&list=PLaeoIQ5GBVoq7s2j7WgyYYTd4Mertw
 
 
 ## Iniciando com Ionic React
+
+https://ionicframework.com/docs/react/adding-ionic-react-to-an-existing-react-project
+
 ---
 
 1. Instalação e criação do projeto:
@@ -20,13 +23,16 @@ ionic start myApp blank --type=react
 
 ```
 cd myApp
+
 npm install
 npm install @mui/material @emotion/styled @mui/icons-material
 npm install tailwindcss 
+npm install @ionic/react
+npm install @ionic/react-router
+npm install @capacitor/core @capacitor/cli
 
 ```
 
-npm install @capacitor/core @capacitor/cli
 
 npm start
 
