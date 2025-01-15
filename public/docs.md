@@ -1,15 +1,16 @@
 
+# Guia de Frameworks Mobile
+---
+
+## Iniciando com Ionic React
+
 https://www.youtube.com/watch?v=K7ghUiXLef8&t=11245s
 
 https://www.youtube.com/watch?v=JaUWIvu_Dyo&list=PLaeoIQ5GBVoq7s2j7WgyYYTd4MertwqRV&index=3
 
-# Guia de Frameworks Mobile
-
-
-## Iniciando com Ionic React
-
 https://ionicframework.com/docs/react/adding-ionic-react-to-an-existing-react-project
 
+https://www.youtube.com/watch?v=IwHt_QpIa8A
 ---
 
 1. Instalação e criação do projeto:
