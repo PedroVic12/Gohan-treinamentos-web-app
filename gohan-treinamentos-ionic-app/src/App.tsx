@@ -42,9 +42,14 @@ import '@ionic/react/css/palettes/dark.system.css';
 
 /* Theme variables */
 import './theme/variables.css';
+
+
+
+
+// imports 
 import { useState } from 'react';
 import GohanTreinamentosGeradorTreinoPage from './app/pages/geradorTreinoPage';
-
+// import { AlarmeClockPage} from "./app/pages/alarm_clock_page";
 setupIonicReact();
 
 const Tab1: React.FC = () => {
@@ -176,9 +181,20 @@ const TodoListPage: React.FC = () => {
   function glassWidget(){
       return (
         <div>
-        
+        glass container div
         </div>
       )
+  }
+
+
+  function alarme_clock_page(){
+    return (
+      <div>
+        alarme_clock_page
+
+
+      </div>
+    )
   }
 };
 

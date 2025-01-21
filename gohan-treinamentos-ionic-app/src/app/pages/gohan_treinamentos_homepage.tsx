@@ -16,7 +16,7 @@ import { formatDate } from './utils/dateUtils';
 import { getTaskMessage } from './data/taskMessages';
 import { Task } from './types/Task';
 
-function App() {
+function HomePage() {
   const [tasks, setTasks] = useState<Task[]>(initialTasks);
   const maxWeeklyCount = 35;
 
@@ -79,4 +79,4 @@ function App() {
   );
 }
 
-export default App;
+export default HomePage;
