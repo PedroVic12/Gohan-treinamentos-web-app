@@ -96,6 +96,9 @@ function AlarmeClockPage() {
     setAlarms((prev) => [...prev, newAlarm]);
   };
 
+
+
+  
   const toggleAlarm = (id) => {
     setAlarms((prev) =>
       prev.map((alarm) =>
