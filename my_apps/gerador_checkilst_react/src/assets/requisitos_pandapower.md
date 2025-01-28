@@ -34,24 +34,21 @@
 
 #### Tarefas PVRV 12/12/2024
 
-[] 1 - adequar a matriz de saída do método avalia_cenarios para chamar o método calcular_violacoes a cada linha da matriz. As informações dos ramos que precisam ser desligados (1) devem ser consideradas a partir da segunda coluna e cruzadas com a informação da matriz de desligamentos.
+[x] 1 - adequar a matriz de saída do método avalia_cenarios para chamar o método calcular_violacoes a cada linha da matriz. As informações dos ramos que precisam ser desligados (1) devem ser consideradas a partir da segunda coluna e cruzadas com a informação da matriz de desligamentos.
 
-[] 2 - Para considerar os carregamentos, o sistema de carga média (2) é exatamente igual ao IEEE14, para carga pesada (3) você deve multiplicar todas as potências ativas e reativas (identificar os elementos das estruturas net) por 1,177 e para carga leve (1) multiplicar por 0,941.
+[x] 2 - Para considerar os carregamentos, o sistema de carga média (2) é exatamente igual ao IEEE14, para carga pesada (3) você deve multiplicar todas as potências ativas e reativas (identificar os elementos das estruturas net) por 1,177 e para carga leve (1) multiplicar por 0,941.
 
 #### Tarefas PVRN 19/12/2024
 
-[] Sobre o 1 : ao chamar o método desligar_elementos você deve passar uma lista de índices da estrutura net.line que correspondem aos ramos que são linhas da lista de desligamentos. Você também deve passar uma lista de índices da estrutura net.trafo que correspondem aos ramos que são trafos da lista de desligamentos. Importante : os campos de e para na estrutura net.line se chamam "from_bus" e "to_bus" e os campos de e para na estrutura net.trafo se chamam "hv_bus" e "lv_bus".
+[x] Sobre o 1 : ao chamar o método desligar_elementos você deve passar uma lista de índices da estrutura net.line que correspondem aos ramos que são linhas da lista de desligamentos. Você também deve passar uma lista de índices da estrutura net.trafo que correspondem aos ramos que são trafos da lista de desligamentos. Importante : os campos de e para na estrutura net.line se chamam "from_bus" e "to_bus" e os campos de e para na estrutura net.trafo se chamam "hv_bus" e "lv_bus".
 
-[] Pedro, para o caso da identificação dos ramos das linhas e dos trafos, verificar tanto um lado como o outro. Ou seja, se o ramo for 3-6, e for trafo, verificar se (hv_bus == 3 E lv_bus==6) OU (hv_bus == 6 E lv_bus==3). Se for linha, verificar se (from_bus == 3 E to_bus==6) OU (from_bus == 6 E to_bus==3).
+[x] Pedro, para o caso da identificação dos ramos das linhas e dos trafos, verificar tanto um lado como o outro. Ou seja, se o ramo for 3-6, e for trafo, verificar se (hv_bus == 3 E lv_bus==6) OU (hv_bus == 6 E lv_bus==3). Se for linha, verificar se (from_bus == 3 E to_bus==6) OU (from_bus == 6 E to_bus==3).
 
-[] Para 2 : o ajuste de cargas deve ser feito no campo "scaling" da estrutura net.load e "scaling" da estrutura net.gen. Basta copiar o fator nestes campos antes de executar o fluxo
+[x] Para 2 : o ajuste de cargas deve ser feito no campo "scaling" da estrutura net.load e 
+"scaling" da estrutura net.gen. Basta copiar o fator nestes campos antes de executar o fluxo
 
-[] Cuidado : antes de desligar os ramos de um determinado cenário, executar um método que liga todos ramos do agendamento. Criar este método que coloca os campos "in_service" das estruturas net.trafo e  net.line em True para os ramos do agendamento.
+[x] Cuidado : antes de desligar os ramos de um determinado cenário, executar um método que liga todos ramos do agendamento. Criar este método que coloca os campos "in_service" das estruturas net.trafo e  net.line em True para os ramos do agendamento.
 
 [x] Criar um draw.io e compartilhar comigo para fazermos um fluxograma de tudo que precisa ser executado.
 
 
-#### Tarefas PV 30/12/2024
-[] Tirar matplotlib do codigo e conectar ao streamlit de forma interativa
-[] Refatorar o codigo seguindo o fluxograma
-[] Ajuste nos agendamentos corretamente fazendo a otimização do rainer
