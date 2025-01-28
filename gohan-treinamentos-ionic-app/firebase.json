@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "build/dist",
+    "public": "    gohan-treinamentos-ionic-app/build/dist",
     "ignore": [
       "firebase.json",
       "**/.*",
