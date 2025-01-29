@@ -49,6 +49,7 @@ import './theme/variables.css';
 // imports 
 import { useState } from 'react';
 import GohanTreinamentosGeradorTreinoPage from './app/pages/geradorTreinoPage';
+import GohanTreinamentosHomePage from './app/pages/gohan_treinamentos_homepage';
 // import { AlarmeClockPage} from "./app/pages/alarm_clock_page";
 setupIonicReact();
 
@@ -73,15 +74,8 @@ const Tab1: React.FC = () => {
   );
 };
 
-const Tab2: React.FC = () => (
-  <IonPage>
-    <IonHeader>
-      <IonTitle>Tab 2</IonTitle>
-    </IonHeader>
-    <IonContent>
-      <IonButton color="secondary">Botão Verde</IonButton>
-    </IonContent>
-  </IonPage>
+const HomePage: React.FC = () => (
+    <GohanTreinamentosHomePage></GohanTreinamentosHomePage>
 );
 
 const Tab3: React.FC = () => (
@@ -209,8 +203,8 @@ const App: React.FC = () => (
           <Route exact path="/tab1">
             <Tab1 />
           </Route>
-          <Route exact path="/tab2">
-            <Tab2 />
+          <Route exact path="/home">
+            <HomePage />
           </Route>
           <Route path="/treinos">
             <GohanTreinamentosGeradorTreinoPage />
@@ -231,9 +225,9 @@ const App: React.FC = () => (
             <IonLabel>Tab 1</IonLabel>
           </IonTabButton>
 
-          <IonTabButton tab="tab2" href="/tab2">
+          <IonTabButton tab="home" href="/home">
             <IonIcon aria-hidden="true" icon={ellipse} />
-            <IonLabel>Tab 2</IonLabel>
+            <IonLabel>Home Page</IonLabel>
           </IonTabButton>
 
           <IonTabButton tab="treinos" href="/treinos">

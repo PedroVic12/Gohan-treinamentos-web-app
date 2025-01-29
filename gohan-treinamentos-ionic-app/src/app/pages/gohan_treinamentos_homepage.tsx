@@ -9,14 +9,14 @@ import {
   IconButton,
 } from '@mui/material';
 import { Refresh as RefreshIcon } from '@mui/icons-material';
-import { TaskItem } from './components/TaskItem';
-import { ProgressBar } from './components/ProgressBar';
-import { initialTasks } from './data/initialTasks';
-import { formatDate } from './utils/dateUtils';
-import { getTaskMessage } from './data/taskMessages';
-import { Task } from './types/Task';
+import { TaskItem } from '../public/components/TaskItem';
+import { ProgressBar } from '../public/components/ProgressBar';
+import { initialTasks } from '../public/data/initialTasks';
+import { formatDate } from '../public/utils/dateUtils';
+import { getTaskMessage } from '../public/data/taskMessages';
+import { Task } from '../public/types/Task';
 
-function HomePage() {
+function GohanTreinamentosHomePage() {
   const [tasks, setTasks] = useState<Task[]>(initialTasks);
   const maxWeeklyCount = 35;
 
@@ -79,4 +79,4 @@ function HomePage() {
   );
 }
 
-export default HomePage;
+export default GohanTreinamentosHomePage;
