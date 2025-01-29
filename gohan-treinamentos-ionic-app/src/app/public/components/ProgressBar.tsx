@@ -11,14 +11,14 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({ totalCount, maxCount }
 
   return (
     <Box sx={{ my: 4 }}>
-      <Typography variant="body2" color="textSecondary" gutterBottom>
-        Weekly Progress: {totalCount}/{maxCount}
+      <Typography variant="h5" color="error" gutterBottom>
+        Desempenho da semana: {totalCount}/{maxCount}
       </Typography>
       <LinearProgress 
         variant="determinate" 
         value={progress} 
         sx={{ 
-          height: 10, 
+          height: 25, 
           borderRadius: 5,
           backgroundColor: '#e0e0e0',
           '& .MuiLinearProgress-bar': {

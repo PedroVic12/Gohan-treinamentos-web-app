@@ -4,7 +4,7 @@ export const initialTasks: Task[] = [
   {
     id: '1',
     title: 'One to make your money',
-    description: 'Estágio em Engenharia Camorim, Citta Delivery App',
+    description: 'Projetos Tech: Chatbots, Sites, Aplicativos e modelos IA',
     count: 0,
   },
   {
@@ -28,7 +28,7 @@ export const initialTasks: Task[] = [
   {
     id: '5',
     title: 'One to stay creative',
-    description: 'Ler um livro, assistir um documentário, explorar uma nova forma de arte',
+    description: 'Ler um livro, assistir um documentário, explorar o universo, estudar coisas que estão fora da sua zona de conforto',
     count: 0,
   },
 ];

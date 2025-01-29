@@ -9,22 +9,44 @@ import {
   IconButton,
 } from '@mui/material';
 import { Refresh as RefreshIcon } from '@mui/icons-material';
-import { TaskItem } from '../public/components/TaskItem';
-import { ProgressBar } from '../public/components/ProgressBar';
-import { initialTasks } from '../public/data/initialTasks';
-import { formatDate } from '../public/utils/dateUtils';
-import { getTaskMessage } from '../public/data/taskMessages';
-import { Task } from '../public/types/Task';
+import { TaskItem } from '../../public/components/TaskItem';
+import { ProgressBar } from '../../public/components/ProgressBar';
+import { initialTasks } from '../../public/data/initialTasks';
+import { formatDate } from '../../public/utils/dateUtils';
+import { getTaskMessage } from '../../public/data/taskMessages';
+import { Task } from '../../public/types/Task';
 
 
 //widgets
 const CustomText = ({ props }: { props: { text: string } }) => {
   return (
-    <Typography variant="subtitle1" align="center" gutterBottom color="textSecondary">
+    <Typography variant="subtitle1" align="center" gutterBottom color="primary">
       {props.text} 
     </Typography>
   );
 }
+
+const HobbiesSection: React.FC = () => {
+  return (
+    <div style={{ textAlign: 'center', margin: '20px 0' }}>
+      <Typography variant="h5" gutterBottom color="primary">
+        You Only Need 5 hobbies
+      </Typography>
+      <Typography variant="subtitle1" gutterBottom color="primary">
+        (Corpo x Mente x Espirito)
+      </Typography>
+      <Typography variant="body1" gutterBottom color="primary">
+        Importante cuidar da sua Comunicação (trabalho), saúde mental(estudos), emocional(relacionamentos) e física (treinos)!
+        <br></br>
+        <br></br>
+
+        Hora de se tornar um Super Sayajin em 2025 e sua melhor versão: Lindo, Inteligente e Gostoso!
+      </Typography>
+    </div>
+  );
+};
+
+
 // src/app/utils/LocalDatabase.ts
 class LocalDatabase {
   static getTasks() {
@@ -54,8 +76,8 @@ function GohanTreinamentosHomePage() {
     setTasks(prevTasks =>
       prevTasks.map(task => {
         if (task.id === taskId) {
-          const newCount = Math.min(task.count + 1, 10);
-          if (newCount === 7) {
+          const newCount = Math.min(task.count + 1, 15);
+          if (newCount === 5) {
             alert(getTaskMessage(taskId));
           }
           return { ...task, count: newCount };
@@ -67,6 +89,7 @@ function GohanTreinamentosHomePage() {
 
   const handleRefresh = () => {
     setTasks(initialTasks);
+    alert("Rotinas resetadas!")
   };
 
   const totalCount = tasks.reduce((sum, task) => sum + task.count, 0);
@@ -76,7 +99,7 @@ function GohanTreinamentosHomePage() {
       <AppBar position="static" sx={{ backgroundColor: '#1976d2', marginBottom: 4 }}>
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Gohan Treinamentos! 2025
+            Gohan Treinamentos 2025
           </Typography>
           <IconButton color="inherit" onClick={handleRefresh}>
             <RefreshIcon />
@@ -84,18 +107,13 @@ function GohanTreinamentosHomePage() {
         </Toolbar>
       </AppBar>
 
-      <Container maxWidth="md">
+        <Container maxWidth="md" sx={{ overflowY: 'auto', maxHeight: '80vh'}}>        
+          
         <Typography variant="h5" align="center" gutterBottom>
           {formatDate()}
         </Typography>
         
-        <Typography variant="subtitle1" align="center" gutterBottom color="textSecondary">
-          You Only Need 5 hobbies! Corpo x Mente x Espirito
-        </Typography>
-
-        <CustomText props={{ text: "Importante cuidar da sua saude mental, emocional e fisica! Hora de se toranr um Super Sayjain em 2025 e sua melhor versão: Lindo, Inteligente e Gostoso!"}}></CustomText>
-
-        <ProgressBar totalCount={totalCount} maxCount={maxWeeklyCount} />
+        <HobbiesSection />
 
         <List>
           {tasks.map((task) => (
@@ -106,7 +124,13 @@ function GohanTreinamentosHomePage() {
             />
           ))}
         </List>
+
+        <ProgressBar totalCount={totalCount} maxCount={maxWeeklyCount} />
+        <br />
+        <br />
+
       </Container>
+
     </Box>
   );
 }

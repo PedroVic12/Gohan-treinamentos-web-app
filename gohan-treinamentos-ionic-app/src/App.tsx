@@ -49,7 +49,7 @@ import './theme/variables.css';
 // imports 
 import { useState } from 'react';
 import GohanTreinamentosGeradorTreinoPage from './app/pages/geradorTreinoPage';
-import GohanTreinamentosHomePage from './app/pages/gohan_treinamentos_homepage';
+import GohanTreinamentosHomePage from './app/pages/HomePage/gohan_treinamentos_homepage';
 // import { AlarmeClockPage} from "./app/pages/alarm_clock_page";
 setupIonicReact();
 
@@ -74,9 +74,6 @@ const Tab1: React.FC = () => {
   );
 };
 
-const HomePage: React.FC = () => (
-    <GohanTreinamentosHomePage></GohanTreinamentosHomePage>
-);
 
 const Tab3: React.FC = () => (
   <IonPage>

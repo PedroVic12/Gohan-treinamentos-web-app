@@ -9,14 +9,14 @@ interface TaskCounterProps {
 
 export const TaskCounter: React.FC<TaskCounterProps> = ({ count, onIncrement }) => {
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-      <Typography variant="body2">
-        {count}/7
+  <Box sx={{ display: 'flex', alignItems: 'center', borderRadius: 5, padding: 1, backgroundColor: 'grey' }}>     
+   <Typography variant="body2">
+        {count}/15
       </Typography>
       <IconButton 
         edge="end" 
         onClick={onIncrement}
-        disabled={count >= 7}
+        disabled={count >= 12}
       >
         <AddIcon />
       </IconButton>
