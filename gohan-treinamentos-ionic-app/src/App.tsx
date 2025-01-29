@@ -59,7 +59,7 @@ const Tab1: React.FC = () => {
   return (
     <IonPage>
       <IonHeader>
-        <IonTitle>Tab 1</IonTitle>
+        <IonTitle>OLA MUNDO! 28/01/2025</IonTitle>
       </IonHeader>
       <IonContent>
         <h2 className="text-xl font-bold mb-4">Contador: {count}</h2>
@@ -213,7 +213,7 @@ const App: React.FC = () => (
             <TodoListPage />
           </Route>
           <Route exact path="/">
-            <Redirect to="/tab1" />
+            <Redirect to="/home" />
           </Route>
         </IonRouterOutlet>
 
