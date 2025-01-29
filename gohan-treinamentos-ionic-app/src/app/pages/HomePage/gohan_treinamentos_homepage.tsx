@@ -29,17 +29,19 @@ const CustomText = ({ props }: { props: { text: string } }) => {
 const HobbiesSection: React.FC = () => {
   return (
     <div style={{ textAlign: 'center', margin: '20px 0' }}>
+
       <Typography variant="h5" gutterBottom color="primary">
         You Only Need 5 hobbies
       </Typography>
+
       <Typography variant="subtitle1" gutterBottom color="primary">
         (Corpo x Mente x Espirito)
       </Typography>
-      <Typography variant="body1" gutterBottom color="primary">
-        Importante cuidar da sua Comunicação (trabalho), saúde mental(estudos), emocional(relacionamentos) e física (treinos)!
-        <br></br>
-        <br></br>
 
+      <Typography variant="body1" gutterBottom color="primary">
+        Importante cuidar da suas Habilidades (trabalho), Saúde mental(estudos), saude emocional(relacionamentos) e saude física (treinos)!
+        <br></br>
+        <br></br>
         Hora de se tornar um Super Sayajin em 2025 e sua melhor versão: Lindo, Inteligente e Gostoso!
       </Typography>
     </div>
@@ -71,6 +73,7 @@ function GohanTreinamentosHomePage() {
     LocalDatabase.saveTasks(tasks); // Usa LocalDatabase para salvar tarefas
   }, [tasks]);
   
+  const totalCount = tasks.reduce((sum, task) => sum + task.count, 0);
 
   const handleIncrement = (taskId: string) => {
     setTasks(prevTasks =>
@@ -79,6 +82,10 @@ function GohanTreinamentosHomePage() {
           const newCount = Math.min(task.count + 1, 15);
           if (newCount === 5) {
             alert(getTaskMessage(taskId));
+          }
+
+          if (totalCount >=25){
+            alert("Parabens meu jovem Padawan! Voce esta com a energia vibrando alto! Busque a paz e equilibrio! Que a força esteja com você")
           }
           return { ...task, count: newCount };
         }
@@ -92,7 +99,6 @@ function GohanTreinamentosHomePage() {
     alert("Rotinas resetadas!")
   };
 
-  const totalCount = tasks.reduce((sum, task) => sum + task.count, 0);
 
   return (
     <Box sx={{ flexGrow: 1 }}>
