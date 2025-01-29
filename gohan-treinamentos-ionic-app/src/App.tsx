@@ -193,6 +193,10 @@ const TodoListPage: React.FC = () => {
 };
 
 
+
+
+{/*! MEU APP IONINC */}
+
 const App: React.FC = () => (
   <IonApp>
     <IonReactRouter>
@@ -204,7 +208,9 @@ const App: React.FC = () => (
             <Tab1 />
           </Route>
           <Route exact path="/home">
-            <HomePage />
+          <GohanTreinamentosHomePage></GohanTreinamentosHomePage>
+
+          
           </Route>
           <Route path="/treinos">
             <GohanTreinamentosGeradorTreinoPage />

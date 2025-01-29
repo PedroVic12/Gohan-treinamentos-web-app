@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Container,
   Typography,
@@ -16,9 +16,39 @@ import { formatDate } from '../public/utils/dateUtils';
 import { getTaskMessage } from '../public/data/taskMessages';
 import { Task } from '../public/types/Task';
 
+
+//widgets
+const CustomText = (text: string) => {
+  return ( // Adicionei o return aqui
+    <Typography variant="subtitle1" align="center" gutterBottom color="textSecondary">
+      {text} 
+    </Typography>
+  );
+}
+// src/app/utils/LocalDatabase.ts
+class LocalDatabase {
+  static getTasks() {
+    const savedTasks = localStorage.getItem('tasks');
+    return savedTasks ? JSON.parse(savedTasks) : null;
+  }
+
+  static saveTasks(tasks: any[]) {
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+  }
+}
+
+
+
 function GohanTreinamentosHomePage() {
-  const [tasks, setTasks] = useState<Task[]>(initialTasks);
+  const [tasks, setTasks] = useState<Task[]>(() => {
+    return LocalDatabase.getTasks() || initialTasks; // Usa LocalDatabase para carregar tarefas
+  });
   const maxWeeklyCount = 35;
+
+  useEffect(() => {
+    LocalDatabase.saveTasks(tasks); // Usa LocalDatabase para salvar tarefas
+  }, [tasks]);
+  
 
   const handleIncrement = (taskId: string) => {
     setTasks(prevTasks =>
@@ -63,6 +93,8 @@ function GohanTreinamentosHomePage() {
           You Only Need 5 hobbies! Corpo x Mente x Espirito
         </Typography>
 
+        <CustomText text="Tambem é necessario ter 5 hobbies"></CustomText>
+
         <ProgressBar totalCount={totalCount} maxCount={maxWeeklyCount} />
 
         <List>
@@ -78,5 +110,8 @@ function GohanTreinamentosHomePage() {
     </Box>
   );
 }
+
+
+
 
 export default GohanTreinamentosHomePage;
