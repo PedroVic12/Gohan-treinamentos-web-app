@@ -43,7 +43,7 @@ function GohanTreinamentosHomePage() {
   const [tasks, setTasks] = useState<Task[]>(() => {
     return LocalDatabase.getTasks() || initialTasks; // Usa LocalDatabase para carregar tarefas
   });
-  const maxWeeklyCount = 35;
+  const maxWeeklyCount = 40;
 
   useEffect(() => {
     LocalDatabase.saveTasks(tasks); // Usa LocalDatabase para salvar tarefas
@@ -54,7 +54,7 @@ function GohanTreinamentosHomePage() {
     setTasks(prevTasks =>
       prevTasks.map(task => {
         if (task.id === taskId) {
-          const newCount = Math.min(task.count + 1, 7);
+          const newCount = Math.min(task.count + 1, 10);
           if (newCount === 7) {
             alert(getTaskMessage(taskId));
           }
