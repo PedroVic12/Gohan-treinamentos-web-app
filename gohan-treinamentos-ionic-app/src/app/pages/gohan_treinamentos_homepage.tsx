@@ -18,10 +18,10 @@ import { Task } from '../public/types/Task';
 
 
 //widgets
-const CustomText = (text: string) => {
-  return ( // Adicionei o return aqui
+const CustomText = ({ props }: { props: { text: string } }) => {
+  return (
     <Typography variant="subtitle1" align="center" gutterBottom color="textSecondary">
-      {text} 
+      {props.text} 
     </Typography>
   );
 }
@@ -93,7 +93,7 @@ function GohanTreinamentosHomePage() {
           You Only Need 5 hobbies! Corpo x Mente x Espirito
         </Typography>
 
-        <CustomText text="Tambem é necessario ter 5 hobbies"></CustomText>
+        <CustomText props={{ text: "Importante cuidar da sua saude mental, emocional e fisica! Hora de se toranr um Super Sayjain em 2025 e sua melhor versão: Lindo, Inteligente e Gostoso!"}}></CustomText>
 
         <ProgressBar totalCount={totalCount} maxCount={maxWeeklyCount} />
 
