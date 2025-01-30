@@ -81,29 +81,6 @@ const Tab1: React.FC = () => {
   );
 };
 
-
-//! Routes
-
-const AppRoutes: React.FC = () => {
-  return (
-    <Switch>
-      <Route exact path="/tab1" component={Tab1} />
-      <Route exact path="/home" component={GohanTreinamentosHomePage} />
-      <Route path="/treinos" component={GohanTreinamentosGeradorTreinoPage} />
-      <Route path="/quizz" component={QuizGamePage} />
-      <Route path="/todo" component={TodoListPage} />
-      <Route path="/alarme" component={AlarmeClockPage} />
-      <Route path="/classroom" component={ClassroomPage} />
-      <Route path="/dashboard" component={DashboardPage} />
-
-
-      <Route exact path="/">
-        <Redirect to="/home" />
-      </Route>
-    </Switch>
-  );
-};
-
 export interface RouteConfig {
   path: string;
   component: React.ComponentType<any>;
@@ -144,7 +121,28 @@ const AppTabs: React.FC<AppTabsProps> = ({ routes }) => {
 };
 
 
-{/*! MEU APP IONINC */}
+//! Routes
+const AppRoutes: React.FC = () => {
+  return (
+    <Switch>
+      <Route exact path="/tab1" component={Tab1} />
+      <Route exact path="/home" component={GohanTreinamentosHomePage} />
+      <Route path="/treinos" component={GohanTreinamentosGeradorTreinoPage} />
+      <Route path="/quizz" component={QuizGamePage} />
+      <Route path="/todo" component={TodoListPage} />
+      <Route path="/alarme" component={AlarmeClockPage} />
+      <Route path="/classroom" component={ClassroomPage} />
+      <Route path="/dashboard" component={DashboardPage} />
+
+
+      <Route exact path="/">
+        <Redirect to="/home" />
+      </Route>
+    </Switch>
+  );
+};
+
+//!MEU APP IONINC
 setupIonicReact();
 
 const App: React.FC = () => {
