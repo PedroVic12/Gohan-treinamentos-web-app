@@ -75,7 +75,7 @@ const ClassroomPage = () => {
                         <IonButtons slot="start">
                             <IonMenuButton></IonMenuButton>
                         </IonButtons>
-                        <IonTitle>GFI00220 - ELETROMAGNETISMO I - A1</IonTitle>
+                        <IonTitle>GFI00220 - Engenharia Eletrica UFF </IonTitle>
                         <IonButtons slot="end">
                             <IonButton>
                                 <IonIcon icon={ellipsisVertical} />
@@ -106,8 +106,8 @@ const ClassroomPage = () => {
                         color: 'white',
                         marginBottom: '1rem'
                     }}>
-                        <h1>GFI00220 - ELETROMAGNETISMO I - A1</h1>
-                        <p>2024 / 2º</p>
+                        <h1>Pedro victor Rodrigues Veras</h1>
+                        <p>2025 / 1º</p>
                     </div>
 
                     {/* Meeting Card */}

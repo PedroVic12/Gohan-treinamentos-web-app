@@ -19,18 +19,19 @@
     "@capacitor/status-bar": "6.0.2",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
-    "@ionic/react": "^8.0.0",
+    "@ionic/react": "^8.4.3",
     "@ionic/react-router": "^8.0.0",
     "@mui/icons-material": "^6.4.2",
     "@mui/material": "^6.4.2",
     "@types/react-router": "^5.1.20",
     "@types/react-router-dom": "^5.3.3",
-    "ionicons": "^7.0.0",
+    "ionicons": "^7.4.0",
     "lucide-react": "^0.474.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router": "^5.3.4",
-    "react-router-dom": "^5.3.4"
+    "react-router-dom": "^5.3.4",
+    "recharts": "^2.15.1"
   },
   "devDependencies": {
     "@capacitor/cli": "6.2.0",

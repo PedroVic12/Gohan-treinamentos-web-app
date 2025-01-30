@@ -53,6 +53,9 @@ import GohanTreinamentosHomePage from './app/pages/HomePage/gohan_treinamentos_h
 import QuizGamePage from './app/pages/quizzgame/QuizzGame';
 import TodoListPage from './app/pages/todoList/todoListPage';
 import  AlarmeClockPage from "./app/pages/clockPage/alarm_clock_page";
+import { Icon } from 'ionicons/dist/types/components/icon/icon';
+import ClassroomPage from './app/pages/dashboard_v1/dashboards_tabs_template';
+import DashboardPage from './app/pages/dashboard_v1/dashboard_overview';
 
 //! DOCS ---> https://ionicframework.com/docs/components
 
@@ -90,6 +93,9 @@ const AppRoutes: React.FC = () => {
       <Route path="/quizz" component={QuizGamePage} />
       <Route path="/todo" component={TodoListPage} />
       <Route path="/alarme" component={AlarmeClockPage} />
+      <Route path="/classroom" component={ClassroomPage} />
+      <Route path="/dashboard" component={DashboardPage} />
+
 
       <Route exact path="/">
         <Redirect to="/home" />
@@ -98,43 +104,41 @@ const AppRoutes: React.FC = () => {
   );
 };
 
+export interface RouteConfig {
+  path: string;
+  component: React.ComponentType<any>;
+  label: string;
+  icon: Icon['icon'];
+}
 
 //! TabBar ionic
-const AppTabs: React.FC = () => {
+interface AppTabsProps {
+  routes: RouteConfig[];
+}
+
+const AppTabs: React.FC<AppTabsProps> = ({ routes }) => {
   const location = useLocation();
 
   return (
     <IonTabs>
       <IonRouterOutlet>
-        <AppRoutes />
+        {routes.map((route) => (
+          <Route key={route.path} path={route.path} component={route.component} />
+        ))}
       </IonRouterOutlet>
-
-
-
       <IonTabBar slot="bottom">
-        <IonTabButton tab="tab1" href="/tab1" selected={location.pathname === '/tab1'}>
-          <IonIcon icon={triangle} />
-          < IonLabel>Tab 1</IonLabel >
-        </IonTabButton>
-        <IonTabButton tab="quizz" href="/quizz" selected={location.pathname === '/quizz'}>
-          <IonIcon icon={triangle} />
-          < IonLabel>Quizz Game</IonLabel >
-        </IonTabButton>
-        <IonTabButton tab="home" href="/home" selected={location.pathname === '/home'}>
-          <IonIcon icon={ellipse} />
-          < IonLabel>Home Page</IonLabel >
-        </IonTabButton>
-        <IonTabButton tab="treinos" href="/treinos" selected={location.pathname === '/treinos'}>
-          <IonIcon icon={square} />
-          < IonLabel>Gerador Treinos</IonLabel >
-        </IonTabButton>
-        <IonTabButton tab="todo" href="/todo" selected={location.pathname === '/todo'}>
-          <IonIcon icon={squareOutline} />
-          < IonLabel>Lista Tarefas 2025</IonLabel >
-        </IonTabButton>
+        {routes.map((route) => (
+          <IonTabButton
+            key={route.path}
+            tab={route.path}
+            href={route.path}
+            selected={location.pathname === route.path}
+          >
+            <IonIcon icon={route.icon} />
+            <IonLabel>{route.label}</IonLabel>
+          </IonTabButton>
+        ))}
       </IonTabBar>
-
-
     </IonTabs>
   );
 };
@@ -143,15 +147,39 @@ const AppTabs: React.FC = () => {
 {/*! MEU APP IONINC */}
 setupIonicReact();
 
-const App: React.FC = () => (
-  
-  <IonApp>
-    <IonReactRouter>
-      <IonRouterOutlet>
-        <AppTabs />
-      </IonRouterOutlet>
-    </IonReactRouter>
-  </IonApp>
-);
+const App: React.FC = () => {
+  const appRoutes: RouteConfig[] = [
+    { path: "/tab1", component: Tab1, label: "Tab 1", icon: triangle },
+
+    //! Gohan treinamentos
+    { path: "/home", component: GohanTreinamentosHomePage, label: "Home Page", icon: ellipse },
+    { path: "/treinos", component: GohanTreinamentosGeradorTreinoPage, label: "Gerador Treinos", icon: square },
+    { path: "/quizz", component: QuizGamePage, label: "Quizz Game", icon: triangle },
+    { path: "/todo", component: TodoListPage, label: "Lista Tarefas 2025", icon: squareOutline }, 
+
+
+    //! IA page
+    { path: "/alarme", component: AlarmeClockPage, label: "C3po Alarme clock", icon: squareOutline }, 
+    { path: "/classroom", component: ClassroomPage, label: "Tabs template", icon: squareOutline }, 
+    { path: "/dashboard", component: DashboardPage, label: "Dashboard", icon: squareOutline }, 
+
+
+
+
+  ];
+
+  return (
+    <IonApp>
+      <IonReactRouter>
+        <IonRouterOutlet>
+          <AppTabs routes={appRoutes} />
+          <Route exact path="/">
+            <Redirect to="/home" />
+          </Route>
+        </IonRouterOutlet>
+      </IonReactRouter>
+    </IonApp>
+  );
+};
 
 export default App;
