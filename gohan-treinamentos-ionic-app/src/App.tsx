@@ -50,6 +50,7 @@ import './theme/variables.css';
 import { useState } from 'react';
 import GohanTreinamentosGeradorTreinoPage from './app/pages/geradorTreinoPage';
 import GohanTreinamentosHomePage from './app/pages/HomePage/gohan_treinamentos_homepage';
+import QuizGamePage from './app/pages/quizzgame/QuizzGame';
 // import { AlarmeClockPage} from "./app/pages/alarm_clock_page";
 setupIonicReact();
 
@@ -75,16 +76,6 @@ const Tab1: React.FC = () => {
 };
 
 
-const Tab3: React.FC = () => (
-  <IonPage>
-    <IonHeader>
-      <IonTitle>Tab 3</IonTitle>
-    </IonHeader>
-    <IonContent>
-      <IonButton color="tertiary">Botão Laranja</IonButton>
-    </IonContent>
-  </IonPage>
-);
 
 const TodoListPage: React.FC = () => {
   // Estado para armazenar as tarefas
@@ -147,46 +138,14 @@ const TodoListPage: React.FC = () => {
                       </IonItem>
                   ))}
               </IonList>
-              {newFunction()}
-
-              {glassWidget()}
+   
           </IonContent>
       </IonPage>
   );
 
-  function newFunction() {
-    return (
-      <div className="h-full w-full bg-indigo-600 rounded-md bg-clip-padding backdrop-filter backdrop-blur-3xl bg-opacity-10 border border-gray-100">
-       teste
-        <img src="https://ionicframework.com/docs/img/dash-logo.svg" style={{ position: 'absolute', left: '50px', top: '50px' }} />
-        glass
-      
-        
-      </div>
-
-        
-    );
-  }
 
 
-  function glassWidget(){
-      return (
-        <div>
-        glass container div
-        </div>
-      )
-  }
 
-
-  function alarme_clock_page(){
-    return (
-      <div>
-        alarme_clock_page
-
-
-      </div>
-    )
-  }
 };
 
 
@@ -201,17 +160,22 @@ const App: React.FC = () => (
 
       {/* rotas */}
       <IonRouterOutlet>
+
           <Route exact path="/tab1">
             <Tab1 />
           </Route>
+
           <Route exact path="/home">
           <GohanTreinamentosHomePage></GohanTreinamentosHomePage>
-
-          
           </Route>
+
           <Route path="/treinos">
             <GohanTreinamentosGeradorTreinoPage />
           </Route>
+          <Route path="/quizz">
+            <QuizGamePage />
+          </Route>
+
           <Route path="/todo">
             <TodoListPage />
           </Route>
@@ -223,11 +187,18 @@ const App: React.FC = () => (
 
       {/* botoes */}
         <IonTabBar slot="bottom">
+
           <IonTabButton tab="tab1" href="/tab1">
             <IonIcon aria-hidden="true" icon={triangle} />
             <IonLabel>Tab 1</IonLabel>
           </IonTabButton>
 
+          <IonTabButton tab="quizz" href="/quizz">
+              <IonIcon aria-hidden="true" icon={triangle} />
+              <IonLabel>Quizz Game</IonLabel>
+            </IonTabButton>
+          
+          
           <IonTabButton tab="home" href="/home">
             <IonIcon aria-hidden="true" icon={ellipse} />
             <IonLabel>Home Page</IonLabel>
