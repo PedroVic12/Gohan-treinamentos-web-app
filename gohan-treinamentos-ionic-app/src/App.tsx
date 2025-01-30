@@ -1,4 +1,4 @@
-import { Redirect, Route } from 'react-router-dom';
+import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
 import {
   IonApp,
   IonIcon,
@@ -19,7 +19,7 @@ import {
   IonInput,
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { ellipse, square, squareOutline, triangle } from 'ionicons/icons';
+import { barbellOutline, ellipse, gameControllerOutline, homeOutline, listOutline, square, squareOutline, triangle } from 'ionicons/icons';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -46,13 +46,16 @@ import './theme/variables.css';
 
 
 
-// imports 
+//! ================================ imports pedro victor
 import { useState } from 'react';
 import GohanTreinamentosGeradorTreinoPage from './app/pages/geradorTreinoPage';
 import GohanTreinamentosHomePage from './app/pages/HomePage/gohan_treinamentos_homepage';
 import QuizGamePage from './app/pages/quizzgame/QuizzGame';
-// import { AlarmeClockPage} from "./app/pages/alarm_clock_page";
-setupIonicReact();
+import TodoListPage from './app/pages/todoList/todoListPage';
+import  AlarmeClockPage from "./app/pages/clockPage/alarm_clock_page";
+
+//! DOCS ---> https://ionicframework.com/docs/components
+
 
 const Tab1: React.FC = () => {
   const [count, setCount] = useState(0);
@@ -76,147 +79,77 @@ const Tab1: React.FC = () => {
 };
 
 
+//! Routes
 
-const TodoListPage: React.FC = () => {
-  // Estado para armazenar as tarefas
-  const [tasks, setTasks] = useState<{ id: number; name: string; completed: boolean }[]>([
-      { id: 1, name: "Enviar curriculo ingels e portugues (UFF, DEV, DOLAR)", completed: false },
-      { id: 2, name: "15 exericios resolvidos Eletromag", completed: false },
-      { id: 3, name: "5 exercicios cc + 5 exercicios enem minicurso", completed: false },
-      { id: 4, name: "Agendamento PAndapower tabela RASH", completed: false },
-      { id: 5, name: "Notebook Analise de dados rede eletrica", completed: false },
-
-  ]);
-
-  const [newTaskName, setNewTaskName] = useState("");
-
-  const handleCheckboxChange = (id: number) => {
-      setTasks((prevTasks) =>
-          prevTasks.map((task) =>
-              task.id === id ? { ...task, completed: !task.completed } : task
-          )
-      );
-  };
-
-  const handleAddTask = () => {
-      if (newTaskName.trim()) {
-          const newTask = {
-              id: tasks.length + 1,
-              name: newTaskName,
-              completed: false,
-          };
-          setTasks((prev) => [...prev, newTask]);
-          setNewTaskName(""); // Limpa o campo de entrada
-      }
-  };
-
+const AppRoutes: React.FC = () => {
   return (
-      <IonPage>
-          <IonHeader>
-              <IonTitle>Minha Lista de Tarefas</IonTitle>
-          </IonHeader>
-          <IonContent>
-              <IonInput
-                  placeholder="Adicionar nova tarefa"
-                  value={newTaskName}
-                  onIonChange={(e) => setNewTaskName(e.detail.value!)}
-              />
-              <IonButton onClick={handleAddTask} color="primary">
-                  Adicionar
-              </IonButton>
+    <Switch>
+      <Route exact path="/tab1" component={Tab1} />
+      <Route exact path="/home" component={GohanTreinamentosHomePage} />
+      <Route path="/treinos" component={GohanTreinamentosGeradorTreinoPage} />
+      <Route path="/quizz" component={QuizGamePage} />
+      <Route path="/todo" component={TodoListPage} />
+      <Route path="/alarme" component={AlarmeClockPage} />
 
-              <IonList>
-                  {tasks.map((task) => (
-                      <IonItem key={task.id}>
-                          <IonCheckbox
-                              checked={task.completed}
-                              onIonChange={() => handleCheckboxChange(task.id)}
-                          />
-                          <IonLabel className={task.completed ? "line-through" : ""}>
-                              {task.name}
-                          </IonLabel>
-                      </IonItem>
-                  ))}
-              </IonList>
-   
-          </IonContent>
-      </IonPage>
+      <Route exact path="/">
+        <Redirect to="/home" />
+      </Route>
+    </Switch>
   );
-
-
-
-
 };
 
 
+//! TabBar ionic
+const AppTabs: React.FC = () => {
+  const location = useLocation();
+
+  return (
+    <IonTabs>
+      <IonRouterOutlet>
+        <AppRoutes />
+      </IonRouterOutlet>
+
+
+
+      <IonTabBar slot="bottom">
+        <IonTabButton tab="tab1" href="/tab1" selected={location.pathname === '/tab1'}>
+          <IonIcon icon={triangle} />
+          < IonLabel>Tab 1</IonLabel >
+        </IonTabButton>
+        <IonTabButton tab="quizz" href="/quizz" selected={location.pathname === '/quizz'}>
+          <IonIcon icon={triangle} />
+          < IonLabel>Quizz Game</IonLabel >
+        </IonTabButton>
+        <IonTabButton tab="home" href="/home" selected={location.pathname === '/home'}>
+          <IonIcon icon={ellipse} />
+          < IonLabel>Home Page</IonLabel >
+        </IonTabButton>
+        <IonTabButton tab="treinos" href="/treinos" selected={location.pathname === '/treinos'}>
+          <IonIcon icon={square} />
+          < IonLabel>Gerador Treinos</IonLabel >
+        </IonTabButton>
+        <IonTabButton tab="todo" href="/todo" selected={location.pathname === '/todo'}>
+          <IonIcon icon={squareOutline} />
+          < IonLabel>Lista Tarefas 2025</IonLabel >
+        </IonTabButton>
+      </IonTabBar>
+
+
+    </IonTabs>
+  );
+};
 
 
 {/*! MEU APP IONINC */}
+setupIonicReact();
 
 const App: React.FC = () => (
+  
   <IonApp>
     <IonReactRouter>
-      <IonTabs>
-
-      {/* rotas */}
       <IonRouterOutlet>
-
-          <Route exact path="/tab1">
-            <Tab1 />
-          </Route>
-
-          <Route exact path="/home">
-          <GohanTreinamentosHomePage></GohanTreinamentosHomePage>
-          </Route>
-
-          <Route path="/treinos">
-            <GohanTreinamentosGeradorTreinoPage />
-          </Route>
-          <Route path="/quizz">
-            <QuizGamePage />
-          </Route>
-
-          <Route path="/todo">
-            <TodoListPage />
-          </Route>
-          <Route exact path="/">
-            <Redirect to="/home" />
-          </Route>
-        </IonRouterOutlet>
-
-
-      {/* botoes */}
-        <IonTabBar slot="bottom">
-
-          <IonTabButton tab="tab1" href="/tab1">
-            <IonIcon aria-hidden="true" icon={triangle} />
-            <IonLabel>Tab 1</IonLabel>
-          </IonTabButton>
-
-          <IonTabButton tab="quizz" href="/quizz">
-              <IonIcon aria-hidden="true" icon={triangle} />
-              <IonLabel>Quizz Game</IonLabel>
-            </IonTabButton>
-          
-          
-          <IonTabButton tab="home" href="/home">
-            <IonIcon aria-hidden="true" icon={ellipse} />
-            <IonLabel>Home Page</IonLabel>
-          </IonTabButton>
-
-          <IonTabButton tab="treinos" href="/treinos">
-            <IonIcon aria-hidden="true" icon={square} />
-            <IonLabel>Gerador Treinos</IonLabel>
-          </IonTabButton>
-
-          <IonTabButton tab="todo" href="/todo">
-            <IonIcon aria-hidden="true" icon={squareOutline} />
-            <IonLabel>Lista Tarefas 2025</IonLabel>
-          </IonTabButton>
-
-
-        </IonTabBar>
-      </IonTabs>
+        <AppTabs />
+      </IonRouterOutlet>
     </IonReactRouter>
   </IonApp>
 );
