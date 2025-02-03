@@ -5,21 +5,21 @@ import React, { useState } from 'react';
 //import { questions } from './repository/questions';
 
 //! simulado prova
-import {questions} from "./repository/prova_p2_circuitosDigitais"
+import { questions } from "./repository/prova_p2_circuitosDigitais"
 
-import { 
-  IonContent, 
-  IonButton, 
-  IonCard, 
+import {
+  IonContent,
+  IonButton,
+  IonCard,
   IonCardContent,
   IonText,
   IonIcon
 } from '@ionic/react';
-import { 
-  arrowForward, 
-  checkmarkCircle, 
-  closeCircle, 
-  refresh 
+import {
+  arrowForward,
+  checkmarkCircle,
+  closeCircle,
+  refresh
 } from 'ionicons/icons';
 
 const QuestionHeader = ({ currentQuestion, totalQuestions, correctAnswers, difficulty }) => {
@@ -64,8 +64,8 @@ const QuestionCard = ({ question, options, handleAnswer, isAnswered, selectedAns
                 ? key === correctAnswer
                   ? 'success'
                   : key === selectedAnswer
-                  ? 'danger'
-                  : 'medium'
+                    ? 'danger'
+                    : 'medium'
                 : 'medium'
             }
             disabled={isAnswered}
@@ -96,7 +96,7 @@ const QuizGamePage = () => {
 
   const handleAnswer = (answer) => {
     if (isAnswered) return;
-    
+
     setSelectedAnswer(answer);
     setIsAnswered(true);
 
