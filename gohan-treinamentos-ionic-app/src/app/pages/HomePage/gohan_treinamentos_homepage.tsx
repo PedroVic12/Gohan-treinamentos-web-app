@@ -7,7 +7,13 @@ import {
   AppBar,
   Toolbar,
   IconButton,
+  Menu,
+  MenuItem,
 } from '@mui/material';
+
+import MenuIcon from '@mui/icons-material/Menu'; // Importe o ícone de menu
+
+
 import { Refresh as RefreshIcon } from '@mui/icons-material';
 import { TaskItem } from '../../public/components/TaskItem';
 import { ProgressBar } from '../../public/components/ProgressBar';
@@ -15,6 +21,8 @@ import { initialTasks } from '../../public/data/initialTasks';
 import { formatDate } from '../../public/utils/dateUtils';
 import { getTaskMessage } from '../../public/data/taskMessages';
 import { Task } from '../../public/types/Task';
+import MenuLateral from '../../widgets/menu_lateral';
+import { IonButton, useIonToast } from '@ionic/react';
 
 
 //widgets
@@ -62,8 +70,58 @@ class LocalDatabase {
 }
 
 
+function AppBarFlutter(){
+    <AppBar position="static" sx={{ backgroundColor: '#1976d2', marginBottom: 4 }}>
+        <Toolbar>
+
+            {/* Adicione o botão de menu para controlar a visibilidade do MenuLateral */}
+           <IconButton
+            size="large"
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            sx={{ mr: 2 }}
+          >
+            <MenuIcon />
+          </IconButton> 
+        
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            Gohan Treinamentos 2025
+          </Typography>
+ 
+
+           {/* Renderize o MenuLateral dentro de um Menu do Material UI */}
+
+
+        </Toolbar>
+      </AppBar>
+ 
+}
+
+
 
 function GohanTreinamentosHomePage() {
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const [present] = useIonToast();
+
+  const presentToast = (position: 'top' | 'middle' | 'bottom') => {
+    present({
+      message: 'Hello World!',
+      duration: 1500,
+      position: position,
+    });
+  };
+
+  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  
+
   const [tasks, setTasks] = useState<Task[]>(() => {
     return LocalDatabase.getTasks() || initialTasks; // Usa LocalDatabase para carregar tarefas
   });
@@ -100,16 +158,64 @@ function GohanTreinamentosHomePage() {
   };
 
 
+
+  const menuItems = [
+    { label: 'Home', rota: '/home', icon: 'home' },
+    { label: 'Treinos', rota: '/treinos', icon: 'create' },
+    { label: 'Quizz', rota: '/quizz', icon: 'calendar' },
+    { label: 'Todo List', rota: '/todo', icon: 'settings' },
+  ];
+
+
+
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" sx={{ backgroundColor: '#1976d2', marginBottom: 4 }}>
         <Toolbar>
+
+            {/* Adicione o botão de menu para controlar a visibilidade do MenuLateral */}
+           <IconButton
+            size="large"
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            sx={{ mr: 2 }}
+            onClick={handleMenu}
+          >
+            <MenuIcon />
+          </IconButton> 
+        
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Gohan Treinamentos 2025
           </Typography>
           <IconButton color="inherit" onClick={handleRefresh}>
             <RefreshIcon />
           </IconButton>
+
+           {/* Renderize o MenuLateral dentro de um Menu do Material UI */}
+           <Menu
+            id="menu-appbar"
+            anchorEl={anchorEl}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'left',
+            }}
+            keepMounted
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'left',
+            }}
+            open={open}
+            onClose={handleClose}
+          >
+            {/* Passe os menuItems para o MenuLateral */}
+            <MenuItem onClick={handleClose}>
+              <MenuLateral menuItems={menuItems} />
+            </MenuItem>
+          </Menu>
+
+
         </Toolbar>
       </AppBar>
 
@@ -134,6 +240,9 @@ function GohanTreinamentosHomePage() {
         <ProgressBar totalCount={totalCount} maxCount={maxWeeklyCount} />
         <br />
         <br />
+        <IonButton expand="block" onClick={() => presentToast('top')}>
+        Present Toast At the Top
+      </IonButton>
 
       </Container>
 

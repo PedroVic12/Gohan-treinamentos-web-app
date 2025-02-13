@@ -34,7 +34,7 @@ const QuestionHeader = ({ currentQuestion, totalQuestions, correctAnswers, diffi
 
   return (
     <div className="ion-padding-bottom">
-      <div className="ion-justify-content-between ion-align-items-center" style={{ display: 'flex' }}>
+      <div className="ion-justify-content-between ion-align-items-center" style={{ display: 'block' }}>
         <IonText>
           <h2>Questão {currentQuestion + 1} de {totalQuestions}</h2>
         </IonText>
@@ -48,10 +48,13 @@ const QuestionHeader = ({ currentQuestion, totalQuestions, correctAnswers, diffi
     </div>
   );
 };
+
+
+
 const QuestionCard = ({ question, options, handleAnswer, isAnswered, selectedAnswer, correctAnswer }) => (
-  <IonCard style={{ backgroundColor: 'rgb(245, 245, 245)' }}>
+  <IonCard style={{ backgroundColor: 'rgb(192,192,192)' }}>
     <IonCardContent>
-      <IonText color="dark">
+      <IonText color="light">
         <h1 className="ion-padding-bottom">{question}</h1>
       </IonText>
       <div className="ion-padding-top">

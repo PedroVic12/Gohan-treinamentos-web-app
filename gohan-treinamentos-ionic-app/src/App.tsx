@@ -56,7 +56,7 @@ import  AlarmeClockPage from "./app/pages/clockPage/alarm_clock_page";
 import { Icon } from 'ionicons/dist/types/components/icon/icon';
 import ClassroomPage from './app/pages/dashboard_v1/dashboards_tabs_template';
 import DashboardPage from './app/pages/dashboard_v1/dashboard_overview';
-
+import MenuLateral from "./app/widgets/menu_lateral"
 //! DOCS ---> https://ionicframework.com/docs/components
 
 
@@ -146,8 +146,10 @@ const AppRoutes: React.FC = () => {
 setupIonicReact();
 
 const App: React.FC = () => {
+
+
   const appRoutes: RouteConfig[] = [
-    { path: "/tab1", component: Tab1, label: "Tab 1", icon: triangle },
+    // { path: "/tab1", component: Tab1, label: "Tab 1", icon: triangle },
 
     //! Gohan treinamentos
     { path: "/home", component: GohanTreinamentosHomePage, label: "Home Page", icon: ellipse },
@@ -158,7 +160,7 @@ const App: React.FC = () => {
 
     //! IA page
     { path: "/alarme", component: AlarmeClockPage, label: "C3po Alarme clock", icon: squareOutline }, 
-    { path: "/classroom", component: ClassroomPage, label: "Tabs template", icon: squareOutline }, 
+    // { path: "/classroom", component: ClassroomPage, label: "Tabs template", icon: squareOutline }, 
     { path: "/dashboard", component: DashboardPage, label: "Dashboard", icon: squareOutline }, 
 
 
@@ -170,7 +172,7 @@ const App: React.FC = () => {
     <IonApp>
       <IonReactRouter>
         <IonRouterOutlet>
-          <AppTabs routes={appRoutes} />
+        <AppTabs routes={appRoutes} />
           <Route exact path="/">
             <Redirect to="/home" />
           </Route>

@@ -7,6 +7,25 @@ import { Route } from 'react-router-dom';
 
 import { IonContent, IonCard, IonCardContent } from '@ionic/react';
 
+
+const Card = ()=>{
+  
+
+      <IonCard> 
+        <IonCardContent>
+          <h2>OLA MUNDO?</h2>
+
+
+          <IonCard>
+
+            
+          </IonCard>
+     
+ 
+        </IonCardContent>
+      </IonCard>
+}
+
 const PushComponent = () => {
   return (
     <IonContent>
