@@ -43,6 +43,8 @@ import '@ionic/react/css/palettes/dark.system.css';
 /* Theme variables */
 import './theme/variables.css';
 
+import '@ionic/react/css/core.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 
@@ -57,6 +59,8 @@ import { Icon } from 'ionicons/dist/types/components/icon/icon';
 import ClassroomPage from './app/pages/dashboard_v1/dashboards_tabs_template';
 import DashboardPage from './app/pages/dashboard_v1/dashboard_overview';
 import MenuLateral from "./app/widgets/menu_lateral"
+import geradorTreinoPage from './app/pages/geradorTreinoPage';
+import TaskManagerPage from './app/pages/todoList/task_manager';
 //! DOCS ---> https://ionicframework.com/docs/components
 
 
@@ -125,14 +129,22 @@ const AppTabs: React.FC<AppTabsProps> = ({ routes }) => {
 const AppRoutes: React.FC = () => {
   return (
     <Switch>
-      <Route exact path="/tab1" component={Tab1} />
       <Route exact path="/home" component={GohanTreinamentosHomePage} />
       <Route path="/treinos" component={GohanTreinamentosGeradorTreinoPage} />
       <Route path="/quizz" component={QuizGamePage} />
       <Route path="/todo" component={TodoListPage} />
+
+
+
+
       <Route path="/alarme" component={AlarmeClockPage} />
       <Route path="/classroom" component={ClassroomPage} />
       <Route path="/dashboard" component={DashboardPage} />
+      <Route exact path="/tab1" component={Tab1} />
+
+
+      <Route exact path="/tasks" component={TaskManagerPage} />
+      <Route exact path="/calistenia" component={geradorTreinoPage} />
 
 
       <Route exact path="/">
@@ -155,12 +167,16 @@ const App: React.FC = () => {
     { path: "/home", component: GohanTreinamentosHomePage, label: "Home Page", icon: ellipse },
     { path: "/treinos", component: GohanTreinamentosGeradorTreinoPage, label: "Gerador Treinos", icon: square },
     { path: "/quizz", component: QuizGamePage, label: "Quizz Game", icon: triangle },
-    { path: "/todo", component: TodoListPage, label: "Lista Tarefas 2025", icon: squareOutline }, 
+
+    // debug TaskManagerPage
+    { path: "/calistenia", component: geradorTreinoPage, label: "caslistenia APP", icon: squareOutline }, 
+    { path: "/tasks", component: TaskManagerPage, label: "task manager", icon: squareOutline }, 
+
 
 
     //! IA page
     { path: "/alarme", component: AlarmeClockPage, label: "C3po Alarme clock", icon: squareOutline }, 
-    // { path: "/classroom", component: ClassroomPage, label: "Tabs template", icon: squareOutline }, 
+    { path: "/classroom", component: ClassroomPage, label: "Tabs template", icon: squareOutline }, 
     { path: "/dashboard", component: DashboardPage, label: "Dashboard", icon: squareOutline }, 
 
 

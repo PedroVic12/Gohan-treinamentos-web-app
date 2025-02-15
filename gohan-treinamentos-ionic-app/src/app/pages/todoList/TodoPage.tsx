@@ -20,7 +20,7 @@ import {
   IonProgressBar,
 } from '@ionic/react';
 
-const geradorTreinoPage: React.FC = () => {
+const TodoListPage: React.FC = () => {
   const [exercises, setExercises] = useState([
     {
       id: 1,
@@ -75,7 +75,7 @@ const geradorTreinoPage: React.FC = () => {
 
   const handleAddExercise = () => {
     if (newExerciseName && newExerciseItems) {
-      const newId = exercises.length + 1;
+      const newId = exercises.length + 1; // Gera um novo ID
       const items = newExerciseItems.split(",").map((item) => item.trim());
 
       setExercises((prev) => [
@@ -87,6 +87,7 @@ const geradorTreinoPage: React.FC = () => {
         },
       ]);
 
+      // Resetar os campos de entrada
       setNewExerciseName("");
       setNewExerciseItems("");
       setShowAddForm(false);
@@ -237,4 +238,4 @@ const geradorTreinoPage: React.FC = () => {
   );
 };
 
-export default geradorTreinoPage;
+export default TodoListPage;
