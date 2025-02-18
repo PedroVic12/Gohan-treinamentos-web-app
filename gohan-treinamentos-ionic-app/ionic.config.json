@@ -1,7 +1,0 @@
-{
-  "name": "gohan-treinamentos-ionic-app",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "react-vite"
-}
