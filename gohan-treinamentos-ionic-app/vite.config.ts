@@ -13,7 +13,7 @@ export default defineConfig({
 
   build: {
     rollupOptions: {
-      external: ['react/jsx-runtime', 'react-dom/client',]
+      external: ['react/jsx-runtime', 'react-dom/client', "recharts","react-markdown", "uuid"]
     }
   }
 
