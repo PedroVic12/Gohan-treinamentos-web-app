@@ -44,7 +44,7 @@ import '@ionic/react/css/palettes/dark.system.css';
 import './theme/variables.css';
 
 import '@ionic/react/css/core.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
+//import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 
@@ -61,6 +61,7 @@ import DashboardPage from './app/pages/dashboard_v1/dashboard_overview';
 import MenuLateral from "./app/widgets/menu_lateral"
 import geradorTreinoPage from './app/pages/geradorTreinoPage';
 import TaskManagerPage from './app/pages/todoList/task_manager';
+import NotesMaterialPage from './app/pages/Notes_App/NotesMaterialPage';
 //! DOCS ---> https://ionicframework.com/docs/components
 
 
@@ -126,7 +127,7 @@ const AppTabs: React.FC<AppTabsProps> = ({ routes }) => {
 
 
 //! Routes
-const AppRoutes: React.FC = () => {
+const  MyRoutesApp: React.FC = () => {
   return (
     <Switch>
       <Route exact path="/home" component={GohanTreinamentosHomePage} />
@@ -170,7 +171,8 @@ const App: React.FC = () => {
 
     // debug TaskManagerPage
     { path: "/calistenia", component: geradorTreinoPage, label: "caslistenia APP", icon: squareOutline }, 
-    { path: "/tasks", component: TaskManagerPage, label: "task manager", icon: squareOutline }, 
+    { path: "/tasks", component: TaskManagerPage, label: "Lista de Tarefas", icon: squareOutline }, 
+    { path: "/notes", component: NotesMaterialPage, label: "Notes App", icon: squareOutline }, 
 
 
 

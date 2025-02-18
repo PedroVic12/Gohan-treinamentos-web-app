@@ -25,7 +25,7 @@ const SidebarMenu: React.FC = () => {
     const menuItems = [
       { path: '/', icon: homeOutline, text: 'Início' },
       { path: '/todo', icon: listOutline, text: 'Tarefas' },
-      { path: '/alarm', icon: notificationsOutline, text: 'Alarmes' },
+      { path: '/notes', icon: notificationsOutline, text: 'Notes APP' },
     ];
   
     return (

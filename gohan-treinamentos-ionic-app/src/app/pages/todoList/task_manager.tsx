@@ -293,7 +293,7 @@ const TaskManagerPage: React.FC = () => {
             <IonButtons slot="start">
               <IonMenuButton />
             </IonButtons>
-            <IonTitle>Lista de Tarefas</IonTitle>
+            <IonTitle>Lista de Tarefas 2025</IonTitle>
             <IonButtons slot="end">
               <IonButton onClick={() => setIsFormOpen(true)}>
                 <IonIcon slot="start" icon={addOutline} />
