@@ -20,6 +20,8 @@ import { IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonMenuButton, I
 import SidebarMenu from '../../widgets/side_menu';
 import { refreshOutline } from 'ionicons/icons';
 
+import "./appbar.css"
+
 // Widgets
 const CustomText = ({ props }: { props: { text: string } }) => {
   return (
@@ -65,10 +67,10 @@ function GohanTreinamentosHomePage() {
   const open = Boolean(anchorEl);
   const [present] = useIonToast();
 
-  const SnackBar = (position: 'top' | 'middle' | 'bottom') => {
+  const SnackBar = (message: string, position: 'top' | 'middle' | 'bottom' = 'bottom') => {
     present({
-      message: 'Hello World!',
-      duration: 1500,
+      message: message, // Usa o parâmetro message
+      duration: 2500,
       position: position,
     });
   };
@@ -106,25 +108,28 @@ function GohanTreinamentosHomePage() {
 
   const handleRefresh = () => {
     setTasks(initialTasks);
-    alert("Rotinas resetadas!");
+    
+    SnackBar("Rotinas resetadas! Tenha um otimo inicio de semana! Lembre-se dos seus objetivos e metas!", "middle");
   };
 
   return (
     <>
             
       <SidebarMenu></SidebarMenu>
+
       <IonPage id="main-content">
+
       <IonHeader mode="ios">
-      <IonToolbar color="tertiary">
+      <IonToolbar color="tertiary" className="custom-toolbar">
         <IonButtons slot="start">
-          <IonMenuButton></IonMenuButton>
+          <IonMenuButton className="custom-menu-button"></IonMenuButton>
         </IonButtons>
         
-        <IonTitle>Gohan Treinamentos 2025</IonTitle>
+        <IonTitle className="custom-title">Gohan Treinamentos 2025</IonTitle>
         
         <IonButtons slot="end">
-          <IonButton onClick={handleRefresh}>
-            <IonIcon icon={refreshOutline} />
+          <IonButton onClick={handleRefresh} className="custom-refresh-button">
+            <IonIcon icon={refreshOutline}  className="custom-refresh-icon"/>
           </IonButton>
         </IonButtons>
       </IonToolbar>
@@ -152,9 +157,7 @@ function GohanTreinamentosHomePage() {
               <ProgressBar totalCount={totalCount} maxCount={maxWeeklyCount} />
               <br />
               <br />
-              <IonButton expand="block" onClick={() => SnackBar('top')}>
-                Present Toast At the Top
-              </IonButton>
+       
             </Container>
           </Box>
         </IonContent>

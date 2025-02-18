@@ -8,15 +8,15 @@ export const taskMessages: TaskMessage[] = [
     id: '1',
     messages: [
       "Continue se esforçando! Seu crescimento profissional é imparável! 💼",
-      "Fazendo movimentos financeiros! Você está construindo seu futuro! 💰",
-      "Excelência profissional alcançada hoje! 🌟"
+      "Lembre-se de seus objetivos! Você esta cada vez mais perto de ser o melhor! 💪",
+      "Fazendo projetos profissionais! Você está construindo seu futuro sempre inovando! 💰",
     ]
   },
   {
     id: '2',
     messages: [
       "Seu corpo vai agradecer! Continue se movendo! Não desista, use sua força de Sayajin! 💪",
-      "Saúde é riqueza! Ótimo treino! Sempre mais forte!!! 🏃‍♂️",
+      "Saúde é riqueza! Ótimo treino! Sempre mais forte!!! Modo SUPER SAYAJIN 💪",
       "Mais forte a cada dia! 1% melhor a cada dia! 🎯"
     ]
   },
@@ -33,7 +33,7 @@ export const taskMessages: TaskMessage[] = [
     messages: [
       "Inovação em ação! Grande resolução de problemas! 💡",
       "Seus projetos estão fazendo a diferença! 🚀",
-      "Soluções criativas alcançadas! Continue construindo! 🛠️"
+      "Soluções criativas alcançadas! Continue construindo, inovando e criando! 💡"
     ]
   },
   {
