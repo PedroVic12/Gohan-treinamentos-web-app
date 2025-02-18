@@ -99,6 +99,11 @@ const TodoPageDashboard = () => {  const [habits, setHabits] = useState([
             <Typography variant="h5" gutterBottom>
               Tarefas do Dia
             </Typography>
+
+            <Typography>
+              Teste de widgets
+            </Typography>
+
             <IonList>
               {habits.map((habit) => (
                 <Card key={habit.id} sx={{ mb: 2 }}>
