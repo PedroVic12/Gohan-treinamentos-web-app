@@ -171,8 +171,10 @@ function GohanTreinamentosHomePage() {
 
 
   return (
+    
     <Box sx={{ flexGrow: 1 }}>
-     <SidebarMenu />
+            <SidebarMenu />
+
             <AppBar position="static" sx={{ backgroundColor: '#1976d2', marginBottom: 4 }}>
                 <Toolbar>
                     {/* Adicione o botão de menu para controlar a visibilidade do MenuLateral */}
