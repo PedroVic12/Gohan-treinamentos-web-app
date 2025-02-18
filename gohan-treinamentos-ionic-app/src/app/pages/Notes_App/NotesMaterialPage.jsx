@@ -122,7 +122,6 @@ function NotesMaterialPage() {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-        <SidebarMenu/>
           <IonTitle>Notes</IonTitle>
         </IonToolbar>
       </IonHeader>

@@ -4,16 +4,11 @@ import {
   Typography,
   List,
   Box,
-  AppBar,
-  Toolbar,
   IconButton,
   Menu,
   MenuItem,
 } from '@mui/material';
-
-import MenuIcon from '@mui/icons-material/Menu'; // Importe o ícone de menu
-
-
+import MenuIcon from '@mui/icons-material/Menu';
 import { Refresh as RefreshIcon } from '@mui/icons-material';
 import { TaskItem } from '../../public/components/TaskItem';
 import { ProgressBar } from '../../public/components/ProgressBar';
@@ -21,16 +16,15 @@ import { initialTasks } from '../../public/data/initialTasks';
 import { formatDate } from '../../public/utils/dateUtils';
 import { getTaskMessage } from '../../public/data/taskMessages';
 import { Task } from '../../public/types/Task';
-import MenuLateral from '../../widgets/menu_lateral';
-import { IonButton, useIonToast } from '@ionic/react';
+import { IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonMenuButton, IonPage, IonTitle, IonToolbar, useIonToast } from '@ionic/react';
 import SidebarMenu from '../../widgets/side_menu';
+import { refreshOutline } from 'ionicons/icons';
 
-
-//widgets
+// Widgets
 const CustomText = ({ props }: { props: { text: string } }) => {
   return (
     <Typography variant="subtitle1" align="center" gutterBottom color="primary">
-      {props.text} 
+      {props.text}
     </Typography>
   );
 }
@@ -38,15 +32,12 @@ const CustomText = ({ props }: { props: { text: string } }) => {
 const HobbiesSection: React.FC = () => {
   return (
     <div style={{ textAlign: 'center', margin: '20px 0' }}>
-
       <Typography variant="h5" gutterBottom color="primary">
         You Only Need 5 hobbies
       </Typography>
-
       <Typography variant="subtitle1" gutterBottom color="primary">
         (Corpo x Mente x Espirito)
       </Typography>
-
       <Typography variant="body1" gutterBottom color="primary">
         Importante cuidar da suas Habilidades (trabalho), Saúde mental(estudos), saude emocional(relacionamentos) e saude física (treinos)!
         <br></br>
@@ -56,7 +47,6 @@ const HobbiesSection: React.FC = () => {
     </div>
   );
 };
-
 
 // src/app/utils/LocalDatabase.ts
 class LocalDatabase {
@@ -69,37 +59,6 @@ class LocalDatabase {
     localStorage.setItem('tasks', JSON.stringify(tasks));
   }
 }
-
-
-function AppBarFlutter(){
-    <AppBar position="static" sx={{ backgroundColor: '#1976d2', marginBottom: 4 }}>
-        <Toolbar>
-
-            {/* Adicione o botão de menu para controlar a visibilidade do MenuLateral */}
-           <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-          >
-            <MenuIcon />
-          </IconButton> 
-        
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Gohan Treinamentos 2025
-          </Typography>
- 
-
-           {/* Renderize o MenuLateral dentro de um Menu do Material UI */}
-
-
-        </Toolbar>
-      </AppBar>
- 
-}
-
-
 
 function GohanTreinamentosHomePage() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -114,14 +73,6 @@ function GohanTreinamentosHomePage() {
     });
   };
 
-  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-  
 
   const [tasks, setTasks] = useState<Task[]>(() => {
     return LocalDatabase.getTasks() || initialTasks; // Usa LocalDatabase para carregar tarefas
@@ -131,7 +82,7 @@ function GohanTreinamentosHomePage() {
   useEffect(() => {
     LocalDatabase.saveTasks(tasks); // Usa LocalDatabase para salvar tarefas
   }, [tasks]);
-  
+
   const totalCount = tasks.reduce((sum, task) => sum + task.count, 0);
 
   const handleIncrement = (taskId: string) => {
@@ -143,8 +94,8 @@ function GohanTreinamentosHomePage() {
             alert(getTaskMessage(taskId));
           }
 
-          if (totalCount >=25){
-            alert("Parabens meu jovem Padawan! Voce esta com a energia vibrando alto! Busque a paz e equilibrio! Que a força esteja com você")
+          if (totalCount == 25) {
+            alert("Parabens meu jovem Padawan! Voce esta com a energia vibrando alto! Busque a paz e equilibrio! Que a força esteja com você, Pedro Victor!!");
           }
           return { ...task, count: newCount };
         }
@@ -155,82 +106,61 @@ function GohanTreinamentosHomePage() {
 
   const handleRefresh = () => {
     setTasks(initialTasks);
-    alert("Rotinas resetadas!")
+    alert("Rotinas resetadas!");
   };
 
-
-
-  const menuItems = [
-    { label: 'Home', rota: '/home', icon: 'home' },
-    { label: 'Treinos', rota: '/treinos', icon: 'create' },
-    { label: 'Quizz', rota: '/quizz', icon: 'calendar' },
-    { label: 'Todo List', rota: '/todo', icon: 'settings' },
-  ];
-
-
-
-
   return (
-    
-    <Box sx={{ flexGrow: 1 }}>
-
-            <AppBar position="static" sx={{ backgroundColor: '#1976d2', marginBottom: 4 }}>
-            <SidebarMenu />
-
-                <Toolbar>
-                    {/* Adicione o botão de menu para controlar a visibilidade do MenuLateral */}
-                    <IconButton
-                        size="large"
-                        edge="start"
-                        color="inherit"
-                        aria-label="menu"
-                        sx={{ mr: 2 }}
-                        onClick={handleMenu}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-
-                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                        Gohan Treinamentos 2025
-                    </Typography>
-                    <IconButton color="inherit" onClick={handleRefresh}>
-                        <RefreshIcon />
-                    </IconButton>
-                </Toolbar>
-            </AppBar>
-
-        <Container maxWidth="md" sx={{ overflowY: 'auto', maxHeight: '80vh'}}>        
-          
-        <Typography variant="h5" align="center" gutterBottom>
-          {formatDate()}
-        </Typography>
+    <>
+            
+      <SidebarMenu></SidebarMenu>
+      <IonPage id="main-content">
+      <IonHeader mode="ios">
+      <IonToolbar color="tertiary">
+        <IonButtons slot="start">
+          <IonMenuButton></IonMenuButton>
+        </IonButtons>
         
-        <HobbiesSection />
+        <IonTitle>Gohan Treinamentos 2025</IonTitle>
+        
+        <IonButtons slot="end">
+          <IonButton onClick={handleRefresh}>
+            <IonIcon icon={refreshOutline} />
+          </IonButton>
+        </IonButtons>
+      </IonToolbar>
+    </IonHeader>
 
-        <List>
-          {tasks.map((task) => (
-            <TaskItem 
-              key={task.id} 
-              task={task} 
-              onIncrement={handleIncrement}
-            />
-          ))}
-        </List>
+        <IonContent className="ion-padding">
+          <Box sx={{ flexGrow: 1 }}>
+            <Container maxWidth="md" sx={{ overflowY: 'auto', maxHeight: '80vh' }}>
+              <Typography variant="h5" align="center" gutterBottom>
+                {formatDate()}
+              </Typography>
 
-        <ProgressBar totalCount={totalCount} maxCount={maxWeeklyCount} />
-        <br />
-        <br />
-        <IonButton expand="block" onClick={() => SnackBar('top')}>
-        Present Toast At the Top
-      </IonButton>
+              <HobbiesSection />
 
-      </Container>
+              <List>
+                {tasks.map((task) => (
+                  <TaskItem
+                    key={task.id}
+                    task={task}
+                    onIncrement={handleIncrement}
+                  />
+                ))}
+              </List>
 
-    </Box>
+              <ProgressBar totalCount={totalCount} maxCount={maxWeeklyCount} />
+              <br />
+              <br />
+              <IonButton expand="block" onClick={() => SnackBar('top')}>
+                Present Toast At the Top
+              </IonButton>
+            </Container>
+          </Box>
+        </IonContent>
+      </IonPage>
+    </>
   );
 }
-
-
-
 
 export default GohanTreinamentosHomePage;

@@ -16,7 +16,7 @@ export const TaskCounter: React.FC<TaskCounterProps> = ({ count, onIncrement }) 
       <IconButton 
         edge="end" 
         onClick={onIncrement}
-        disabled={count >= 12}
+        disabled={count >= 15}
       >
         <AddIcon />
       </IconButton>

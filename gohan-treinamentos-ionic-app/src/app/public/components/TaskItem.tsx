@@ -32,6 +32,7 @@ const getGlassStyles = (backgroundColor: string): SxProps => ({
 
 // Função para determinar a cor baseada no count
 const getBackgroundColor = (count: number): string => {
+  if (count > 10) return 'rgba(75,0,130)';
   if (count > 7) return 'rgba(255, 223, 0, 0.25)';
   if (count > 4) return 'rgba(144, 238, 144, 0.25)';
   return 'rgba(220, 220, 220, 0.25)';
@@ -45,7 +46,7 @@ interface TaskItemProps {
 export const TaskItem: React.FC<TaskItemProps> = ({ task, onIncrement }) => {
   return (
     <Paper
-      elevation={15}
+      elevation={30}
       sx={{
         mb: 2,
         ...getGlassStyles(getBackgroundColor(task.count))

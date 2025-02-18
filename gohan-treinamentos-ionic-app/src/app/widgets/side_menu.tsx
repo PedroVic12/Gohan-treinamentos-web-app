@@ -24,15 +24,16 @@ import {
 const SidebarMenu: React.FC = () => {
     const menuItems = [
       { path: '/', icon: homeOutline, text: 'Início' },
-      { path: '/todo', icon: listOutline, text: 'Tarefas' },
+      { path: '/tasks', icon: listOutline, text: 'Tarefas' },
       { path: '/notes', icon: notificationsOutline, text: 'Notes APP' },
+      
     ];
   
     return (
       <IonMenu contentId="main-content">
         <IonHeader>
           <IonToolbar>
-            <IonTitle>Menu</IonTitle>
+            <IonTitle>Menu Lateral</IonTitle>
           </IonToolbar>
         </IonHeader>
         <IonContent>
