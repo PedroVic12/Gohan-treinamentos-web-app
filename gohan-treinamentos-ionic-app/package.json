@@ -12,7 +12,6 @@
     "@vitejs/plugin-react": "^4.3.4",
     "ionicons": "^7.4.0",
     "react-markdown": "^9.0.3",
-    "react-router-dom": "^7.1.5",
     "recharts": "^2.15.1",
     "uuid": "^11.0.5"
   },

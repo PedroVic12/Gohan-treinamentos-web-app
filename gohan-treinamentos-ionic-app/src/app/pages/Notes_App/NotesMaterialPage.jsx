@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonFab, IonFabButton, IonIcon, IonSearchbar, IonSelect, IonSelectOption } from '@ionic/react';
+import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonFab, IonFabButton, IonIcon, IonSearchbar, IonSelect, IonSelectOption, IonModal, IonButton, IonLabel, IonItem, IonInput, IonTextarea } from '@ionic/react';
 import { add } from 'ionicons/icons';
 import Container from '@mui/material/Container';
-import { Card, CardActionArea, CardContent, CardMedia, CardActions, Button, Typography, Grid, Chip, TextField } from '@mui/material';
+import { Card, CardActionArea, CardContent, CardMedia, CardActions, Button, Typography, Grid, Chip } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import ReactMarkdown from 'react-markdown';
 import { v4 as uuidv4 } from 'uuid';
+import SidebarMenu from '../../widgets/side_menu';
 
 const useStyles = makeStyles({
   media: {
@@ -18,8 +19,8 @@ function CustomCard({ note, onDelete, onEdit }) {
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <Card>
-      <CardActionArea onClick={() => setExpanded(!expanded)}>
+    <Card onClick={() => setExpanded(!expanded)}>
+      <CardActionArea>
         <CardMedia
           className={classes.media}
           image={note.image}
@@ -40,7 +41,7 @@ function CustomCard({ note, onDelete, onEdit }) {
         </CardContent>
       </CardActionArea>
       <CardActions>
-        <Button size="small" color="primary" onClick={() => onEdit(note.id)}>
+        <Button size="small" color="primary" onClick={() => onEdit(note)}>
           Edit
         </Button>
         <Button size="small" color="primary" onClick={() => onDelete(note.id)}>
@@ -57,6 +58,9 @@ function NotesMaterialPage() {
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const [newNote, setNewNote] = useState({ id: '', title: '', categories: [], body: '' });
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     setNotes(fetchNotes());
@@ -73,31 +77,37 @@ function NotesMaterialPage() {
   };
 
   const addNewNote = () => {
-    const newNote = {
+    const noteToAdd = {
+      ...newNote,
       id: uuidv4(),
-      title: 'New Note',
-      categories: ['General'],
-      body: 'This is a new note.',
       image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${Math.floor(Math.random() * 100) + 1}.png`,
     };
-    const newNotes = [...notes, newNote];
+    const newNotes = [...notes, noteToAdd];
     saveNotes(newNotes);
     setNotes(newNotes);
+    setShowModal(false);
+    setNewNote({ id: '', title: '', categories: [], body: '' });
   };
 
-  const editNote = (id) => {
-    const updatedBody = prompt('Edit Note:', notes.find(note => note.id === id).body);
-    if (updatedBody !== null) {
-      const newNotes = notes.map(note => (note.id === id ? { ...note, body: updatedBody } : note));
-      saveNotes(newNotes);
-      setNotes(newNotes);
-    }
+  const editNote = () => {
+    const updatedNotes = notes.map(note => (note.id === newNote.id ? newNote : note));
+    saveNotes(updatedNotes);
+    setNotes(updatedNotes);
+    setShowModal(false);
+    setNewNote({ id: '', title: '', categories: [], body: '' });
+    setIsEditing(false);
   };
 
   const deleteNote = (id) => {
     const newNotes = notes.filter(note => note.id !== id);
     saveNotes(newNotes);
     setNotes(newNotes);
+  };
+
+  const openEditModal = (note) => {
+    setNewNote(note);
+    setIsEditing(true);
+    setShowModal(true);
   };
 
   const filteredNotes = notes.filter(note =>
@@ -112,6 +122,7 @@ function NotesMaterialPage() {
     <IonPage>
       <IonHeader>
         <IonToolbar>
+        <SidebarMenu/>
           <IonTitle>Notes</IonTitle>
         </IonToolbar>
       </IonHeader>
@@ -127,17 +138,46 @@ function NotesMaterialPage() {
           <Grid container spacing={3}>
             {filteredNotes.map(note => (
               <Grid item md={4} sm={6} xs={12} key={note.id}>
-                <CustomCard note={note} onDelete={deleteNote} onEdit={editNote} />
+                <CustomCard note={note} onDelete={deleteNote} onEdit={openEditModal} />
               </Grid>
             ))}
           </Grid>
         </Container>
 
         <IonFab vertical="bottom" horizontal="end" slot="fixed">
-          <IonFabButton onClick={addNewNote}>
+          <IonFabButton onClick={() => setShowModal(true)}>
             <IonIcon icon={add} />
           </IonFabButton>
         </IonFab>
+
+        <IonModal isOpen={showModal} onDidDismiss={() => setShowModal(false)}>
+          <IonHeader>
+            <IonToolbar>
+              <IonTitle>{isEditing ? 'Edit Note' : 'Add New Note'}</IonTitle>
+              <IonButton slot="end" onClick={() => setShowModal(false)}>Close</IonButton>
+            </IonToolbar>
+          </IonHeader>
+          <IonContent>
+            <IonItem>
+              <IonLabel position="stacked">Title</IonLabel>
+              <IonInput value={newNote.title} onIonChange={e => setNewNote({ ...newNote, title: e.detail.value })} />
+            </IonItem>
+            <IonItem>
+              <IonLabel position="stacked">Categories</IonLabel>
+              <IonSelect multiple value={newNote.categories} onIonChange={e => setNewNote({ ...newNote, categories: e.detail.value })}>
+                <IonSelectOption value="Eng Eletrica">Eng Eletrica</IonSelectOption>
+                <IonSelectOption value="Tecnologia">Tecnologia</IonSelectOption>
+                <IonSelectOption value="Projetos">Projetos</IonSelectOption>
+                <IonSelectOption value="Estudos">Estudos</IonSelectOption>
+              </IonSelect>
+            </IonItem>
+            <IonItem>
+              <IonLabel position="stacked">Body (Markdown)</IonLabel>
+              <IonTextarea rows={6} value={newNote.body} onIonChange={e => setNewNote({ ...newNote, body: e.detail.value })} />
+            </IonItem>
+            <IonButton expand="full" onClick={isEditing ? editNote : addNewNote}>{isEditing ? 'Save Changes' : 'Save Note'}</IonButton>
+          </IonContent>
+        </IonModal>
       </IonContent>
     </IonPage>
   );

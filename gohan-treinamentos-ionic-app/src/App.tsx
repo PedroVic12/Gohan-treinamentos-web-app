@@ -170,7 +170,7 @@ const App: React.FC = () => {
     { path: "/quizz", component: QuizGamePage, label: "Quizz Game", icon: triangle },
 
     // debug TaskManagerPage
-    { path: "/calistenia", component: geradorTreinoPage, label: "caslistenia APP", icon: squareOutline }, 
+    //{ path: "/calistenia", component: geradorTreinoPage, label: "caslistenia APP", icon: squareOutline }, 
     { path: "/tasks", component: TaskManagerPage, label: "Lista de Tarefas", icon: squareOutline }, 
     { path: "/notes", component: NotesMaterialPage, label: "Notes App", icon: squareOutline }, 
 
