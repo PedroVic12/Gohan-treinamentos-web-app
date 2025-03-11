@@ -24,12 +24,11 @@ import {
 const SidebarMenu: React.FC = () => {
     const menuItems = [
       { path: '/', icon: homeOutline, text: 'Início' },
-      { path: '/tasks', icon: listOutline, text: 'Tarefas' },
-      { path: '/notes', icon: notificationsOutline, text: 'Notes APP' },
+      { path: '/tasks', icon: listOutline, text: 'Tarefas 2025' },
       { path: '/lista_tarefas', icon: gridOutline, text: 'Lista Tarefas MUI' },
-      { path: '/users', icon: peopleOutline, text: 'Users' },
-      { path: '/analytics', icon: analyticsOutline, text: 'Analytics' },
-      { path: '/settings', icon: settingsOutline, text: 'Settings' },
+      { path: '/quizz', icon: peopleOutline, text: 'Quizz App' },
+      { path: '/alarme', icon: analyticsOutline, text: 'Analytics' },
+      { path: '/treinos', icon: settingsOutline, text: 'Treinos Manager' },
       
     ];
   

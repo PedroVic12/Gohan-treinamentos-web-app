@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
     IonContent,
     IonHeader,
@@ -9,7 +9,6 @@ import {
     IonIcon,
     IonButtons,
     IonMenuButton,
-    IonLoading
 } from '@ionic/react';
 import { addOutline } from 'ionicons/icons';
 import {
@@ -39,7 +38,7 @@ import {
 } from '@mui/icons-material';
 import SidebarMenu from '../../widgets/side_menu';
 
-// Definição da interface Task
+// --- Interfaces ---
 interface Task {
     id: number;
     title: string;
@@ -54,18 +53,6 @@ interface CustomTextProps {
     color?: string;
 }
 
-const CustomText: React.FC<CustomTextProps> = ({ text, color = 'white' }) => {
-    return <span style={{ color }}>{text}</span>;
-};
-
-// Constantes
-const LOCAL_STORAGE_KEY = "TAREFAS"; // Nova chave para localStorage para esta versão
-
-if (!localStorage.getItem(LOCAL_STORAGE_KEY)) {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify([]));
-}
-
-// Componente TaskItem
 interface TaskItemProps {
     task: Task;
     onEdit: (task: Task) => void;
@@ -73,21 +60,46 @@ interface TaskItemProps {
     onChangeStatus: (taskId: number, newStatus: Task['status']) => void;
 }
 
+interface TaskFormProps {
+    task: Task;
+    onSubmit: (e: React.FormEvent) => void;
+    onCancel: () => void;
+    onChange: (field: keyof Task, value: string) => void;
+    isEditing: boolean;
+}
+
+interface TaskListProps {
+    tasks: Task[];
+    onEdit: (task: Task) => void;
+    onDelete: (taskId: number) => void;
+    onChangeStatus: (taskId: number, newStatus: Task['status']) => void;
+}
+
+// --- Constants ---
+const LOCAL_STORAGE_KEY = "TAREFAS";
+
+// --- Helper Components ---
+const CustomText: React.FC<CustomTextProps> = ({ text, color = 'black' }) => { // Cor padrão preta
+    return <span style={{ color }}>{text}</span>;
+};
+
+// --- TaskItem Component ---
 const TaskItem: React.FC<TaskItemProps> = ({ task, onEdit, onDelete, onChangeStatus }) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const menuOpen = Boolean(anchorEl);
 
-    const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    const handleMenuOpen = useCallback((event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
-    };
+    }, []);
 
-    const handleMenuClose = () => {
+    const handleMenuClose = useCallback(() => {
         setAnchorEl(null);
-    };
+    }, []);
 
-    const handleStatusChange = (status: Task['status']) => {
+    const handleStatusChange = useCallback((status: Task['status']) => {
         onChangeStatus(task.id, status);
         handleMenuClose();
-    };
+    }, [onChangeStatus, handleMenuClose, task.id]);
 
     const priorityColors = {
         baixa: '#8bc34a',
@@ -123,12 +135,12 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onEdit, onDelete, onChangeSta
                             <Chip
                                 label={<CustomText text={task.priority.charAt(0).toUpperCase() + task.priority.slice(1)} color="black" />}
                                 size="small"
-                                sx={{ bgcolor: priorityColors[task.priority], color: 'white' }}
+                                sx={{ bgcolor: priorityColors[task.priority] }}
                             />
                             <Chip
                                 label={<CustomText text={statusLabels[task.status]} color="black" />}
                                 size="small"
-                                sx={{ bgcolor: statusColors[task.status], color: 'white' }}
+                                sx={{ bgcolor: statusColors[task.status] }}
                             />
                             <Chip
                                 label={<CustomText text={`Prazo: ${new Date(task.dueDate).toLocaleDateString('pt-BR')}`} color="black" />}
@@ -139,22 +151,24 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onEdit, onDelete, onChangeSta
                     </Box>
 
                     <Box>
-                        <IconButton size="small" onClick={() => onEdit(task)}>
+                        <IconButton aria-label="edit-task" size="small" onClick={() => onEdit(task)}>
                             <EditIcon fontSize="small" />
                         </IconButton>
-                        <IconButton size="small" onClick={() => onDelete(task.id)}>
+                        <IconButton aria-label="delete-task" size="small" onClick={() => onDelete(task.id)}>
                             <DeleteIcon fontSize="small" />
                         </IconButton>
-                        <IconButton size="small" onClick={handleMenuOpen}>
+                        <IconButton aria-label="open-status-menu" size="small" onClick={handleMenuOpen}>
                             <MoreVertIcon fontSize="small" />
                         </IconButton>
                     </Box>
                 </Box>
 
                 <Menu
+                    id="status-menu"
                     anchorEl={anchorEl}
-                    open={Boolean(anchorEl)}
+                    open={menuOpen}
                     onClose={handleMenuClose}
+                    TransitionComponent={Fade}
                 >
                     <MenuItem onClick={() => handleStatusChange('pendente')}>
                         <CustomText text="Marcar como Pendente" color="black" />
@@ -171,22 +185,14 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onEdit, onDelete, onChangeSta
     );
 };
 
-// Componente TaskForm - REVISADO E CORRIGIDO
-interface TaskFormProps {
-    task: Task;
-    onSubmit: (e: React.FormEvent) => void;
-    onCancel: () => void;
-    onChange: (field: keyof Task, value: string) => void;
-    isEditing: boolean;
-}
-
+// --- TaskForm Component ---
 const TaskForm: React.FC<TaskFormProps> = ({ task, onSubmit, onCancel, onChange, isEditing }) => {
     return (
         <Card sx={{ mb: 4, position: 'relative' }}>
             <CardHeader
                 title={<CustomText text={isEditing ? "Editar Tarefa" : "Nova Tarefa"} color="black" />}
                 action={
-                    <IconButton onClick={onCancel}>
+                    <IconButton aria-label="cancel-form" onClick={onCancel}>
                         <CloseIcon />
                     </IconButton>
                 }
@@ -260,6 +266,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onSubmit, onCancel, onChange,
                                     variant="outlined"
                                     onClick={onCancel}
                                     color="inherit"
+                                    aria-label="cancel"
                                 >
                                     <CustomText text="Cancelar" color="black" />
                                 </Button>
@@ -269,6 +276,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onSubmit, onCancel, onChange,
                                     variant="contained"
                                     type="submit"
                                     color="primary"
+                                    aria-label={isEditing ? 'atualizar' : 'adicionar'}
                                 >
                                     <CustomText text={isEditing ? 'Atualizar' : 'Adicionar'} color="black" />
                                 </Button>
@@ -281,14 +289,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onSubmit, onCancel, onChange,
     );
 };
 
-// Componente TaskList
-interface TaskListProps {
-    tasks: Task[];
-    onEdit: (task: Task) => void;
-    onDelete: (taskId: number) => void;
-    onChangeStatus: (taskId: number, newStatus: Task['status']) => void;
-}
-
+// --- TaskList Component ---
 const TaskList: React.FC<TaskListProps> = ({ tasks, onEdit, onDelete, onChangeStatus }) => {
     const [filter, setFilter] = useState<string>('all');
     const [sortBy, setSortBy] = useState<string>('dueDate');
@@ -319,12 +320,14 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, onEdit, onDelete, onChangeSt
     return (
         <Box>
             <Box display="flex" justifyContent="space-between" mb={3} gap={2}>
+                {/* Filters and Sorting */}
                 <FormControl variant="outlined" size="small" sx={{ minWidth: 150 }}>
                     <InputLabel><CustomText text="Filtrar por" color="black" /></InputLabel>
                     <Select
                         value={filter}
-                        onChange={(e) => setFilter(e.target.value)}
+                        onChange={(e) => setFilter(e.target.value as string)}
                         label={<CustomText text="Filtrar por" color="black" />}
+                        aria-label="filter-tasks"
                     >
                         <MenuItem value="all"><CustomText text="Todas" color="black" /></MenuItem>
                         <MenuItem value="pendente"><CustomText text="Pendentes" color="black" /></MenuItem>
@@ -337,8 +340,9 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, onEdit, onDelete, onChangeSt
                     <InputLabel><CustomText text="Ordenar por" color="black" /></InputLabel>
                     <Select
                         value={sortBy}
-                        onChange={(e) => setSortBy(e.target.value)}
+                        onChange={(e) => setSortBy(e.target.value as string)}
                         label={<CustomText text="Ordenar por" color="black" />}
+                        aria-label="sort-tasks"
                     >
                         <MenuItem value="dueDate"><CustomText text="Data de Conclusão" color="black" /></MenuItem>
                         <MenuItem value="priority"><CustomText text="Prioridade" color="black" /></MenuItem>
@@ -366,50 +370,52 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, onEdit, onDelete, onChangeSt
     );
 };
 
-// Componente principal da página: TaskManagerPage
+// --- TaskManagerPage Component ---
 const TaskManagerPage: React.FC = () => {
     const [tasks, setTasks] = useState<Task[]>([]);
-    const [newTask, setNewTask] = useState<Omit<Task, 'id'>>({
+    const [newTask, setNewTask] = useState<Task>({ // Mudança aqui: newTask agora é Task, não Omit<Task, 'id'>
+        id: 0, // Adicionamos id: 0 como valor inicial
         title: '',
         description: '',
         priority: 'normal',
         dueDate: new Date().toISOString().split('T')[0],
         status: 'pendente',
     });
-    const [editingTask, setEditingTask] = useState<Task | null>(null);
     const [isFormOpen, setIsFormOpen] = useState(false);
-    const [loading, setLoading] = useState(true);
 
+    // Load tasks from localStorage on component mount (SEM LOADING AGORA)
     useEffect(() => {
-        const storedTasks = localStorage.getItem(LOCAL_STORAGE_KEY);
         try {
+            const storedTasks = localStorage.getItem(LOCAL_STORAGE_KEY);
             const initialTasks = storedTasks ? JSON.parse(storedTasks) : [];
             setTasks(initialTasks);
         } catch (error) {
-            console.error("Erro ao analisar tarefas do localStorage:", error);
-            setTasks([]);
-        } finally {
-            setLoading(false);
+            console.error("Erro ao carregar tarefas do localStorage", error);
+            setTasks([]); // Garante que tasks seja um array mesmo em caso de erro
         }
     }, []);
 
+    // Save tasks to localStorage whenever tasks state changes
     useEffect(() => {
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(tasks));
     }, [tasks]);
 
-    const handleAddTask = (e: React.FormEvent) => {
+    const handleAddTask = useCallback((e: React.FormEvent) => {
         e.preventDefault();
-        if (editingTask) {
+        if (newTask.id !== 0) { // Verificamos se newTask.id é diferente de 0 (valor inicial) -> EDITAR
+            // Editar tarefa existente
             const updatedTasks = tasks.map(task =>
-                task.id === editingTask.id ? { ...newTask, id: editingTask.id } as Task : task
+                task.id === newTask.id ? newTask : task // Se o id da tarefa for igual ao id da newTask, atualiza com a newTask
             );
             setTasks(updatedTasks);
-            setEditingTask(null);
-        } else {
+        } else { // ADICIONAR nova tarefa
+            // Adicionar nova tarefa
             const newTaskWithId = { ...newTask, id: Date.now() };
             setTasks([...tasks, newTaskWithId]);
         }
-        setNewTask({
+        // Reset form e fechar
+        setNewTask({ // Reseta newTask para o estado inicial (id: 0)
+            id: 0,
             title: '',
             description: '',
             priority: 'normal',
@@ -417,29 +423,40 @@ const TaskManagerPage: React.FC = () => {
             status: 'pendente',
         });
         setIsFormOpen(false);
-    };
+    }, [tasks, newTask, setTasks, setNewTask, setIsFormOpen]);
 
-    const handleEditTask = (task: Task) => {
-        setEditingTask(task);
-        setNewTask(task);
+    const handleEditTask = useCallback((task: Task) => {
+        setNewTask(task); // Preenche newTask com os dados da tarefa a ser editada
         setIsFormOpen(true);
-    };
+    }, [setNewTask, setIsFormOpen]);
 
-    const handleDeleteTask = (taskId: number) => {
+    const handleDeleteTask = useCallback((taskId: number) => {
         const updatedTasks = tasks.filter(task => task.id !== taskId);
         setTasks(updatedTasks);
-    };
+    }, [tasks, setTasks]);
 
-    const handleChangeTaskStatus = (taskId: number, newStatus: Task['status']) => {
+    const handleChangeTaskStatus = useCallback((taskId: number, newStatus: Task['status']) => {
         const updatedTasks = tasks.map(task =>
             task.id === taskId ? { ...task, status: newStatus } : task
         );
         setTasks(updatedTasks);
-    };
+    }, [tasks, setTasks]);
 
-    const handleTaskChange = (field: keyof Task, value: string) => {
-        setNewTask({ ...newTask, [field]: value });
-    };
+    const handleTaskChange = useCallback((field: keyof Task, value: string) => {
+        setNewTask(prevNewTask => ({ ...prevNewTask, [field]: value }));
+    }, []);
+
+    const handleCancelForm = useCallback(() => {
+        setIsFormOpen(false);
+        setNewTask({ // Reseta newTask para o estado inicial (id: 0)
+            id: 0,
+            title: '',
+            description: '',
+            priority: 'normal',
+            dueDate: new Date().toISOString().split('T')[0],
+            status: 'pendente',
+        });
+    }, [setIsFormOpen, setNewTask]);
 
     return (
         <>
@@ -452,9 +469,10 @@ const TaskManagerPage: React.FC = () => {
                         </IonButtons>
                         <IonTitle><CustomText text="Lista de Tarefas 2025" color="black" /></IonTitle>
                         <IonButtons slot="end">
-                            <IonButton onClick={() => setIsFormOpen(true)}>
+                            <IonButton onClick={() => setIsFormOpen(true)} aria-label="add-new-task">
                                 <IonIcon slot="start" icon={addOutline} />
-                                <CustomText text="Nova Tarefa" color="black" /></IonButton>
+                                <CustomText text="Nova Tarefa" color="black" />
+                            </IonButton>
                         </IonButtons>
                     </IonToolbar>
                 </IonHeader>
@@ -464,38 +482,22 @@ const TaskManagerPage: React.FC = () => {
                         <Fade in={isFormOpen} unmountOnExit>
                             <Box>
                                 <TaskForm
-                                    task={editingTask || newTask as Task}
+                                    task={newTask} // Passamos newTask como a prop task para o Form
                                     onSubmit={handleAddTask}
-                                    onCancel={() => {
-                                        setIsFormOpen(false);
-                                        setEditingTask(null);
-                                        setNewTask({
-                                            title: '',
-                                            description: '',
-                                            priority: 'normal',
-                                            dueDate: new Date().toISOString().split('T')[0],
-                                            status: 'pendente',
-                                        });
-                                    }}
+                                    onCancel={handleCancelForm}
                                     onChange={handleTaskChange}
-                                    isEditing={!!editingTask}
+                                    isEditing={newTask.id !== 0} // isEditing será true se newTask.id for diferente de 0
                                 />
                             </Box>
                         </Fade>
 
-                        {loading ? (
-                            <IonLoading
-                                isOpen={loading}
-                                message={'Carregando tarefas...'}
-                            />
-                        ) : (
-                            <TaskList
-                                tasks={tasks}
-                                onEdit={handleEditTask}
-                                onDelete={handleDeleteTask}
-                                onChangeStatus={handleChangeTaskStatus}
-                            />
-                        )}
+                        {/* TaskList SEM LOADING */}
+                        <TaskList
+                            tasks={tasks}
+                            onEdit={handleEditTask}
+                            onDelete={handleDeleteTask}
+                            onChangeStatus={handleChangeTaskStatus}
+                        />
                     </Container>
                 </IonContent>
             </IonPage>

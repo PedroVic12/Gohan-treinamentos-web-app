@@ -66,27 +66,6 @@ import TodoListSignal from "./app/pages/signalTodoList/todo_list_signal.jsx"
 //! DOCS ---> https://ionicframework.com/docs/components
 
 
-const Tab1: React.FC = () => {
-  const [count, setCount] = useState(0);
-
-  return (
-    <IonPage>
-      <IonHeader>
-        <IonTitle>OLA MUNDO! 28/01/2025</IonTitle>
-      </IonHeader>
-      <IonContent>
-        <h2 className="text-xl font-bold mb-4">Contador: {count}</h2>
-        <IonButton onClick={() => setCount(count + 1)} color="primary">
-          Incrementar
-        </IonButton>
-        <IonButton onClick={() => setCount(count - 1)} color="danger">
-          Decrementar
-        </IonButton>
-      </IonContent>
-    </IonPage>
-  );
-};
-
 export interface RouteConfig {
   path: string;
   component: React.ComponentType<any>;
@@ -141,7 +120,6 @@ const  MyRoutesApp: React.FC = () => {
       <Route path="/alarme" component={AlarmeClockPage} />
       <Route path="/classroom" component={ClassroomPage} />
       <Route path="/dashboard" component={DashboardPage} />
-      <Route exact path="/tab1" component={Tab1} />
 
 
       <Route exact path="/tasks" component={TaskManagerPage} />
@@ -164,20 +142,20 @@ const App: React.FC = () => {
   const appRoutes: RouteConfig[] = [
 
     //! Gohan treinamentos
-    { path: "/home", component: GohanTreinamentosHomePage, label: "Home Page", icon: ellipse },
+   // { path: "/home", component: GohanTreinamentosHomePage, label: "Home Page", icon: ellipse },
     { path: "/treinos", component: GohanTreinamentosGeradorTreinoPage, label: "Gerador Treinos", icon: square },
     { path: "/quizz", component: QuizGamePage, label: "Quizz Game", icon: triangle },
-    { path: "/lista_tarefas", component: TodoListPageUseState, label: "Todo List useState", icon: square },
+    //{ path: "/lista_tarefas", component: TodoListPageUseState, label: "Todo List useState", icon: square },
 
 
     //? debug TaskManagerPage
     { path: "/tasks", component: TaskManagerPage, label: "Lista de Tarefas", icon: squareOutline }, 
-    { path: "/notes", component: NotesMaterialPage, label: "Notes App", icon: squareOutline }, 
+    //{ path: "/notes", component: NotesMaterialPage, label: "Notes App", icon: squareOutline }, 
 
 
     //! IA page
     { path: "/alarme", component: AlarmeClockPage, label: "C3po Alarme clock", icon: squareOutline }, 
-    { path: "/classroom", component: ClassroomPage, label: "Tabs template", icon: squareOutline }, 
+    //{ path: "/classroom", component: ClassroomPage, label: "Tabs template", icon: squareOutline }, 
     { path: "/dashboard", component: DashboardPage, label: "Dashboard", icon: squareOutline }, 
 
 
