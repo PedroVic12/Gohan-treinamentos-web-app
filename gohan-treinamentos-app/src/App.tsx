@@ -58,10 +58,11 @@ import  AlarmeClockPage from "./app/pages/clockPage/alarm_clock_page";
 import { Icon } from 'ionicons/dist/types/components/icon/icon';
 import ClassroomPage from './app/pages/dashboard_v1/dashboards_tabs_template';
 import DashboardPage from './app/pages/dashboard_v1/dashboard_overview';
-import MenuLateral from "./app/widgets/menu_lateral"
 import geradorTreinoPage from './app/pages/geradorTreinoPage';
 import TaskManagerPage from './app/pages/todoList/task_manager';
 import NotesMaterialPage from './app/pages/Notes_App/NotesMaterialPage';
+import TodoListPageUseState from './app/pages/signalTodoList/TodoListStatePage.jsx';
+import TodoListSignal from "./app/pages/signalTodoList/todo_list_signal.jsx"
 //! DOCS ---> https://ionicframework.com/docs/components
 
 
@@ -133,9 +134,8 @@ const  MyRoutesApp: React.FC = () => {
       <Route exact path="/home" component={GohanTreinamentosHomePage} />
       <Route path="/treinos" component={GohanTreinamentosGeradorTreinoPage} />
       <Route path="/quizz" component={QuizGamePage} />
-      <Route path="/todo" component={TodoListPage} />
-
-
+      <Route path="/todo" component={TodoListPage} /> 
+      <Route path="/lista_tarefas" component={TodoListPageUseState} /> 
 
 
       <Route path="/alarme" component={AlarmeClockPage} />
@@ -162,18 +162,17 @@ const App: React.FC = () => {
 
 
   const appRoutes: RouteConfig[] = [
-    // { path: "/tab1", component: Tab1, label: "Tab 1", icon: triangle },
 
     //! Gohan treinamentos
     { path: "/home", component: GohanTreinamentosHomePage, label: "Home Page", icon: ellipse },
     { path: "/treinos", component: GohanTreinamentosGeradorTreinoPage, label: "Gerador Treinos", icon: square },
     { path: "/quizz", component: QuizGamePage, label: "Quizz Game", icon: triangle },
+    { path: "/lista_tarefas", component: TodoListPageUseState, label: "Todo List useState", icon: square },
 
-    // debug TaskManagerPage
-    //{ path: "/calistenia", component: geradorTreinoPage, label: "caslistenia APP", icon: squareOutline }, 
+
+    //? debug TaskManagerPage
     { path: "/tasks", component: TaskManagerPage, label: "Lista de Tarefas", icon: squareOutline }, 
     { path: "/notes", component: NotesMaterialPage, label: "Notes App", icon: squareOutline }, 
-
 
 
     //! IA page

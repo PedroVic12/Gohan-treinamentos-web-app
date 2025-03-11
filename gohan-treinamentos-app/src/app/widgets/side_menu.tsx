@@ -26,6 +26,10 @@ const SidebarMenu: React.FC = () => {
       { path: '/', icon: homeOutline, text: 'Início' },
       { path: '/tasks', icon: listOutline, text: 'Tarefas' },
       { path: '/notes', icon: notificationsOutline, text: 'Notes APP' },
+      { path: '/lista_tarefas', icon: gridOutline, text: 'Lista Tarefas MUI' },
+      { path: '/users', icon: peopleOutline, text: 'Users' },
+      { path: '/analytics', icon: analyticsOutline, text: 'Analytics' },
+      { path: '/settings', icon: settingsOutline, text: 'Settings' },
       
     ];
   
@@ -51,4 +55,6 @@ const SidebarMenu: React.FC = () => {
       </IonMenu>
     );
   };
+
+  
 export default SidebarMenu;
