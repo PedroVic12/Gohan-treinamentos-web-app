@@ -142,7 +142,7 @@ const App: React.FC = () => {
   const appRoutes: RouteConfig[] = [
 
     //! Gohan treinamentos
-   // { path: "/home", component: GohanTreinamentosHomePage, label: "Home Page", icon: ellipse },
+    { path: "/home", component: GohanTreinamentosHomePage, label: "Home Page", icon: ellipse },
     { path: "/treinos", component: GohanTreinamentosGeradorTreinoPage, label: "Gerador Treinos", icon: square },
     { path: "/quizz", component: QuizGamePage, label: "Quizz Game", icon: triangle },
     //{ path: "/lista_tarefas", component: TodoListPageUseState, label: "Todo List useState", icon: square },
@@ -156,7 +156,7 @@ const App: React.FC = () => {
     //! IA page
     { path: "/alarme", component: AlarmeClockPage, label: "C3po Alarme clock", icon: squareOutline }, 
     //{ path: "/classroom", component: ClassroomPage, label: "Tabs template", icon: squareOutline }, 
-    { path: "/dashboard", component: DashboardPage, label: "Dashboard", icon: squareOutline }, 
+   // { path: "/dashboard", component: DashboardPage, label: "Dashboard", icon: squareOutline }, 
 
 
 
