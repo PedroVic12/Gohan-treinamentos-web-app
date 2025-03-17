@@ -9,8 +9,6 @@ import {
   MenuItem,
 } from '@mui/material';
 
-import MenuIcon from '@mui/icons-material/Menu';
-import { Refresh as RefreshIcon } from '@mui/icons-material';
 import { TaskItem } from '../../public/components/TaskItem';
 import { ProgressBar } from '../../public/components/ProgressBar';
 import { initialTasks } from '../../public/data/initialTasks';
@@ -109,32 +107,32 @@ function GohanTreinamentosHomePage() {
 
   const handleRefresh = () => {
     setTasks(initialTasks);
-    
+
     SnackBar("Rotinas resetadas! Tenha um otimo inicio de semana! Lembre-se dos seus objetivos e metas!", "middle");
   };
 
   return (
     <>
-            
+
       <SidebarMenu></SidebarMenu>
 
       <IonPage id="main-content">
 
-      <IonHeader mode="ios">
-      <IonToolbar color="tertiary" className="custom-toolbar">
-        <IonButtons slot="start">
-          <IonMenuButton className="custom-menu-button"></IonMenuButton>
-        </IonButtons>
-        
-        <IonTitle className="custom-title">Gohan Treinamentos 2025</IonTitle>
-        
-        <IonButtons slot="end">
-          <IonButton onClick={handleRefresh} className="custom-refresh-button">
-            <IonIcon icon={refreshOutline}  className="custom-refresh-icon"/>
-          </IonButton>
-        </IonButtons>
-      </IonToolbar>
-    </IonHeader>
+        <IonHeader mode="ios">
+          <IonToolbar color="tertiary" className="custom-toolbar">
+            <IonButtons slot="start">
+              <IonMenuButton className="custom-menu-button"></IonMenuButton>
+            </IonButtons>
+
+            <IonTitle className="custom-title">Gohan Treinamentos 2025</IonTitle>
+
+            <IonButtons slot="end">
+              <IonButton onClick={handleRefresh} className="custom-refresh-button">
+                <IonIcon icon={refreshOutline} className="custom-refresh-icon" />
+              </IonButton>
+            </IonButtons>
+          </IonToolbar>
+        </IonHeader>
 
         <IonContent className="ion-padding">
           <Box sx={{ flexGrow: 1 }}>
@@ -158,7 +156,7 @@ function GohanTreinamentosHomePage() {
               <ProgressBar totalCount={totalCount} maxCount={maxWeeklyCount} />
               <br />
               <br />
-       
+
             </Container>
           </Box>
         </IonContent>

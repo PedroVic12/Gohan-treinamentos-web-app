@@ -57,7 +57,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onIncrement }) => {
           primary={
             <Typography
               fontWeight='bold'
-              sx={{ color: 'rgba(0, 0, 0, 0.87)', fontSize: '1.1rem' }}
+              sx={{ color: 'rgba(0, 0, 0, 0.87)', fontSize: '1.0rem' }}
             >
               {task.title}
               <Divider sx={{ borderBottomWidth: 2, borderColor: 'rgba(0, 0, 0, 0.87)' }} />
@@ -72,7 +72,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, onIncrement }) => {
               {task.description}
             </Typography>
           }
-          sx={{ flex: '1 1 auto', minWidth: 0, mr: 2 }}
+          sx={{ flex: '1 1 auto', minWidth: 0, mr: 1 }}
         />
         <div style={{ flexShrink: 0 }}>
           <TaskCounter

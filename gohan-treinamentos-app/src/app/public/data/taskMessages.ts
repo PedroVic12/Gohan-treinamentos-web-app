@@ -49,7 +49,7 @@ export const taskMessages: TaskMessage[] = [
 export const getTaskMessage = (taskId: string): string => {
   const task = taskMessages.find(t => t.id === taskId);
   if (!task) return "Great job! Keep going! 🎉";
-  
+
   const randomIndex = Math.floor(Math.random() * task.messages.length);
   return task.messages[randomIndex];
 };
