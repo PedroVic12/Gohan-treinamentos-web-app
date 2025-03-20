@@ -496,17 +496,6 @@ const CalisthenicsApp = () => {
     <div style={styles.appContainer}>
       <h1 style={styles.appTitle}>Calistenia App</h1>
       
-      {/* Action Buttons */}
-      <div style={styles.actionButtonContainer}>
-        
-        <button 
-          onClick={() => setShowAddForm(!showAddForm)}
-          style={styles.addExerciseButton}
-        >
-          {showAddForm ? '✖️ Fechar Formulário' : '➕ Adicionar Exercício'}
-        </button>
-      </div>
-      
       {/* New Exercise Form */}
       {showAddForm && (
         <div style={styles.formContainer}>
@@ -620,7 +609,7 @@ const CalisthenicsApp = () => {
       <div style={styles.workoutContainer}>
         {/* Training List */}
         <div style={styles.trainingList}>
-          <h2 style={{ marginBottom: '10px' }}>Treinos de {selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)}</h2>
+          <h2 >Treinos de {selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)}</h2>
           
           {categoryWorkouts.length > 0 ? (
             <div>
@@ -645,7 +634,17 @@ const CalisthenicsApp = () => {
             </div>
           )}
         </div>
+       {/* Action Buttons */}
+      <div style={styles.actionButtonContainer}>
         
+        <button 
+          onClick={() => setShowAddForm(!showAddForm)}
+          style={styles.addExerciseButton}
+        >
+          {showAddForm ? '✖️ Fechar Formulário' : '➕ Adicionar Exercício'}
+        </button>
+      </div>
+      
         {/* Exercise Details */}
         <div style={styles.exerciseDetails}>
           {selectedWorkout ? (
@@ -687,14 +686,16 @@ const styles = {
     backgroundColor: '#121212',
     color: 'white',
     minHeight: '100vh',
+    overflowY: 'auto'
+
   },
   appTitle: {
     textAlign: 'center',
-    marginBottom: '20px',
+    marginBottom: '10px',
   },
   actionButtonContainer: {
     textAlign: 'center',
-    marginBottom: '20px',
+    marginBottom: '5px',
     display: 'flex',
     justifyContent: 'center'
   },
@@ -761,7 +762,6 @@ marginBottom: '5px',
     display: 'flex',
     justifyContent: 'center',
     gap: '10px',
-    marginBottom: '20px',
     flexWrap: 'wrap'
   },
   categoryButton: {
@@ -788,10 +788,14 @@ marginBottom: '5px',
     display: 'flex',
     flexDirection: 'column',
     gap: '20px',
+    overflowY: 'auto'
+
   },
   trainingList: {
     flex: '1',
     minWidth: '250px',
+    overflowY: 'auto',
+
   },
   exerciseDetails: {
     flex: '2',
