@@ -60,9 +60,12 @@ import ClassroomPage from './app/pages/dashboard_v1/dashboards_tabs_template';
 import DashboardPage from './app/pages/dashboard_v1/dashboard_overview';
 import geradorTreinoPage from './app/pages/geradorTreinoPage';
 import TaskManagerPage from './app/pages/todoList/task_manager';
-import NotesMaterialPage from './app/pages/Notes_App/NotesMaterialPage';
 import TodoListPageUseState from './app/pages/signalTodoList/TodoListStatePage.jsx';
-import TodoListSignal from "./app/pages/signalTodoList/todo_list_signal.jsx"
+import CalisthenicsAppV3 from './app/pages/calistenia_app/calistenia_app_stable';
+import CalisthenicsAppPreview from './app/pages/calistenia_app/calistenia_app_v2';
+import CalisthenicsAppV5 from './app/pages/calistenia_app/calistenia_app_v4';
+import CalisthenicsAppMaterial from './app/pages/calistenia_app/calistenia_app_v4';
+import CalisthenicsApp from './app/pages/calistenia_app/pages/calistenia_app_mui';
 //! DOCS ---> https://ionicframework.com/docs/components
 
 
@@ -143,6 +146,11 @@ const App: React.FC = () => {
 
     //! Gohan treinamentos
     { path: "/home", component: GohanTreinamentosHomePage, label: "Home Page", icon: ellipse },
+    //{ path: "/calistenia", component: CalisthenicsAppPreview, label: "Calistenia APP", icon: barbellOutline },
+    //{ path: "/calistenia", component: CalisteniaApp, label: "Calistenia APP", icon: barbellOutline },
+   // { path: "/calistenia", component: CalisthenicsAppMaterial, label: "Calistenia APP", icon: barbellOutline },
+    { path: "/calistenia", component: CalisthenicsApp, label: "Calistenia APP", icon: barbellOutline },
+
     { path: "/treinos", component: GohanTreinamentosGeradorTreinoPage, label: "Gerador Treinos", icon: square },
     { path: "/quizz", component: QuizGamePage, label: "Quizz Game", icon: triangle },
     //{ path: "/lista_tarefas", component: TodoListPageUseState, label: "Todo List useState", icon: square },
