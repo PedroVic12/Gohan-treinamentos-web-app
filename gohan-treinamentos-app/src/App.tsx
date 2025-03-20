@@ -11,7 +11,7 @@ import {
   setupIonicReact,
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { Redirect, Route } from 'react-router-dom';
+import { Redirect, Route, useLocation } from 'react-router-dom';
 
 import {
   analyticsOutline,
@@ -49,16 +49,41 @@ import './theme/variables.css';
 
 setupIonicReact();
 
-// Rotas configuradas
+
 export const appRoutes = [
   { path: '/home', component: GohanTreinamentosHomePage, label: 'Home', icon: homeOutline },
-  { path: '/calistenia', component: CalisthenicsApp, label: 'Calistenia', icon: barbellOutline, isJSX: true },
+  { path: '/calistenia', component: CalisthenicsApp, label: 'Calistenia', icon: barbellOutline },
   { path: '/treinos', component: GohanTreinamentosGeradorTreinoPage, label: 'Treinos', icon: settingsOutline },
-  { path: '/quizz', component: QuizGamePage, label: 'Quizz', icon: peopleOutline, isJSX: true },
+  { path: '/quizz', component: QuizGamePage, label: 'Quizz', icon: peopleOutline },
   { path: '/tasks', component: TaskManagerPage, label: 'Tarefas', icon: listOutline },
   { path: '/alarme', component: AlarmeClockPage, label: 'Alarme', icon: analyticsOutline },
   { path: '/checklist', component: MarkdownChecklist, label: 'Checklist', icon: notificationsOutline },
 ];
+
+const AppContent = () => {
+  const location = useLocation();
+
+  return (
+    <IonTabs>
+      {/* Força re-render com key baseada na location.pathname */}
+      <IonRouterOutlet key={location.pathname}>
+        {appRoutes.map((route, index) => (
+          <Route key={index} exact path={route.path} component={route.component} />
+        ))}
+        <Redirect exact from="/" to="/home" />
+      </IonRouterOutlet>
+
+      <IonTabBar slot="bottom">
+        {appRoutes.map((route, index) => (
+          <IonTabButton key={index} tab={route.label} href={route.path}>
+            <IonIcon icon={route.icon} />
+            <IonLabel>{route.label}</IonLabel>
+          </IonTabButton>
+        ))}
+      </IonTabBar>
+    </IonTabs>
+  );
+};
 
 const App: React.FC = () => {
   return (
@@ -66,38 +91,9 @@ const App: React.FC = () => {
       <IonReactRouter>
         <IonSplitPane contentId="main">
           <SidebarMenu />
-          <IonTabs>
-            <IonRouterOutlet id="main">
-              {appRoutes.map((route, index) => {
-                const Component = route.component;
-                return route.isJSX ? (
-                  <Route
-                    key={index}
-                    exact
-                    path={route.path}
-                    render={() => <Component />}
-                  />
-                ) : (
-                  <Route
-                    key={index}
-                    exact
-                    path={route.path}
-                    component={Component}
-                  />
-                );
-              })}
-              <Redirect exact from="/" to="/home" />
-            </IonRouterOutlet>
-
-            <IonTabBar slot="bottom">
-              {appRoutes.map((route, index) => (
-                <IonTabButton key={index} tab={route.label} href={route.path}>
-                  <IonIcon icon={route.icon} />
-                  <IonLabel>{route.label}</IonLabel>
-                </IonTabButton>
-              ))}
-            </IonTabBar>
-          </IonTabs>
+          <IonRouterOutlet id="main">
+            <Route path="/" component={AppContent} />
+          </IonRouterOutlet>
         </IonSplitPane>
       </IonReactRouter>
     </IonApp>
