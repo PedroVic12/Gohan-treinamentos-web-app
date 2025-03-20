@@ -696,8 +696,7 @@ const styles = {
     backgroundColor: '#121212',
     color: 'white',
     minHeight: '100vh',
-    overflowY: 'auto'
-
+    overflowX: 'hidden' // Mudança importante: overflowX para hidden
   },
   appTitle: {
     textAlign: 'center',
@@ -797,14 +796,13 @@ marginBottom: '5px',
   workoutContainer: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '20px',
+    gap: '10px',
     overflowY: 'auto'
 
   },
   trainingList: {
     flex: '1',
     minWidth: '250px',
-    overflowY: 'auto',
 
   },
   exerciseDetails: {
@@ -827,6 +825,7 @@ marginBottom: '5px',
     gap: '15px',
     paddingBottom: '10px',
     flexWrap: 'nowrap',
+    
   },
   noWorkoutSelectedMessage: {
     textAlign: 'center',
