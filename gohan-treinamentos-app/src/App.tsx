@@ -61,10 +61,9 @@ import DashboardPage from './app/pages/dashboard_v1/dashboard_overview';
 import geradorTreinoPage from './app/pages/geradorTreinoPage';
 import TaskManagerPage from './app/pages/todoList/task_manager';
 import TodoListPageUseState from './app/pages/signalTodoList/TodoListStatePage.jsx';
-import CalisthenicsAppV3 from './app/pages/calistenia_app/calistenia_app_stable';
-import CalisthenicsAppPreview from './app/pages/calistenia_app/calistenia_app_v2';
-import CalisthenicsAppV5 from './app/pages/calistenia_app/calistenia_app_v4';
-import CalisthenicsAppMaterial from './app/pages/calistenia_app/calistenia_app_v4';
+import CalisthenicsAppPreview from './app/pages/calistenia_app/pages/calistenia_app_v2';
+import CalisthenicsAppV5 from './app/pages/calistenia_app/pages/calistenia_app_v4';
+import CalisthenicsAppMaterial from './app/pages/calistenia_app/pages/calistenia_app_v4';
 import CalisthenicsApp from './app/pages/calistenia_app/pages/calistenia_app_mui';
 import MarkdownChecklist from './app/pages/CheckListMarkdown/MarkdownCheckList';
 //! DOCS ---> https://ionicframework.com/docs/components

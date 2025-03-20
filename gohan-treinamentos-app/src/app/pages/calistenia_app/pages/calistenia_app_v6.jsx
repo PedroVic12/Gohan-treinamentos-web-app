@@ -635,7 +635,7 @@ const CalisthenicsApp = () => {
         </div>
         
         {/* Exercise Details */}
-        <div style={{...styles.exerciseDetails, }} >
+        <div style={styles.exerciseDetails}>
           {selectedWorkout ? (
             <div>
               <h2 style={{ marginBottom: '15px' }}>Exercícios de {selectedWorkout.treino}</h2>
@@ -675,7 +675,7 @@ const styles = {
   },
   appTitle: {
     textAlign: 'center',
-    marginBottom: '15px',
+    marginBottom: '20px',
   },
   actionButtonContainer: {
     textAlign: 'center',
@@ -780,7 +780,6 @@ const styles = {
     padding: '15px',
     backgroundColor: '#1e1e1e',
     borderRadius: '5px',
-    overflowX: 'auto'
   },
   noWorkoutSelectedMessage: {
     textAlign: 'center',

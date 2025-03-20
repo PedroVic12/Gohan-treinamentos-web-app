@@ -147,11 +147,11 @@ const YouTubeVideo = ({ title, youtubeUrl }) => {
   const embedUrl = `https://www.youtube.com/embed/${videoId}`;
   
   return (
-    <div style={styles.youtubeVideoContainer}>
-      <h3 style={styles.youtubeVideoTitle}>{title}</h3>
-      <div style={styles.youtubeVideoWrapper}>
+    <div style={{ margin: '10px 0', padding: '10px', border: '1px solid #333', borderRadius: '5px', backgroundColor: '#1e1e1e' }}>
+      <h3 style={{ margin: '0 0 10px 0' }}>{title}</h3>
+      <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden' }}>
         <iframe 
-          style={styles.youtubeVideoFrame} 
+          style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', borderRadius: '4px' }} 
           src={embedUrl} 
           title={title} 
           frameBorder="0" 
@@ -171,20 +171,20 @@ const ExerciseCard = ({ exercise, onDelete, checkedExercises, onToggleCheck }) =
     checkedExercises[exercise.id].every(Boolean);
 
   return (
-    <div style={styles.exerciseCard}>
-      <h3 style={styles.exerciseName}>{exercise.name}</h3>
+    <div style={{ marginBottom: '15px', padding: '15px', border: '1px solid #333', borderRadius: '5px', backgroundColor: '#1e1e1e' }}>
+      <h3 style={{ margin: '0 0 10px 0' }}>{exercise.name}</h3>
       
-      <div style={styles.exerciseInfo}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', backgroundColor: '#252525', padding: '10px', borderRadius: '4px', marginBottom: '15px' }}>
         <div><strong>Sets:</strong> {exercise.sets}</div>
         <div><strong>Reps:</strong> {exercise.reps}</div>
         <div><strong>Dificuldade:</strong> {exercise.difficulty}</div>
       </div>
       
-      <div style={styles.progressTracking}>
-        <h4 style={styles.progressTitle}>Progress Tracking:</h4>
-        <div style={styles.checkboxContainer}>
+      <div style={{ marginBottom: '15px' }}>
+        <h4 style={{ marginTop: 0, marginBottom: '10px' }}>Progress Tracking:</h4>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
           {Array.from({ length: exercise.sets }).map((_, setIndex) => (
-            <label key={setIndex} style={styles.checkboxLabel}>
+            <label key={setIndex} style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
               <input
                 type="checkbox"
                 checked={checkedExercises[exercise.id]?.[setIndex] || false}
@@ -197,11 +197,28 @@ const ExerciseCard = ({ exercise, onDelete, checkedExercises, onToggleCheck }) =
       </div>
       
       {isAllChecked && (
-        <div style={styles.completedMessage}>
+        <div style={{ marginBottom: '15px', padding: '10px', backgroundColor: '#4caf50', color: 'white', borderRadius: '4px', textAlign: 'center' }}>
           Treino concluído! 🎉
         </div>
       )}
       
+      <div style={{ display: 'flex', gap: '10px' }}>
+        <button 
+          onClick={() => onDelete(exercise.id)} 
+          style={{ padding: '8px 12px', backgroundColor: '#dc004e', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}
+        >
+          🗑️ Delete Exercise
+        </button>
+        
+        {exercise.youtubeUrl && (
+          <button 
+            onClick={() => setShowVideo(!showVideo)} 
+            style={{ padding: '8px 12px', backgroundColor: '#2196f3', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}
+          >
+            {showVideo ? '🎬 Hide Video' : '🎬 Show Video'}
+          </button>
+        )}
+      </div>
       
       {showVideo && exercise.youtubeUrl && (
         <YouTubeVideo title={exercise.name} youtubeUrl={exercise.youtubeUrl} />
@@ -211,7 +228,7 @@ const ExerciseCard = ({ exercise, onDelete, checkedExercises, onToggleCheck }) =
 };
 
 // Training List Item Component
-const TrainingListItem = ({ treino, exerciseCount, isSelected, onClick, onEdit, onTimer }) => {
+const TrainingListItem = ({ treino, exerciseCount, isSelected, onClick }) => {
   return (
     <div 
       onClick={onClick}
@@ -222,13 +239,10 @@ const TrainingListItem = ({ treino, exerciseCount, isSelected, onClick, onEdit, 
         borderRadius: '5px',
         cursor: 'pointer',
         border: isSelected ? '1px solid #f44336' : '1px solid #333',
-        transition: 'all 0.2s ease',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center'
+        transition: 'all 0.2s ease'
       }}
     >
-      <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h3 style={{ margin: 0 }}>{treino}</h3>
         <div style={{ 
           backgroundColor: '#f44336', 
@@ -245,26 +259,6 @@ const TrainingListItem = ({ treino, exerciseCount, isSelected, onClick, onEdit, 
           {exerciseCount}
         </div>
       </div>
-      <div style={{display: 'flex', gap: '10px'}}>
-        <button
-            onClick={(e) => {
-              e.stopPropagation(); // Prevent the main div's onClick from firing
-              onEdit();
-            }}
-            style={styles.editButton}
-          >
-            Editar
-        </button>
-        <button
-            onClick={(e) => {
-              e.stopPropagation(); // Prevent the main div's onClick from firing
-              onTimer();
-            }}
-            style={styles.timerButtonSmall}
-          >
-            ⏱️
-        </button>
-      </div>
     </div>
   );
 };
@@ -272,11 +266,11 @@ const TrainingListItem = ({ treino, exerciseCount, isSelected, onClick, onEdit, 
 // Workout Group Component
 const WorkoutGroup = ({ treino, exercises, onDelete, checkedExercises, onToggleCheck }) => {
   return (
-    <div style={styles.workoutGroup}>
-      <div style={styles.workoutGroupHeader}>
+    <div style={{ marginBottom: '30px', border: '1px solid #333', borderRadius: '5px', overflow: 'hidden' }}>
+      <div style={{ backgroundColor: '#252525', padding: '15px', borderBottom: '1px solid #333' }}>
         <h2 style={{ margin: 0 }}>{treino}</h2>
       </div>
-      <div style={styles.exerciseListContainer}>
+      <div style={{ padding: '15px' }}>
         {exercises.map(exercise => (
           <ExerciseCard
             key={exercise.id}
@@ -328,8 +322,8 @@ const TimerModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div style={styles.modalOverlay}>
-      <div style={styles.modalContent}>
+    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0, 0, 0, 0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000 }}>
+      <div style={{ backgroundColor: '#333', padding: '20px', borderRadius: '8px', color: 'white', width: '300px' }}>
         <h2 style={{ marginTop: 0 }}>Timer de Descanso</h2>
         {isRunning ? (
           <div style={{ textAlign: 'center', margin: '20px 0' }}>
@@ -344,15 +338,15 @@ const TimerModal = ({ isOpen, onClose }) => {
                 type="number"
                 value={timerValue}
                 onChange={(e) => setTimerValue(Math.max(1, parseInt(e.target.value) || 1))}
-                style={styles.modalInput}
+                style={{ padding: '8px', borderRadius: '5px', border: '1px solid #555', width: '100%', backgroundColor: '#222', color: 'white' }}
               />
             </div>
-            <button onClick={handleStartTimer} style={styles.modalButton}>
+            <button onClick={handleStartTimer} style={{ padding: '10px 16px', backgroundColor: '#4caf50', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer', width: '100%', marginBottom: '10px' }}>
               Iniciar
             </button>
           </>
         )}
-        <button onClick={onClose} style={styles.modalCancelButton}>
+        <button onClick={onClose} style={{ padding: '10px 16px', backgroundColor: '#dc004e', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer', width: '100%' }}>
           Cancelar
         </button>
       </div>
@@ -381,8 +375,6 @@ const CalisthenicsApp = () => {
     youtubeUrl: ''
   });
   const [checkedExercises, setCheckedExercises] = useState({});
-  const [editingTreino, setEditingTreino] = useState(null);
-
 
   // Load workouts on component mount
   useEffect(() => {
@@ -390,7 +382,7 @@ const CalisthenicsApp = () => {
     setWorkouts(loadedWorkouts);
   }, [controller]);
 
-    // Add new exercise handler
+  // Add new exercise handler
   const handleAddExercise = (e) => {
     e.preventDefault();
     
@@ -419,7 +411,6 @@ const CalisthenicsApp = () => {
       
       // Set the newly added treino as selected
       setSelectedTreino(newExercise.treino);
-      setShowAddForm(false); // Close form after adding
     }
   };
 
@@ -455,7 +446,7 @@ const CalisthenicsApp = () => {
   }, [selectedCategory]);
   
   // Update dropdown options when category changes
-    useEffect(() => {
+  useEffect(() => {
     if (categoryWorkouts.length > 0 && !newExercise.treino) {
       setNewExercise(prev => ({
         ...prev,
@@ -465,31 +456,42 @@ const CalisthenicsApp = () => {
   }, [categoryWorkouts, newExercise.treino]);
 
   // Get the currently selected workout
-    const selectedWorkout = selectedTreino
+  const selectedWorkout = selectedTreino 
     ? categoryWorkouts.find(workout => workout.treino === selectedTreino)
     : null;
 
-  const handleEditTreino = (treinoName) => {
-    setEditingTreino(treinoName);
-    // Populate the form with the treino name for editing
-    setNewExercise(prev => ({...prev, treino: treinoName}));
-    setShowAddForm(true); // Show the form
-  };
-
-  const handleTimerTreino = () => {
-    setIsTimerModalOpen(true);
-  };
-
   return (
-    <div style={styles.appContainer}>
-      <h1 style={styles.appTitle}>Calistenia App</h1>
+    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px', backgroundColor: '#121212', color: 'white', minHeight: '100vh' }}>
+      <h1 style={{ textAlign: 'center', marginBottom: '20px' }}>Calistenia App</h1>
       
       {/* Action Buttons */}
-      <div style={styles.actionButtonContainer}>
-        
+      <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+        <button 
+          onClick={() => setIsTimerModalOpen(true)}
+          style={{ 
+            padding: '10px 20px', 
+            backgroundColor: '#4caf50', 
+            color: 'white', 
+            border: 'none', 
+            borderRadius: '5px', 
+            cursor: 'pointer',
+            fontSize: '16px',
+            marginRight: '10px'
+          }}
+        >
+          ⏱️ Timer de Descanso
+        </button>
         <button 
           onClick={() => setShowAddForm(!showAddForm)}
-          style={styles.addExerciseButton}
+          style={{ 
+            padding: '10px 20px', 
+            backgroundColor: '#2196f3', 
+            color: 'white', 
+            border: 'none', 
+            borderRadius: '5px', 
+            cursor: 'pointer',
+            fontSize: '16px'
+          }}
         >
           {showAddForm ? '✖️ Fechar Formulário' : '➕ Adicionar Exercício'}
         </button>
@@ -497,58 +499,58 @@ const CalisthenicsApp = () => {
       
       {/* New Exercise Form */}
       {showAddForm && (
-        <div style={styles.formContainer}>
-          <h2 style={{ marginTop: 0 }}>{editingTreino ? 'Editar Treino' : 'Adicionar Novo Exercício'}</h2>
+        <div style={{ backgroundColor: '#1e1e1e', padding: '20px', borderRadius: '5px', marginBottom: '20px' }}>
+          <h2 style={{ marginTop: 0 }}>Adicionar Novo Exercício</h2>
           <form onSubmit={handleAddExercise}>
-            <div style={styles.formGroup}>
-              <label style={styles.formLabel}>Treino:</label>
+            <div style={{ marginBottom: '15px' }}>
+              <label style={{ display: 'block', marginBottom: '5px' }}>Treino:</label>
               <input 
                 type="text" 
                 value={newExercise.treino} 
                 onChange={(e) => setNewExercise({...newExercise, treino: e.target.value})}
-                style={styles.formInput}
+                style={{ padding: '8px', borderRadius: '5px', border: '1px solid #555', width: '100%', backgroundColor: '#222', color: 'white' }}
                 required
               />
             </div>
-            <div style={styles.formGroup}>
-              <label style={styles.formLabel}>Nome do Exercício:</label>
+            <div style={{ marginBottom: '15px' }}>
+              <label style={{ display: 'block', marginBottom: '5px' }}>Nome do Exercício:</label>
               <input 
                 type="text" 
                 value={newExercise.name} 
                 onChange={(e) => setNewExercise({...newExercise, name: e.target.value})}
-                style={styles.formInput}
+                style={{ padding: '8px', borderRadius: '5px', border: '1px solid #555', width: '100%', backgroundColor: '#222', color: 'white' }}
                 required
               />
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-              <div style={styles.formGroup}>
-                <label style={styles.formLabel}>Sets:</label>
+            <div style={{ display: 'flex', gap: '15px', marginBottom: '15px' }}>
+              <div style={{ flex: 1 }}>
+                <label style={{ display: 'block', marginBottom: '5px' }}>Sets:</label>
                 <input 
                   type="number" 
                   value={newExercise.sets} 
                   onChange={(e) => setNewExercise({...newExercise, sets: e.target.value})}
-                  style={styles.formInput}
+                  style={{ padding: '8px', borderRadius: '5px', border: '1px solid #555', width: '100%', backgroundColor: '#222', color: 'white' }}
                   min="1"
                   required
                 />
               </div>
-              <div style={styles.formGroup}>
-                <label style={styles.formLabel}>Reps:</label>
+              <div style={{ flex: 1 }}>
+                <label style={{ display: 'block', marginBottom: '5px' }}>Reps:</label>
                 <input 
                   type="text" 
                   value={newExercise.reps} 
                   onChange={(e) => setNewExercise({...newExercise, reps: e.target.value})}
-                  style={styles.formInput}
+                  style={{ padding: '8px', borderRadius: '5px', border: '1px solid #555', width: '100%', backgroundColor: '#222', color: 'white' }}
                   required
                 />
               </div>
             </div>
-            <div style={styles.formGroup}>
-              <label style={styles.formLabel}>Dificuldade:</label>
+            <div style={{ marginBottom: '15px' }}>
+              <label style={{ display: 'block', marginBottom: '5px' }}>Dificuldade:</label>
               <select 
                 value={newExercise.difficulty} 
                 onChange={(e) => setNewExercise({...newExercise, difficulty: e.target.value})}
-                style={styles.formInput}
+                style={{ padding: '8px', borderRadius: '5px', border: '1px solid #555', width: '100%', backgroundColor: '#222', color: 'white' }}
               >
                 <option value="Easy">Fácil</option>
                 <option value="Normal">Normal</option>
@@ -556,58 +558,86 @@ const CalisthenicsApp = () => {
                 <option value="Sayajin">Sayajin</option>
               </select>
             </div>
-            <div style={styles.formGroup}>
-              <label style={styles.formLabel}>URL do YouTube:</label>
+            <div style={{ marginBottom: '15px' }}>
+              <label style={{ display: 'block', marginBottom: '5px' }}>URL do YouTube:</label>
               <input 
                 type="url" 
                 value={newExercise.youtubeUrl} 
                 onChange={(e) => setNewExercise({...newExercise, youtubeUrl: e.target.value})}
-                style={styles.formInput}
+                style={{ padding: '8px', borderRadius: '5px', border: '1px solid #555', width: '100%', backgroundColor: '#222', color: 'white' }}
                 placeholder="https://www.youtube.com/watch?v=..."
               />
             </div>
             <button 
               type="submit" 
-              style={styles.saveButton}
+              style={{ padding: '10px 16px', backgroundColor: '#4caf50', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer', width: '100%' }}
             >
-              {editingTreino ? 'Atualizar Treino' : 'Salvar Exercício'}
+              Salvar Exercício
             </button>
           </form>
         </div>
       )}
       
       {/* Category Selection */}
-      <div style={styles.categoryButtonContainer}>
+      <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', marginBottom: '20px' }}>
         <button 
           onClick={() => setSelectedCategory('push')}
-          style={selectedCategory === 'push' ? styles.selectedCategoryButton : styles.categoryButton}
+          style={{ 
+            padding: '10px 20px', 
+            backgroundColor: selectedCategory === 'push' ? '#f44336' : '#333', 
+            color: 'white', 
+            border: 'none', 
+            borderRadius: '5px', 
+            cursor: 'pointer' 
+          }}
         >
           Push
         </button>
         <button 
           onClick={() => setSelectedCategory('pull')}
-          style={selectedCategory === 'pull' ? styles.selectedCategoryButton : styles.categoryButton}
+          style={{ 
+            padding: '10px 20px', 
+            backgroundColor: selectedCategory === 'pull' ? '#f44336' : '#333', 
+            color: 'white', 
+            border: 'none', 
+            borderRadius: '5px', 
+            cursor: 'pointer' 
+          }}
         >
           Pull
         </button>
         <button 
           onClick={() => setSelectedCategory('legs')}
-          style={selectedCategory === 'legs' ? styles.selectedCategoryButton : styles.categoryButton}
+          style={{ 
+            padding: '10px 20px', 
+            backgroundColor: selectedCategory === 'legs' ? '#f44336' : '#333', 
+            color: 'white', 
+            border: 'none', 
+            borderRadius: '5px', 
+            cursor: 'pointer' 
+          }}
         >
           Legs
         </button>
         <button 
           onClick={() => setSelectedCategory('abs')}
-          style={selectedCategory === 'abs' ? styles.selectedCategoryButton : styles.categoryButton}
+          style={{ 
+            padding: '10px 20px', 
+            backgroundColor: selectedCategory === 'abs' ? '#f44336' : '#333', 
+            color: 'white', 
+            border: 'none', 
+            borderRadius: '5px', 
+            cursor: 'pointer' 
+          }}
         >
           Abs
         </button>
       </div>
       
       {/* Workout Lists and Details */}
-      <div style={styles.workoutContainer}>
+      <div style={{ display: 'flex', gap: '20px' }}>
         {/* Training List */}
-        <div style={styles.trainingList}>
+        <div style={{ flex: '1', minWidth: '250px' }}>
           <h2 style={{ marginBottom: '15px' }}>Treinos de {selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)}</h2>
           
           {categoryWorkouts.length > 0 ? (
@@ -619,27 +649,22 @@ const CalisthenicsApp = () => {
                   exerciseCount={workout.exercises.length}
                   isSelected={selectedTreino === workout.treino}
                   onClick={() => setSelectedTreino(workout.treino)}
-                  onEdit={() => handleEditTreino(workout.treino)}
-                  onTimer={() => {
-                    setSelectedTreino(workout.treino); // Set selected treino for timer context
-                    handleTimerTreino();
-                  }}
                 />
               ))}
             </div>
           ) : (
-            <div style={styles.noWorkoutsMessage}>
+            <div style={{ textAlign: 'center', padding: '20px', backgroundColor: '#1e1e1e', borderRadius: '5px' }}>
               <p>Nenhum treino encontrado para esta categoria.</p>
             </div>
           )}
         </div>
         
         {/* Exercise Details */}
-        <div style={{...styles.exerciseDetails, }} >
+        <div style={{ flex: '2' }}>
           {selectedWorkout ? (
             <div>
               <h2 style={{ marginBottom: '15px' }}>Exercícios de {selectedWorkout.treino}</h2>
-              <div style={styles.exerciseListContainer}>
+              <div style={{ padding: '15px', backgroundColor: '#1e1e1e', borderRadius: '5px' }}>
                 {selectedWorkout.exercises.map(exercise => (
                   <ExerciseCard
                     key={exercise.id}
@@ -652,7 +677,7 @@ const CalisthenicsApp = () => {
               </div>
             </div>
           ) : (
-            <div style={styles.noWorkoutSelectedMessage}>
+            <div style={{ textAlign: 'center', padding: '40px', backgroundColor: '#1e1e1e', borderRadius: '5px' }}>
               <p>Selecione um treino para ver os exercícios.</p>
             </div>
           )}
@@ -663,271 +688,6 @@ const CalisthenicsApp = () => {
       <TimerModal isOpen={isTimerModalOpen} onClose={() => setIsTimerModalOpen(false)} />
     </div>
   );
-};
-const styles = {
-  appContainer: {
-    maxWidth: '800px',
-    margin: '0 auto',
-    padding: '20px',
-    backgroundColor: '#121212',
-    color: 'white',
-    minHeight: '100vh',
-  },
-  appTitle: {
-    textAlign: 'center',
-    marginBottom: '15px',
-  },
-  actionButtonContainer: {
-    textAlign: 'center',
-    marginBottom: '20px',
-  },
-  timerButton: {
-    padding: '10px 20px',
-    backgroundColor: '#4caf50',
-    color: 'white',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer',
-    fontSize: '16px',
-    marginRight: '10px',
-  },
-  addExerciseButton: {
-    padding: '10px 20px',
-    backgroundColor: '#2196f3',
-    color: 'white',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer',
-    fontSize: '16px',
-  },
-  formContainer: {
-    backgroundColor: '#1e1e1e',
-    padding: '20px',
-    borderRadius: '5px',
-    marginBottom: '20px',
-  },
-  formGroup: {
-    marginBottom: '15px',
-  },
-  formLabel: {
-    display: 'block',
-    marginBottom: '5px',
-  },
-  formInput: {
-    padding: '8px',
-    borderRadius: '5px',
-    border: '1px solid #555',
-    width: '100%',
-    backgroundColor: '#222',
-    color: 'white',
-    boxSizing: 'border-box'
-  },
-  saveButton: {
-    padding: '10px 16px',
-    backgroundColor: '#4caf50',
-    color: 'white',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer',
-    width: '100%',
-  },
-  categoryButtonContainer: {
-    display: 'flex',
-    justifyContent: 'center',
-    gap: '10px',
-    marginBottom: '20px',
-    flexWrap: 'wrap'
-  },
-  categoryButton: {
-    padding: '10px 20px',
-    backgroundColor: '#333',
-    color: 'white',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer',
-    flex: '1 0 auto',
-    minWidth: '100px'
-  },
-  selectedCategoryButton: {
-    padding: '10px 20px',
-    backgroundColor: '#f44336',
-    color: 'white',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer',
-    flex: '1 0 auto',
-    minWidth: '100px'
-  },
-  workoutContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '20px',
-  },
-  trainingList: {
-    flex: '1',
-    minWidth: '250px',
-  },
-  exerciseDetails: {
-    flex: '2',
-  },
-  noWorkoutsMessage: {
-    textAlign: 'center',
-    padding: '20px',
-    backgroundColor: '#1e1e1e',
-    borderRadius: '5px',
-  },
-  exerciseListContainer: {
-    padding: '15px',
-    backgroundColor: '#1e1e1e',
-    borderRadius: '5px',
-    overflowX: 'auto'
-  },
-  noWorkoutSelectedMessage: {
-    textAlign: 'center',
-    padding: '40px',
-    backgroundColor: '#1e1e1e',
-    borderRadius: '5px',
-  },
-  modalOverlay: {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 1000,
-  },
-  modalContent: {
-    backgroundColor: '#333',
-    padding: '20px',
-    borderRadius: '8px',
-    color: 'white',
-    width: '90%',
-    maxWidth: '300px'
-  },
-  modalInput: {
-    padding: '8px',
-    borderRadius: '5px',
-    border: '1px solid #555',
-    width: '100%',
-    backgroundColor: '#222',
-    color: 'white',
-    boxSizing: 'border-box'
-  },
-  modalButton: {
-    padding: '10px 16px',
-    backgroundColor: '#4caf50',
-    color: 'white',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer',
-    width: '100%',
-    marginBottom: '10px',
-  },
-    modalCancelButton: {
-    padding: '10px 16px',
-    backgroundColor: '#dc004e',
-    color: 'white',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer',
-    width: '100%'
-  },
-  exerciseCard: {
-    marginBottom: '15px',
-    padding: '15px',
-    border: '1px solid #333',
-    borderRadius: '5px',
-    backgroundColor: '#1e1e1e',
-  },
-  exerciseName: {
-    margin: '0 0 10px 0',
-  },
-  exerciseInfo: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    backgroundColor: '#252525',
-    padding: '10px',
-    borderRadius: '4px',
-    marginBottom: '15px',
-    flexWrap: 'wrap',
-    gap: '10px'
-  },
-  progressTracking: {
-    marginBottom: '15px',
-  },
-  progressTitle: {
-    marginTop: 0,
-    marginBottom: '10px',
-  },
-  checkboxContainer: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    gap: '10px',
-  },
-  checkboxLabel: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '5px',
-  },
-  completedMessage: {
-    marginBottom: '15px',
-    padding: '10px',
-    backgroundColor: '#4caf50',
-    color: 'white',
-    borderRadius: '4px',
-    textAlign: 'center',
-  },
-  buttonContainer: {
-    display: 'flex',
-    gap: '10px',
-    flexWrap: 'wrap'
-  },
-  deleteButton: {
-    padding: '8px 12px',
-    backgroundColor: '#dc004e',
-    color: 'white',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer',
-    flex: '1 0 auto'
-  },
-  showVideoButton: {
-    padding: '8px 12px',
-    backgroundColor: '#2196f3',
-    color: 'white',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer',
-    flex: '1 0 auto'
-  },
-  youtubeVideoContainer: {
-    margin: '10px 0',
-    padding: '10px',
-    border: '1px solid #333',
-    borderRadius: '5px',
-    backgroundColor: '#1e1e1e',
-  },
-  youtubeVideoTitle: {
-    margin: '0 0 10px 0',
-  },
-  youtubeVideoWrapper: {
-    position: 'relative',
-    paddingBottom: '56.25%',
-    height: 0,
-    overflow: 'hidden',
-  },
-  youtubeVideoFrame: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    borderRadius: '4px',
-  },
 };
 
 export default CalisthenicsApp;
