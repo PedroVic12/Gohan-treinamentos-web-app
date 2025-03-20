@@ -197,7 +197,9 @@ const ExerciseCard = ({ exercise, onDelete, checkedExercises, onToggleCheck }) =
       </div>
             
       {/* Novo botão para mostrar/ocultar o vídeo */}
-      <button onClick={() => setShowVideo(!showVideo)}>
+      <button style={
+        showVideo ? styles.showVideoButton : styles.deleteButton
+      } onClick={() => setShowVideo(!showVideo)}>
             {showVideo ? 'Ocultar Vídeo' : 'Mostrar Vídeo'}
       </button>
           
