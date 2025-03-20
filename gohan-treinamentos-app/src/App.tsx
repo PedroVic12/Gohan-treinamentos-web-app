@@ -66,6 +66,7 @@ import CalisthenicsAppPreview from './app/pages/calistenia_app/calistenia_app_v2
 import CalisthenicsAppV5 from './app/pages/calistenia_app/calistenia_app_v4';
 import CalisthenicsAppMaterial from './app/pages/calistenia_app/calistenia_app_v4';
 import CalisthenicsApp from './app/pages/calistenia_app/pages/calistenia_app_mui';
+import MarkdownChecklist from './app/pages/CheckListMarkdown/MarkdownCheckList';
 //! DOCS ---> https://ionicframework.com/docs/components
 
 
@@ -88,7 +89,7 @@ const AppTabs: React.FC<AppTabsProps> = ({ routes }) => {
     <IonTabs>
       <IonRouterOutlet>
         {routes.map((route) => (
-          <Route key={route.path} path={route.path} component={route.component} />
+          <Route key={route.path} path={route.path} component={route.component} exact={true} />
         ))}
       </IonRouterOutlet>
       <IonTabBar slot="bottom">
@@ -109,67 +110,43 @@ const AppTabs: React.FC<AppTabsProps> = ({ routes }) => {
 };
 
 
-//! Routes
-const  MyRoutesApp: React.FC = () => {
-  return (
-    <Switch>
-      <Route exact path="/home" component={GohanTreinamentosHomePage} />
-      <Route path="/treinos" component={GohanTreinamentosGeradorTreinoPage} />
-      <Route path="/quizz" component={QuizGamePage} />
-      <Route path="/todo" component={TodoListPage} /> 
-      <Route path="/lista_tarefas" component={TodoListPageUseState} /> 
-
-
-      <Route path="/alarme" component={AlarmeClockPage} />
-      <Route path="/classroom" component={ClassroomPage} />
-      <Route path="/dashboard" component={DashboardPage} />
-
-
-      <Route exact path="/tasks" component={TaskManagerPage} />
-      <Route exact path="/calistenia" component={geradorTreinoPage} />
-
-
-      <Route exact path="/">
-        <Redirect to="/home" />
-      </Route>
-    </Switch>
-  );
-};
 
 //!MEU APP IONINC
 setupIonicReact();
 
+const appRoutes: RouteConfig[] = [
+
+  //! Gohan treinamentos
+  { path: "/home", component: GohanTreinamentosHomePage, label: "Home Page", icon: ellipse },
+  //{ path: "/calistenia", component: CalisthenicsAppPreview, label: "Calistenia APP", icon: barbellOutline },
+  //{ path: "/calistenia", component: CalisteniaApp, label: "Calistenia APP", icon: barbellOutline },
+ // { path: "/calistenia", component: CalisthenicsAppMaterial, label: "Calistenia APP", icon: barbellOutline },
+  { path: "/calistenia", component: CalisthenicsApp, label: "Calistenia APP", icon: barbellOutline },
+
+  { path: "/treinos", component: GohanTreinamentosGeradorTreinoPage, label: "Gerador Treinos", icon: square },
+  { path: "/quizz", component: QuizGamePage, label: "Quizz Game", icon: triangle },
+  //{ path: "/lista_tarefas", component: TodoListPageUseState, label: "Todo List useState", icon: square },
+
+
+  //? debug TaskManagerPage
+  { path: "/tasks", component: TaskManagerPage, label: "Lista de Tarefas", icon: squareOutline }, 
+  //{ path: "/notes", component: NotesMaterialPage, label: "Notes App", icon: squareOutline }, 
+
+
+  //! IA page
+  { path: "/alarme", component: AlarmeClockPage, label: "C3po Alarme clock", icon: squareOutline }, 
+  { path: "/checklist", component: MarkdownChecklist, label: "CheckList", icon: squareOutline }, 
+
+  //{ path: "/classroom", component: ClassroomPage, label: "Tabs template", icon: squareOutline }, 
+ // { path: "/dashboard", component: DashboardPage, label: "Dashboard", icon: squareOutline }, 
+
+
+
+
+];
+
+
 const App: React.FC = () => {
-
-
-  const appRoutes: RouteConfig[] = [
-
-    //! Gohan treinamentos
-    { path: "/home", component: GohanTreinamentosHomePage, label: "Home Page", icon: ellipse },
-    //{ path: "/calistenia", component: CalisthenicsAppPreview, label: "Calistenia APP", icon: barbellOutline },
-    //{ path: "/calistenia", component: CalisteniaApp, label: "Calistenia APP", icon: barbellOutline },
-   // { path: "/calistenia", component: CalisthenicsAppMaterial, label: "Calistenia APP", icon: barbellOutline },
-    { path: "/calistenia", component: CalisthenicsApp, label: "Calistenia APP", icon: barbellOutline },
-
-    { path: "/treinos", component: GohanTreinamentosGeradorTreinoPage, label: "Gerador Treinos", icon: square },
-    { path: "/quizz", component: QuizGamePage, label: "Quizz Game", icon: triangle },
-    //{ path: "/lista_tarefas", component: TodoListPageUseState, label: "Todo List useState", icon: square },
-
-
-    //? debug TaskManagerPage
-    { path: "/tasks", component: TaskManagerPage, label: "Lista de Tarefas", icon: squareOutline }, 
-    //{ path: "/notes", component: NotesMaterialPage, label: "Notes App", icon: squareOutline }, 
-
-
-    //! IA page
-    { path: "/alarme", component: AlarmeClockPage, label: "C3po Alarme clock", icon: squareOutline }, 
-    //{ path: "/classroom", component: ClassroomPage, label: "Tabs template", icon: squareOutline }, 
-   // { path: "/dashboard", component: DashboardPage, label: "Dashboard", icon: squareOutline }, 
-
-
-
-
-  ];
 
   return (
     <IonApp>

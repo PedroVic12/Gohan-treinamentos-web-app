@@ -28,7 +28,9 @@ const SidebarMenu: React.FC = () => {
       { path: '/lista_tarefas', icon: gridOutline, text: 'Lista Tarefas MUI' },
       { path: '/quizz', icon: peopleOutline, text: 'Quizz App' },
       { path: '/alarme', icon: analyticsOutline, text: 'Alarme C3PO' },
-      { path: '/treinos', icon: settingsOutline, text: 'Treinos Manager' },
+      { path: '/treinos', icon: settingsOutline, text: 'Treinos Manager' }, 
+      { path: '/checklist', icon: notificationsOutline, text: 'Checklist' },
+      
       
     ];
   

@@ -1,5 +1,5 @@
 import React from "react";
-import MarkdownChecklist from "./components/MarkdownCheckList";
+import MarkdownChecklist from "../../CheckListMarkdown/MarkdownCheckList";
 
 const App = () => {
   return (

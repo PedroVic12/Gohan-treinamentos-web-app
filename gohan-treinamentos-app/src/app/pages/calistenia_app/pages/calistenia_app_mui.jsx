@@ -18,32 +18,12 @@ class DataRepository {
             { id: 'pull-3', name: '5 minutes 30x30', sets: 2, reps: '30', youtubeUrl: '', difficulty: 'Normal' }
           ],
           Legs: [
-            { id: 'legs-1', name: '100 Squads a Day', sets: 4, reps: '25', youtubeUrl: 'https://www.youtube.com/watch?v=qLPrPVz4NzQ', difficulty: 'Normal' }
+            { id: 'legs-1', name: '100 Squads a Day', sets: 5, reps: '20', youtubeUrl: 'https://www.youtube.com/watch?v=qLPrPVz4NzQ', difficulty: 'Normal' }
           ],
           ABS: [
-            { id: 'abs-1', name: 'Get ABS in 28 Days', sets: 3, reps: '15', youtubeUrl: 'https://www.youtube.com/watch?v=TIMghHu6QFU', difficulty: 'Normal' },
-            { id: 'abs-2', name: 'DO THIS ABS WORKOUT EVERY DAY', sets: 2, reps: '20', youtubeUrl: 'https://www.youtube.com/watch?v=xRXhpMsLaXo', difficulty: 'Normal' }
+            { id: 'abs-1', name: 'Get ABS in 28 Days', sets: 5, reps: '15', youtubeUrl: 'https://www.youtube.com/watch?v=TIMghHu6QFU', difficulty: 'Normal' },
+            { id: 'abs-2', name: 'DO THIS ABS WORKOUT EVERY DAY', sets: 7, reps: '12', youtubeUrl: 'https://www.youtube.com/watch?v=xRXhpMsLaXo', difficulty: 'Normal' }
           ]
-        },
-        // Keep the original legacy format for backward compatibility
-        treinos: {
-          Pull: {
-            '1': ["100 Pull ups - Chris Heria", "", "Normal"],
-            '2': ["Skin the Cat + 100 Pull ups + Muscle Up", "", "Sayajin"]
-          },
-          Push: {
-            '1': ["100 Push Ups - Next", "https://www.youtube.com/watch?v=X4XDkWOlQD8", "Normal"],
-            '2': ["100 Push ups - Chris Heria", "https://www.youtube.com/watch?v=IYLxm0T6qls", "Sayajin"],
-            '3': ["5 minutes 30x30", "", "Normal"],
-            '4': ["Moves of the day - treino de peito", "https://www.youtube.com/watch?v=ypxmdLxCK7k&t=441s", "https://www.youtube.com/watch?v=1BpYbEi2QcI&t=703s", "https://www.youtube.com/watch?v=0cMXdZL9ESA"]
-          },
-          ABS: {
-            '1': ["Get ABS in 28 Days", "https://www.youtube.com/watch?v=TIMghHu6QFU", "Normal"],
-            '2': ["DO THIS ABS WORKOUT EVERY DAY", "https://www.youtube.com/watch?v=xRXhpMsLaXo&t=285s", "https://www.youtube.com/watch?v=fpK5VZCwJPY", "Normal"]
-          },
-          Legs: {
-            '1': ["100 Squads a Day - Chris Heria", "https://www.youtube.com/watch?v=qLPrPVz4NzQ", "", "Normal"]
-          },
         },
         TUTORIAL_YOUTUBE: {
           mobilidade: [
@@ -205,7 +185,8 @@ class AppController {
   }
 }
 
-// Components
+//! Components
+//Youtube
 const YouTubeVideo = ({ title, youtubeUrl }) => {
   const videoId = youtubeUrl.split('v=')[1]?.split('&')[0];
 
@@ -231,10 +212,126 @@ const YouTubeVideo = ({ title, youtubeUrl }) => {
   );
 };
 
+// Exercise Component
+const ExerciseCard = ({ exercise, checkedExercises, onToggleCheck, isEditing, onDelete }) => {
+    return (
+      <div 
+        style={{ 
+          marginBottom: '15px', 
+          padding: '15px', 
+          border: '1px solid #333', 
+          borderRadius: '5px', 
+          backgroundColor: '#1e1e1e'
+        }}
+      >
+        <h3 style={{ margin: '0 0 10px 0' }}>{exercise.name}</h3>
+        
+        {/* Sets and Reps Info */}
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          backgroundColor: '#252525', 
+          padding: '10px', 
+          borderRadius: '4px',
+          marginBottom: '15px'
+        }}>
+          <div>
+            <strong>Sets:</strong> {exercise.sets}
+          </div>
+          <div>
+            <strong>Reps:</strong> {exercise.reps}
+          </div>
+          {exercise.difficulty && (
+            <div>
+              <strong>Difficulty:</strong> {exercise.difficulty}
+            </div>
+          )}
+        </div>
+        
+        {/* Sets Checkboxes */}
+        <div style={{ marginBottom: '15px' }}>
+          <h4 style={{ marginTop: 0, marginBottom: '10px' }}>Progress Tracking:</h4>
+          <div style={{ 
+            display: 'flex', 
+            flexWrap: 'wrap', 
+            gap: '10px', 
+            backgroundColor: '#252525',
+            padding: '10px',
+            borderRadius: '4px'
+          }}>
+            {Array.from({ length: exercise.sets }).map((_, setIndex) => (
+              <label 
+                key={setIndex} 
+                style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: '5px',
+                  padding: '5px 10px',
+                  backgroundColor: checkedExercises[exercise.id]?.[setIndex] ? '#1e4d2b' : '#333',
+                  borderRadius: '4px',
+                  cursor: 'pointer'
+                }}
+              >
+                <input
+                  type="checkbox"
+                  checked={checkedExercises[exercise.id]?.[setIndex] || false}
+                  onChange={(e) => onToggleCheck(exercise.id, setIndex, e.target.checked)}
+                />
+                Set {setIndex + 1}
+              </label>
+            ))}
+          </div>
+        </div>
+        
+        {/* YouTube Video */}
+        {exercise.youtubeUrl && exercise.youtubeUrl.includes('youtube.com') && (
+          <div style={{ marginBottom: '15px' }}>
+            <h4 style={{ marginTop: 0, marginBottom: '10px' }}>Tutorial Video:</h4>
+            <div style={{ 
+              backgroundColor: '#252525',
+              padding: '10px',
+              borderRadius: '4px'
+            }}>
+              <a 
+                href={exercise.youtubeUrl} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                style={{ color: '#1976d2', textDecoration: 'none' }}
+              >
+                Watch on YouTube
+              </a>
+            </div>
+          </div>
+        )}
+        
+        {/* Delete Button */}
+        {isEditing && (
+          <button 
+            onClick={() => onDelete(exercise.id)}
+            style={{
+              padding: '8px 12px',
+              backgroundColor: '#dc004e',
+              color: 'white',
+              border: 'none',
+              borderRadius: '5px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '5px'
+            }}
+          >
+            <span>🗑️</span> Delete Exercise
+          </button>
+        )}
+      </div>
+    );
+  };
+
 const CalisthenicsApp = () => {
   // Initialize repository and controller
-  const [repository] = useState(new DataRepository());
-  const [controller] = useState(new AppController(repository));
+  const repository = new DataRepository()
+  const controller = new AppController(repository)
+  
   
   // State variables
   const [selectedTab, setSelectedTab] = useState('Push');
@@ -413,11 +510,21 @@ const CalisthenicsApp = () => {
 
   const renderWorkoutTab = (category) => {
     const categoryWorkouts = workouts[category] || [];
-    
+    console.log(categoryWorkouts)
+    for (let index = 0; index < categoryWorkouts.length; index++) {
+        let element = categoryWorkouts[index];
+        console.log(element)
+        
+    }
+        
     return (
       <div style={{ padding: '20px' }}>
-        <h2 style={{ marginTop: 0, textTransform: 'capitalize' }}>{category}</h2>
+        <h2 style={{ marginTop: 0, textTransform: 'capitalize' }}> Treino: {category}</h2>
+
+ 
         
+
+        {/*! Botao Editar */}
         <button 
           onClick={() => setIsEditing(!isEditing)}
           style={{
@@ -432,7 +539,21 @@ const CalisthenicsApp = () => {
         >
           {isEditing ? 'Concluir Edição' : 'Editar Treino'}
         </button>
+
+           {/* Lista de exercícios */}
+        {categoryWorkouts.map((exercise) => (
+          <ExerciseCard 
+            key={exercise.id} 
+            exercise={exercise} 
+            checkedExercises={checkedExercises} 
+            onToggleCheck={handleToggleCheck} 
+            isEditing={isEditing}
+            onDelete={handleDeleteExercise}
+          />
+        ))}
         
+
+    {/* Card de exercícios simples */}
         {categoryWorkouts.map((exercise) => (
           <div 
             key={exercise.id} 
@@ -444,6 +565,7 @@ const CalisthenicsApp = () => {
               backgroundColor: '#1e1e1e'
             }}
           >
+
             <h3 style={{ margin: '0 0 5px 0' }}>{exercise.name}</h3>
             <div style={{ fontSize: '14px', color: '#aaa', marginBottom: '10px' }}>
               Sets: {exercise.sets} | Reps: {exercise.reps}
@@ -483,6 +605,9 @@ const CalisthenicsApp = () => {
           </div>
         ))}
         
+
+
+        {/* adicionar e editar treino */}
         {isEditing && (
           <div 
             style={{ 
