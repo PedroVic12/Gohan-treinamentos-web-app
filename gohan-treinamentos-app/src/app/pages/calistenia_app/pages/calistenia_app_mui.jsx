@@ -195,17 +195,25 @@ const ExerciseCard = ({ exercise, onDelete, checkedExercises, onToggleCheck }) =
           ))}
         </div>
       </div>
+            
+      {/* Novo botão para mostrar/ocultar o vídeo */}
+      <button onClick={() => setShowVideo(!showVideo)}>
+            {showVideo ? 'Ocultar Vídeo' : 'Mostrar Vídeo'}
+      </button>
+          
+      {/* Mostra o vídeo se o estado showVideo for verdadeiro */}
+      {showVideo && exercise.youtubeUrl && (
+        <YouTubeVideo title={exercise.name} youtubeUrl={exercise.youtubeUrl} />
+      )}
       
+
       {isAllChecked && (
         <div style={styles.completedMessage}>
           Treino concluído! 🎉
         </div>
       )}
       
-      
-      {showVideo && exercise.youtubeUrl && (
-        <YouTubeVideo title={exercise.name} youtubeUrl={exercise.youtubeUrl} />
-      )}
+
     </div>
   );
 };
