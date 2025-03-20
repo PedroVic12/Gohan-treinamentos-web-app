@@ -608,7 +608,7 @@ const CalisthenicsApp = () => {
       <div style={styles.workoutContainer}>
         {/* Training List */}
         <div style={styles.trainingList}>
-          <h2 style={{ marginBottom: '15px' }}>Treinos de {selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)}</h2>
+          <h2 style={{ marginBottom: '10px' }}>Treinos de {selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)}</h2>
           
           {categoryWorkouts.length > 0 ? (
             <div>
@@ -638,17 +638,19 @@ const CalisthenicsApp = () => {
         <div style={styles.exerciseDetails}>
           {selectedWorkout ? (
             <div>
-              <h2 style={{ marginBottom: '15px' }}>Exercícios de {selectedWorkout.treino}</h2>
-              <div style={styles.exerciseListContainer}>
-                {selectedWorkout.exercises.map(exercise => (
-                  <ExerciseCard
-                    key={exercise.id}
-                    exercise={exercise}
-                    onDelete={handleDeleteExercise}
-                    checkedExercises={checkedExercises}
-                    onToggleCheck={handleToggleCheck}
-                  />
-                ))}
+              <h2 style={{ marginBottom: '5px' }}>Exercícios de {selectedWorkout.treino}</h2>
+              <div style={styles.exerciseListWrapper}>
+                <div style={styles.exerciseListContainer}>
+                  {selectedWorkout.exercises.map(exercise => (
+                    <ExerciseCard
+                      key={exercise.id}
+                      exercise={exercise}
+                      onDelete={handleDeleteExercise}
+                      checkedExercises={checkedExercises}
+                      onToggleCheck={handleToggleCheck}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
           ) : (
@@ -664,6 +666,7 @@ const CalisthenicsApp = () => {
     </div>
   );
 };
+
 const styles = {
   appContainer: {
     maxWidth: '800px',
@@ -680,6 +683,8 @@ const styles = {
   actionButtonContainer: {
     textAlign: 'center',
     marginBottom: '20px',
+    display: 'flex',
+    justifyContent: 'center'
   },
   timerButton: {
     padding: '10px 20px',
@@ -690,6 +695,15 @@ const styles = {
     cursor: 'pointer',
     fontSize: '16px',
     marginRight: '10px',
+  },
+    timerButtonSmall: {
+    padding: '5px 10px',
+    backgroundColor: '#4caf50',
+    color: 'white',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
+    fontSize: '14px',
   },
   addExerciseButton: {
     padding: '10px 20px',
@@ -711,7 +725,7 @@ const styles = {
   },
   formLabel: {
     display: 'block',
-    marginBottom: '5px',
+marginBottom: '5px',
   },
   formInput: {
     padding: '8px',
@@ -776,10 +790,17 @@ const styles = {
     backgroundColor: '#1e1e1e',
     borderRadius: '5px',
   },
+  exerciseListWrapper: {  // New wrapper for horizontal scroll
+    overflowX: 'auto',
+    width: '100%',
+    paddingBottom: '10px', // Add some padding at the bottom for scrollbar
+    marginBottom: '15px'
+  },
   exerciseListContainer: {
-    padding: '15px',
-    backgroundColor: '#1e1e1e',
-    borderRadius: '5px',
+    display: 'flex',
+    gap: '15px',
+    paddingBottom: '10px',
+    flexWrap: 'nowrap',
   },
   noWorkoutSelectedMessage: {
     textAlign: 'center',
@@ -841,6 +862,8 @@ const styles = {
     border: '1px solid #333',
     borderRadius: '5px',
     backgroundColor: '#1e1e1e',
+    minWidth: '250px',
+    maxWidth: '250px'
   },
   exerciseName: {
     margin: '0 0 10px 0',
@@ -927,6 +950,27 @@ const styles = {
     height: '100%',
     borderRadius: '4px',
   },
+    editButton: {
+    padding: '5px 10px',
+    backgroundColor: '#007bff',
+    color: 'white',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
+    fontSize: '14px',
+  },
+  workoutGroup: {
+    marginBottom: '30px',
+    border: '1px solid #333',
+    borderRadius: '5px',
+    overflow: 'hidden'
+  },
+  workoutGroupHeader: {
+    backgroundColor: '#252525',
+    padding: '15px',
+    borderBottom: '1px solid #333'
+  }
 };
 
 export default CalisthenicsApp;
+
