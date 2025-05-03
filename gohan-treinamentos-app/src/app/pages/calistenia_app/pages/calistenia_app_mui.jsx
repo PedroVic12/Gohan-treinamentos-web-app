@@ -1,5 +1,8 @@
 import React, { useState, useEffect,useRef } from 'react';
 
+import { Box } from '@mui/material';
+
+
 // Exercise Model
 class Exercise {
   constructor(treino, name, sets, reps, difficulty, youtubeUrl) {
@@ -503,8 +506,26 @@ const CalisthenicsApp = () => {
     setIsTimerModalOpen(true);
   };
   return (
+    
+
     <div style={styles.appContainer}>
-      <h1 style={styles.appTitle}>Calistenia App</h1>
+     {/* <h1 style={styles.appTitle}>Calistenia App</h1> */}
+     
+     <Box
+            sx={{
+                mb: 2,
+                display: "flex",
+                flexDirection: "column",
+                //height: 700,
+                overflow: "hidden",
+                overflowY: "scroll",
+              }}
+          >
+
+
+      </Box>
+
+
       
       {/* New Exercise Form */}
       {showAddForm && (
@@ -587,7 +608,7 @@ const CalisthenicsApp = () => {
         </div>
       )}
       
-      {/* Category Selection */}
+      {/* TABS for Category Selection */}
       <div style={styles.categoryButtonContainer}>
         <button 
           onClick={() => setSelectedCategory('push')}
@@ -615,6 +636,7 @@ const CalisthenicsApp = () => {
         </button>
       </div>
       
+
       {/* Workout Lists and Details */}
       <div style={styles.workoutContainer}>
         {/* Training List */}
@@ -696,7 +718,7 @@ const styles = {
     backgroundColor: '#121212',
     color: 'white',
     minHeight: '100vh',
-    overflowX: 'hidden' // Mudança importante: overflowX para hidden
+    //overflowX: 'hidden' // Mudança importante: overflowX para hidden
   },
   appTitle: {
     textAlign: 'center',
@@ -796,15 +818,19 @@ marginBottom: '5px',
   workoutContainer: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '10px',
+    gap: '20px',
     overflowY: 'auto'
 
   },
-  trainingList: {
-    flex: '1',
-    minWidth: '250px',
-
+   trainingList: {
+    flex: 1,
+    backgroundColor: '#1e1e1e',
+    padding: '20px',
+    borderRadius: '5px',
+    maxHeight: '600px',
+    overflowY: 'auto',
   },
+  
   exerciseDetails: {
     flex: '2',
   },
@@ -821,11 +847,11 @@ marginBottom: '5px',
     marginBottom: '15px'
   },
   exerciseListContainer: {
-    display: 'flex',
+    flex: 1,
     gap: '15px',
     paddingBottom: '10px',
-    flexWrap: 'nowrap',
-    
+    overflowY: 'auto',
+    maxHeight: '500px', /* Adicione esta linha */
   },
   noWorkoutSelectedMessage: {
     textAlign: 'center',

@@ -111,17 +111,20 @@ const MarkdownChecklist = () => {
 
       {Object.keys(checklist).length > 0 && (
         <>
+        <Box sx={{ backgroundColor: '#C0C0C0', padding: 2, borderRadius: 1 }}>
           <Tabs
-            value={activeTab}
-            onChange={(e, newValue) => setActiveTab(newValue)}
-            variant="scrollable"
-            scrollButtons="auto"
-            sx={{ marginBottom: "20px" }}
-          >
-            {Object.keys(checklist).map((tab, index) => (
-              <Tab key={index} label={tab} />
-            ))}
-          </Tabs>
+              value={activeTab}
+              onChange={(e, newValue) => setActiveTab(newValue)}
+              variant="scrollable"
+              scrollButtons="auto"
+              sx={{ marginBottom: "20px" }}
+            >
+              {Object.keys(checklist).map((tab, index) => (
+                <Tab key={index} label={tab} />
+              ))}
+            </Tabs>
+        </Box>
+
 
           {Object.keys(checklist).map((tab, index) => (
             <Box
