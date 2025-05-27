@@ -39,12 +39,7 @@ const HobbiesSection: React.FC = () => {
       <Typography variant="subtitle1" gutterBottom color="primary">
         (Corpo x Mente x Espirito)
       </Typography>
-      <Typography variant="body1" gutterBottom color="primary">
-        Importante cuidar da suas Habilidades (trabalho), Saúde mental(estudos), saude emocional(relacionamentos) e saude física (treinos)!
-        <br></br>
-        <br></br>
-        Hora de se tornar um Super Sayajin em 2025 e sua melhor versão: Lindo, Inteligente e Gostoso!
-      </Typography>
+
     </div>
   );
 };
@@ -154,6 +149,13 @@ function GohanTreinamentosHomePage() {
               </List>
 
               <ProgressBar totalCount={totalCount} maxCount={maxWeeklyCount} />
+              <Typography variant="body1" gutterBottom color="primary">
+              Importante cuidar da suas Habilidades (trabalho), Saúde mental(estudos), saude emocional(relacionamentos) e saude física (treinos)!
+              <br></br>
+              <br></br>
+              Hora de se tornar um Super Sayajin em 2025 e sua melhor versão: Lindo, Inteligente e Gostoso!
+            </Typography>
+            
               <br />
               <br />
 
