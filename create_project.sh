@@ -36,6 +36,9 @@ npm install @ionic/react @ionic/react-router ionicons @stencil/core @stencil/rea
 # 5. Instala react-router-dom
 npm install react-router-dom
 
+# 6. Instala o TypeScript e suas dependências
+npm install 
+
 echo "Configurando arquivos e estrutura de pastas..."
 
 # Cria as pastas necessárias
@@ -1023,6 +1026,8 @@ const AppProdutivdade: React.FC = () => {
 
 export default AppProdutivdade;
 EOF
+
+echo "Todas paginas e pastas foram criadas com sucesso!"
 
 # 10. Cria o arquivo principal src/App.tsx
 cat << 'EOF' > src/App.tsx
