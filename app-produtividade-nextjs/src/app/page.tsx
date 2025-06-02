@@ -22,7 +22,6 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Toolti
 //! npm install @mui/material @emotion/react @emotion/styled @mui/icons-material react-chartjs-2 chart.js
 
 
-
 // Registrar componentes do Chart.js
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip);
 
@@ -506,6 +505,98 @@ export default function HomePage() {
       <main className="p-4 max-w-6xl mx-auto">
         {renderContent()}
       </main>
+    </div>
+  );
+}
+
+
+export  function Home() {
+  return (
+    <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-8">
+      <h1 className="text-4xl font-bold mb-6">Painel de Produtividade</h1>
+      <div className="space-x-4">
+        <Link href="/dashboard"><button className="btn">Dashboard</button></Link>
+        <Link href="/anotacoes"><button className="btn">Anotações</button></Link>
+        <Link href="/projetos"><button className="btn">Projetos</button></Link>
+      </div>
+    </div>
+  );
+}
+
+// components/Estatisticas.jsx
+type EstatisticasProps = {
+  dados: {
+    xp: Record<string, string | number>;
+    ouro: Record<string, string | number>;
+    tarefas: Record<string, string | number>;
+    criado: Record<string, string | number>;
+  };
+};
+
+export function Estatisticas({ dados }: EstatisticasProps) {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-black">
+      <Card titulo="XP" dados={dados.xp} />
+      <Card titulo="Ouro" dados={dados.ouro} />
+      <Card titulo="Tarefas" dados={dados.tarefas} />
+      <Card titulo="Criado" dados={dados.criado} />
+    </div>
+  );
+}
+
+// components/Card.jsx
+type CardProps = {
+  titulo: string;
+  dados: Record<string, string | number>;
+};
+
+export function Card({ titulo, dados }: CardProps) {
+  return (
+    <div className="bg-white p-4 rounded-2xl shadow-md">
+      <h2 className="text-xl font-bold mb-2">{titulo}</h2>
+      <ul className="text-sm space-y-1">
+        {Object.entries(dados).map(([chave, valor], i) => (
+          <li key={i}><strong>{chave}:</strong> {valor}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+
+export  function DashboardXpPage() {
+  const dados = {
+    xp: {
+      "Total (herdi)": "16,09",
+      "Semana passada": "21,92",
+      "Média por dia": "3,13",
+      "Multiplicador de EXP": "1,01",
+    },
+    ouro: {
+      "Total": "4",
+      "Mês Passado": "40",
+      "Média por tarefa": "4,44",
+    },
+    tarefas: {
+      "Executado (total)": "zh",
+      "Feitas (último mês)": "ZA",
+      "Feitas (média por semana)": "ro",
+    },
+    criado: {
+      "Total (habilidades)": "16,15",
+      "Mês Passado": "16,09",
+      "Média por tarefa": "2,44",
+      "Semana passada": "40",
+      "Feitas (última semana)": "7",
+      "Feitas (média por dia)": "co",
+      "Feitas (média por mês)": "co",
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-100 p-8">
+      <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
+      <Estatisticas dados={dados} />
     </div>
   );
 }
