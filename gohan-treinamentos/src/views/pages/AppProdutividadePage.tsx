@@ -33,6 +33,8 @@ import GohanTreinamentosHomePage from "./GohanTreinamentosPage";
 // Configure o Ionic React uma vez no cliente
 setupIonicReact();
 
+import "../../index.css"; // Importar estilos globais
+
 
 
 // Registrar componentes do Chart.js

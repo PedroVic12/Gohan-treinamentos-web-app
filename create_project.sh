@@ -1,62 +1,77 @@
+#!/bin/bash
+
+#chmod +x create_project.sh
+#./create_project.sh
 
 
-/* CSS */
-import '@ionic/react/css/core.css';
-import '@ionic/react/css/normalize.css';
-import '@ionic/react/css/structure.css';
-import '@ionic/react/css/typography.css';
-import '@ionic/react/css/padding.css';
-import '@ionic/react/css/float-elements.css';
-import '@ionic/react/css/text-alignment.css';
-import '@ionic/react/css/text-transformation.css';
-import '@ionic/react/css/flex-utils.css';
-import '@ionic/react/css/display.css';
-import '@ionic/react/css/palettes/dark.system.css';
 
-import {  setupIonicReact } from '@ionic/react';
-setupIonicReact();
+# Define o nome da pasta do projeto
+PROJECT_NAME="my-react-app-template"
 
+echo "Criando um novo projeto React com Vite..."
 
-// App.tsx - Arquivo único com todos os componentes
-import React, { useState, createContext, useContext, ReactNode,  useEffect } from 'react';
-import { BrowserRouter, Routes, Route, useNavigate, useLocation, Link } from 'react-router-dom';
-import {
-    Box, Snackbar, Alert as MuiAlert, IconButton, Button, AppBar, Toolbar,
-    Typography, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText,
-    BottomNavigation, BottomNavigationAction, Paper, Modal, Avatar, Switch, Divider,
-    Tabs, Tab, Checkbox, FormControlLabel, Card, CardContent, CardMedia, CardActions,
-    Grid, CircularProgress, useTheme, CssBaseline
-} from '@mui/material';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+# 1. Cria o projeto Vite + React
+npm create vite@latest "$PROJECT_NAME" -- --template react-ts
+
+# Verifica se a criação do projeto foi bem-sucedida
+if [ $? -ne 0 ]; then
+    echo "Erro ao criar o projeto Vite. Abortando."
+    exit 1
+fi
+
+cd "$PROJECT_NAME"
+
+echo "Instalando dependências..."
+
+# 2. Instala Tailwind CSS
+npm install -D tailwindcss postcss autoprefixer
+npx tailwindcss init -p
+
+# 3. Instala Material UI e Emotion
+npm install @mui/material @emotion/react @emotion/styled @mui/icons-material @mui/utils
+
+# 4. Instala Ionic React e suas dependências
+npm install @ionic/react @ionic/react-router ionicons @stencil/core @stencil/react-output-target
+
+# 5. Instala react-router-dom
+npm install react-router-dom
+
+echo "Configurando arquivos e estrutura de pastas..."
+
+# Cria as pastas necessárias
+mkdir -p src/contexts
+mkdir -p src/components
+mkdir -p src/views/pages
+mkdir -p src/views/screens
+mkdir -p src/assets
+mkdir -p src/styles
+mkdir -p src/hooks
+mkdir -p src/controllers
+
+# 6. Configura o CSS do Tailwind no index.css
+cat << EOF > src/index.css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Estilos globais adicionais ou overrides aqui, se necessário */
+/* Lembre-se: NÃO inclua os CSS globais do Ionic aqui para evitar conflitos! */
+
+/* Pode ser útil para full height com Material UI */
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Evita scroll indesejado para apps móveis com barra inferior */
+}
+EOF
+
+# 7. Cria os arquivos de Contextos
+cat << 'EOF' > src/contexts/ToastContext.tsx
+import React, { useState, createContext, useContext, ReactNode, useEffect } from 'react';
+import { Snackbar, Alert as MuiAlert, IconButton, Button } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import MenuIcon from '@mui/icons-material/Menu';
-import HomeIcon from '@mui/icons-material/Home';
-import PersonIcon from '@mui/icons-material/Person';
-import SettingsIcon from '@mui/icons-material/Settings';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import DarkModeIcon from '@mui/icons-material/DarkMode';
-import LanguageIcon from '@mui/icons-material/Language';
-import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import { deepmerge } from '@mui/utils';
-import StockManagerpage from './views/pages/StockManagerPage';
 
-
-import GohanTreinamentosHomePage from './views/pages/GohanTreinamentosPage';
-import AppProdutivdade from './views/pages/AppProdutividadePage';
-
-
-
-//import LembreteApp from "../src/views/MyCompnent"; 
-
-
-
-
-// --- Toast Notification Context and Provider ---
 interface ToastMessage {
     id: number;
     message: string;
@@ -78,7 +93,7 @@ export const useToast = () => {
     return context;
 };
 
-const ToastProvider = ({ children }: { children: ReactNode }) => {
+export const ToastProvider = ({ children }: { children: ReactNode }) => {
     const [toasts, setToasts] = useState<ToastMessage[]>([]);
     const [currentToast, setCurrentToast] = useState<ToastMessage | null>(null);
     const [open, setOpen] = useState(false);
@@ -147,10 +162,220 @@ const ToastProvider = ({ children }: { children: ReactNode }) => {
         </ToastContext.Provider>
     );
 };
-// --- End Toast Notification Context ---
+EOF
 
+cat << 'EOF' > src/contexts/SessionContext.tsx
+import React, { useState, createContext, useContext, ReactNode } from 'react';
 
-// --- BottomSheet Component ---
+interface SessionContextType {
+    drawerOpen: boolean;
+    setDrawerOpen: (open: boolean) => void;
+}
+
+const SessionContext = createContext<SessionContextType | null>(null);
+
+export const useSession = () => {
+    const context = useContext(SessionContext);
+    if (!context) {
+        throw new Error('useSession must be used within a SessionProvider');
+    }
+    return context;
+};
+
+export const SessionProvider = ({ children }: { children: ReactNode }) => {
+    const [drawerOpen, setDrawerOpen] = useState(false);
+
+    return (
+        <SessionContext.Provider value={{ drawerOpen, setDrawerOpen }}>
+            {children}
+        </SessionContext.Provider>
+    );
+};
+EOF
+
+cat << 'EOF' > src/contexts/DarkModeContext.tsx
+import React, { useState, createContext, useContext, ReactNode } from 'react';
+import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
+import { deepmerge } from '@mui/utils';
+
+type ThemeMode = 'light' | 'dark';
+
+interface DarkModeContextType {
+    themeMode: ThemeMode;
+    setThemeMode:(mode: ThemeMode) => void;
+}
+
+const DarkModeContext = createContext<DarkModeContextType | null>(null);
+
+export const useDarkMode = () => {
+    const context = useContext(DarkModeContext);
+    if (!context) {
+        throw new Error('useDarkMode must be used within a DarkModeProvider');
+    }
+    return context;
+};
+
+const lightTheme = createTheme({
+    palette: {
+        mode: 'light',
+        primary: {
+            main: '#6200EE', // Purple 500
+        },
+        secondary: {
+            main: '#03DAC5', // Teal 300
+        },
+        background: {
+            default: '#F5F5F5', // Gray 100
+            paper: '#FFFFFF', // White
+        },
+        text: {
+            primary: 'rgba(0, 0, 0, 0.87)',
+            secondary: 'rgba(0, 0, 0, 0.6)',
+        },
+    },
+    typography: {
+        fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+    },
+    components: {
+        MuiButton: {
+            styleOverrides: {
+                root: {
+                    textTransform: 'none',
+                    borderRadius: 4,
+                },
+            },
+        },
+        MuiPaper: {
+            styleOverrides: {
+                root: {
+                    borderRadius: 4,
+                },
+            },
+        },
+        MuiCard: {
+            styleOverrides: {
+                root: {
+                    borderRadius: 8, // More rounded cards
+                    boxShadow: '0px 1px 3px rgba(0,0,0,0.1)', // Subtle shadow
+                }
+            }
+        },
+        MuiAppBar: {
+            styleOverrides: {
+                root: {
+                    backgroundColor: '#FFFFFF', // White AppBar
+                    color: 'rgba(0, 0, 0, 0.87)', // Dark text
+                    boxShadow: '0px 2px 4px rgba(0,0,0,0.08)', // Subtle shadow
+                },
+            },
+        },
+        MuiBottomNavigation: {
+            styleOverrides: {
+                root: {
+                    backgroundColor: '#FFFFFF', // White Bottom Navigation
+                    color: 'rgba(0, 0, 0, 0.6)', // Light text
+                    boxShadow: '0px -1px 3px rgba(0,0,0,0.05)',
+                },
+            },
+        },
+    },
+});
+
+const darkTheme = createTheme({
+    palette: {
+        mode: 'dark',
+        primary: {
+            main: '#BB86FC', // Purple 200
+        },
+        secondary: {
+            main: '#03DAC6', // Teal 200
+        },
+        background: {
+            default: '#121212', // Near Black
+            paper: '#1E1E1E', // Dark Gray
+        },
+        text: {
+            primary: '#FFFFFF',
+            secondary: 'rgba(255, 255, 255, 0.7)',
+        },
+    },
+    typography: {
+        fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+    },
+    components: {
+        MuiButton: {
+            styleOverrides: {
+                root: {
+                    textTransform: 'none',
+                    borderRadius: 4,
+                },
+            },
+        },
+        MuiPaper: {
+            styleOverrides: {
+                root: {
+                    borderRadius: 4,
+                },
+            },
+        },
+        MuiCard: {
+            styleOverrides: {
+                root: {
+                    borderRadius: 8, // More rounded cards
+                    boxShadow: '0px 2px 6px rgba(0,0,0,0.4)', // More pronounced shadow
+                }
+            }
+        },
+        MuiAppBar: {
+            styleOverrides: {
+                root: {
+                    backgroundColor: '#1E1E1E', // Darker AppBar
+                    color: '#FFFFFF', // White text
+                    boxShadow: '0px 2px 8px rgba(0,0,0,0.3)',
+                },
+            },
+        },
+        MuiBottomNavigation: {
+            styleOverrides: {
+                root: {
+                    backgroundColor: '#1E1E1E',
+                    color: 'rgba(255, 255, 255, 0.7)',
+                    boxShadow: '0px -1px 3px rgba(0,0,0,0.1)',
+                },
+            },
+        },
+    },
+});
+
+export const DarkModeProvider = ({ children }: { children: ReactNode }) => {
+    const [themeMode, setThemeMode] = useState<ThemeMode>('light');
+
+    const theme = React.useMemo(
+        () =>
+            deepmerge(
+                themeMode === 'light' ? lightTheme : darkTheme,
+                {},
+            ),
+        [themeMode],
+    );
+
+    return (
+        <DarkModeContext.Provider value={{ themeMode, setThemeMode }}>
+            <ThemeProvider theme={theme}>
+                <CssBaseline />
+                {children}
+            </ThemeProvider>
+        </DarkModeContext.Provider>
+    );
+};
+EOF
+
+# 8. Cria os arquivos de Componentes
+cat << 'EOF' > src/components/BottomSheet.tsx
+import React, { ReactNode } from 'react';
+import { Box, Modal, Typography, IconButton, Button } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+
 interface BottomSheetProps {
     open: boolean;
     onClose: () => void;
@@ -172,7 +397,7 @@ const bottomSheetStyle = {
     overflowY: 'auto',
 };
 
-const BottomSheet: React.FC<BottomSheetProps> = ({ open, onClose, title, children }) => {
+export const BottomSheet: React.FC<BottomSheetProps> = ({ open, onClose, title, children }) => {
     return (
         <Modal
             open={open}
@@ -201,43 +426,30 @@ const BottomSheet: React.FC<BottomSheetProps> = ({ open, onClose, title, childre
         </Modal>
     );
 };
-// --- End BottomSheet Component ---
+EOF
 
-// --- Session Context ---
-interface SessionContextType {
-    drawerOpen: boolean;
-    setDrawerOpen: (open: boolean) => void;
-}
+cat << 'EOF' > src/components/MainLayout.tsx
+import React, { ReactNode } from 'react';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
+import {
+    Box, AppBar, Toolbar, IconButton, Typography, Drawer, List, ListItem,
+    ListItemButton, ListItemIcon, ListItemText, BottomNavigation, BottomNavigationAction, Paper, Divider, useTheme
+} from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+import HomeIcon from '@mui/icons-material/Home';
+import PersonIcon from '@mui/icons-material/Person';
+import SettingsIcon from '@mui/icons-material/Settings';
+import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 
-const SessionContext = createContext<SessionContextType | null>(null);
+import { useSession } from '../contexts/SessionContext';
 
-const useSession = () => {
-    const context = useContext(SessionContext);
-    if (!context) {
-        throw new Error('useSession must be used within a SessionProvider');
-    }
-    return context;
-};
-
-const SessionProvider = ({ children }: { children: ReactNode }) => {
-    const [drawerOpen, setDrawerOpen] = useState(false);
-
-    return (
-        <SessionContext.Provider value={{ drawerOpen, setDrawerOpen }}>
-            {children}
-        </SessionContext.Provider>
-    );
-};
-// --- End Session Context ---
-
-// --- MainLayout Component ---
 interface MainLayoutProps {
     children: ReactNode;
 }
 
 const drawerWidth = 240;
 
-const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
+export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     const { drawerOpen, setDrawerOpen } = useSession();
     const navigate = useNavigate();
     const location = useLocation();
@@ -270,16 +482,13 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             <List>
                 {[
                     { text: 'Gohan Treinamentos', path: '/home', icon: <HomeIcon /> },
-                     { text: 'App Produtividade', path: '/app_produtividade', icon: <SettingsIcon /> },
-
+                    { text: 'App Produtividade', path: '/app_produtividade', icon: <SettingsIcon /> },
                     { text: 'Home', path: '/', icon: <HomeIcon /> },
                     { text: 'Profile', path: '/profile', icon: <PersonIcon /> },
                     { text: 'Settings', path: '/settings', icon: <SettingsIcon /> },
                     { text: 'Workout', path: '/workout', icon: <FitnessCenterIcon /> },
                     { text: 'Stock Manager', path: '/stock-manager', icon: <SettingsIcon /> },
                     { text: 'Agenda Contatos', path: '/agenda-contatos', icon: <PersonIcon /> }
-
-
                 ].map((item) => (
                     <ListItem key={item.text} disablePadding>
                         <ListItemButton onClick={() => handleNavigation(item.path)}>
@@ -346,13 +555,111 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         </Box>
     );
 };
-// --- End MainLayout Component ---
+EOF
 
+cat << 'EOF' > src/components/YouTubeVideo.tsx
+import React from 'react';
+import { Card, CardMedia, CardContent, Typography } from '@mui/material';
 
-// --- Page Components ---
+interface YouTubeVideoProps {
+    videoId: string;
+    title: string;
+}
 
-// HomePage
-const HomePage: React.FC = () => {
+export const YouTubeVideo: React.FC<YouTubeVideoProps> = ({ videoId, title }) => {
+    return (
+        <Card sx={{ mb: 2, height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <CardMedia
+                component="iframe"
+                height={200}
+                src={`https://www.youtube.com/embed/${videoId}`}
+                title={title}
+                frameBorder="0"
+                allowFullScreen
+                sx={{ border: 0 }}
+            />
+            <CardContent sx={{ flexGrow: 1 }}>
+                <Typography variant="subtitle1" component="div" noWrap>
+                    {title}
+                </Typography>
+            </CardContent>
+        </Card>
+    );
+};
+EOF
+
+cat << 'EOF' > src/components/ExerciseItem.tsx
+import React from 'react';
+import { Checkbox, FormControlLabel } from '@mui/material';
+
+interface ExerciseItemProps {
+    name: string;
+    checked: boolean;
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+export const ExerciseItem: React.FC<ExerciseItemProps> = ({ name, checked, onChange }) => {
+    return (
+        <FormControlLabel
+            control={<Checkbox checked={checked} onChange={onChange} color="primary" />}
+            label={name}
+            sx={{ width: '100%', mb: 1 }}
+        />
+    );
+};
+EOF
+
+cat << 'EOF' > src/components/Carousel.tsx
+import React, { useState, ReactNode } from 'react';
+import { Box, IconButton, Typography } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+
+interface CarouselProps {
+    children: ReactNode[];
+}
+
+export const Carousel: React.FC<CarouselProps> = ({ children }) => {
+    const [current, setCurrent] = useState(0);
+    const maxIndex = children.length - 1;
+
+    const next = () => {
+        setCurrent(current === maxIndex ? 0 : current + 1);
+    };
+
+    const prev = () => {
+        setCurrent(current === 0 ? maxIndex : current - 1);
+    };
+
+    return (
+        <Box sx={{ position: 'relative', width: '100%', mt: 2, mb: 2 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                {children[current]}
+            </Box>
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+                <IconButton onClick={prev} color="primary">
+                    <ArrowBackIcon />
+                </IconButton>
+                <Typography sx={{ mx: 2, display: 'flex', alignItems: 'center' }}>
+                    {current + 1} / {children.length}
+                </Typography>
+                <IconButton onClick={next} color="primary">
+                    <ArrowForwardIcon />
+                </IconButton>
+            </Box>
+        </Box>
+    );
+};
+EOF
+
+# 9. Cria os arquivos de Páginas
+cat << 'EOF' > src/views/pages/HomePage.tsx
+import React, { useState } from 'react';
+import { Box, Typography, Button } from '@mui/material';
+import { useToast } from '../../contexts/ToastContext';
+import { BottomSheet } from '../../components/BottomSheet';
+
+export const HomePage: React.FC = () => {
     const [bottomSheetOpen, setBottomSheetOpen] = useState(false);
     const { addToast } = useToast();
 
@@ -387,9 +694,13 @@ const HomePage: React.FC = () => {
         </Box>
     );
 };
+EOF
 
-// ProfilePage
-const ProfilePage: React.FC = () => {
+cat << 'EOF' > src/views/pages/ProfilePage.tsx
+import React from 'react';
+import { Box, Typography, Paper, Avatar } from '@mui/material';
+
+export const ProfilePage: React.FC = () => {
     return (
         <Box className="p-4">
             <Typography variant="h4" gutterBottom>Profile</Typography>
@@ -402,9 +713,18 @@ const ProfilePage: React.FC = () => {
         </Box>
     );
 };
+EOF
 
-// SettingsPage
-const SettingsPage: React.FC = () => {
+cat << 'EOF' > src/views/pages/SettingsPage.tsx
+import React, { useState } from 'react';
+import { Box, Typography, List, ListItem, ListItemIcon, ListItemText, Switch, Divider } from '@mui/material';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import LanguageIcon from '@mui/icons-material/Language';
+import { useToast } from '../../contexts/ToastContext';
+import { useDarkMode } from '../../contexts/DarkModeContext';
+
+export const SettingsPage: React.FC = () => {
     const [notificationsEnabled, setNotificationsEnabled] = useState(true);
     const { addToast } = useToast();
     const { setThemeMode, themeMode } = useDarkMode();
@@ -444,9 +764,14 @@ const SettingsPage: React.FC = () => {
         </Box>
     );
 };
+EOF
 
-// NotFoundPage
-const NotFoundPage: React.FC = () => {
+cat << 'EOF' > src/views/pages/NotFoundPage.tsx
+import React from 'react';
+import { Box, Typography, Button } from '@mui/material';
+import { Link } from 'react-router-dom';
+
+export const NotFoundPage: React.FC = () => {
     return (
         <Box className="flex flex-col items-center justify-center min-h-[calc(100vh-120px)] p-4 text-center">
             <Typography variant="h1" component="h1" gutterBottom>404</Typography>
@@ -456,88 +781,17 @@ const NotFoundPage: React.FC = () => {
         </Box>
     );
 };
-// --- YouTube Video Component ---
-interface YouTubeVideoProps {
-    videoId: string;
-    title: string;
-}
+EOF
 
-const YouTubeVideo: React.FC<YouTubeVideoProps> = ({ videoId, title }) => {
-    return (
-        <Card sx={{ mb: 2, height: '100%', display: 'flex', flexDirection: 'column' }}>
-            <CardMedia
-                component="iframe"
-                height={200}
-                src={`https://www.youtube.com/embed/${videoId}`}
-                title={title}
-                frameBorder="0"
-                allowFullScreen
-                sx={{ border: 0 }}
-            />
-            <CardContent sx={{ flexGrow: 1 }}>
-                <Typography variant="subtitle1" component="div" noWrap>
-                    {title}
-                </Typography>
-            </CardContent>
-        </Card>
-    );
-};
+cat << 'EOF' > src/views/pages/WorkoutPage.tsx
+import React, { useState } from 'react';
+import { Box, Typography, Paper, Tabs, Tab, CircularProgress, Button } from '@mui/material';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { useToast } from '../../contexts/ToastContext';
+import { YouTubeVideo } from '../../components/YouTubeVideo';
+import { ExerciseItem } from '../../components/ExerciseItem';
+import { Carousel } from '../../components/Carousel';
 
-// --- Exercise Item Component ---
-interface ExerciseItemProps {
-    name: string;
-    checked: boolean;
-    onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-}
-
-const ExerciseItem: React.FC<ExerciseItemProps> = ({ name, checked, onChange }) => {
-    return (
-        <FormControlLabel
-            control={<Checkbox checked={checked} onChange={onChange} color="primary" />}
-            label={name}
-            sx={{ width: '100%', mb: 1 }}
-        />
-    );
-};
-
-// --- Carousel Component ---
-interface CarouselProps {
-    children: ReactNode[];
-}
-
-const Carousel: React.FC<CarouselProps> = ({ children }) => {
-    const [current, setCurrent] = useState(0);
-    const maxIndex = children.length - 1;
-
-    const next = () => {
-        setCurrent(current === maxIndex ? 0 : current + 1);
-    };
-
-    const prev = () => {
-        setCurrent(current === 0 ? maxIndex : current - 1);
-    };
-
-    return (
-        <Box sx={{ position: 'relative', width: '100%', mt: 2, mb: 2 }}>
-            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                {children[current]}
-            </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-                <IconButton onClick={prev} color="primary">
-                    <ArrowBackIcon />
-                </IconButton>
-                <Typography sx={{ mx: 2, display: 'flex', alignItems: 'center' }}>
-                    {current + 1} / {children.length}
-                </Typography>
-                <IconButton onClick={next} color="primary">
-                    <ArrowForwardIcon />
-                </IconButton>
-            </Box>
-        </Box>
-    );
-};
-
-// --- Workout Content Component ---
 interface WorkoutTabContentProps {
     videos: { id: string; title: string }[];
     exercises: string[];
@@ -622,8 +876,7 @@ const WorkoutTabContent: React.FC<WorkoutTabContentProps> = ({ videos, exercises
     );
 };
 
-// --- WorkoutPage Component ---
-const WorkoutPage: React.FC = () => {
+export const WorkoutPage: React.FC = () => {
     const [currentTab, setCurrentTab] = useState(0);
 
     // Workout data
@@ -711,180 +964,94 @@ const WorkoutPage: React.FC = () => {
         </Box>
     );
 };
+EOF
 
-// --- Dark Mode Context and Theme ---
-type ThemeMode = 'light' | 'dark';
+# Cria arquivos placeholder para as páginas importadas
+cat << EOF > src/views/pages/StockManagerPage.tsx
+import React from 'react';
+import { Box, Typography } from '@mui/material';
 
-interface DarkModeContextType {
-    themeMode: ThemeMode;
-    setThemeMode:(mode: ThemeMode) => void;
-}
-
-const DarkModeContext = createContext<DarkModeContextType | null>(null);
-
-const useDarkMode = () => {
-    const context = useContext(DarkModeContext);
-    if (!context) {
-        throw new Error('useDarkMode must be used within a DarkModeProvider');
-    }
-    return context;
+const StockManagerPage: React.FC = () => {
+  return (
+    <Box className="p-4">
+      <Typography variant="h4" gutterBottom>Stock Manager Page</Typography>
+      <Typography paragraph>This is a placeholder for the Stock Manager content.</Typography>
+    </Box>
+  );
 };
 
-const lightTheme = createTheme({
-    palette: {
-        mode: 'light',
-        primary: {
-            main: '#6200EE', // Purple 500
-        },
-        secondary: {
-            main: '#03DAC5', // Teal 300
-        },
-        background: {
-            default: '#F5F5F5', // Gray 100
-            paper: '#FFFFFF', // White
-        },
-        text: {
-            primary: 'rgba(0, 0, 0, 0.87)',
-            secondary: 'rgba(0, 0, 0, 0.6)',
-        },
-    },
-    typography: {
-        fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-    },
-    components: {
-        MuiButton: {
-            styleOverrides: {
-                root: {
-                    textTransform: 'none',
-                    borderRadius: 4,
-                },
-            },
-        },
-        MuiPaper: {
-            styleOverrides: {
-                root: {
-                    borderRadius: 4,
-                },
-            },
-        },
-        MuiCard: {
-          styleOverrides: {
-            root: {
-                borderRadius: 8, // More rounded cards
-                boxShadow: '0px 1px 3px rgba(0,0,0,0.1)', // Subtle shadow
-            }
-          }
-        },
-        MuiAppBar: {
-            styleOverrides: {
-                root: {
-                    backgroundColor: '#FFFFFF', // White AppBar
-                    color: 'rgba(0, 0, 0, 0.87)', // Dark text
-                    boxShadow: '0px 2px 4px rgba(0,0,0,0.08)', // Subtle shadow
-                },
-            },
-        },
-        MuiBottomNavigation: {
-            styleOverrides: {
-                root: {
-                    backgroundColor: '#FFFFFF', // White Bottom Navigation
-                    color: 'rgba(0, 0, 0, 0.6)', // Light text
-                    boxShadow: '0px -1px 3px rgba(0,0,0,0.05)',
-                },
-            },
-        },
-    },
-});
+export default StockManagerPage;
+EOF
 
-const darkTheme = createTheme({
-    palette: {
-        mode: 'dark',
-        primary: {
-            main: '#BB86FC', // Purple 200
-        },
-        secondary: {
-            main: '#03DAC6', // Teal 200
-        },
-        background: {
-            default: '#121212', // Near Black
-            paper: '#1E1E1E', // Dark Gray
-        },
-        text: {
-            primary: '#FFFFFF',
-            secondary: 'rgba(255, 255, 255, 0.7)',
-        },
-    },
-    typography: {
-        fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-    },
-      components: {
-        MuiButton: {
-            styleOverrides: {
-                root: {
-                    textTransform: 'none',
-                    borderRadius: 4,
-                },
-            },
-        },
-        MuiPaper: {
-            styleOverrides: {
-                root: {
-                    borderRadius: 4,
-                },
-            },
-        },
-        MuiCard: {
-          styleOverrides: {
-            root: {
-                borderRadius: 8, // More rounded cards
-                boxShadow: '0px 2px 6px rgba(0,0,0,0.4)', // More pronounced shadow
-            }
-          }
-        },
-        MuiAppBar: {
-            styleOverrides: {
-                root: {
-                    backgroundColor: '#1E1E1E', // Darker AppBar
-                    color: '#FFFFFF', // White text
-                    boxShadow: '0px 2px 8px rgba(0,0,0,0.3)',
-                },
-            },
-        },
-          MuiBottomNavigation: {
-            styleOverrides: {
-                root: {
-                    backgroundColor: '#1E1E1E',
-                    color: 'rgba(255, 255, 255, 0.7)',
-                    boxShadow: '0px -1px 3px rgba(0,0,0,0.1)',
-                },
-            },
-        },
-    },
-});
+cat << EOF > src/views/pages/GohanTreinamentosPage.tsx
+import React from 'react';
+import { Box, Typography } from '@mui/material';
+import { setupIonicReact } from '@ionic/react';
 
-const DarkModeProvider = ({ children }: { children: ReactNode }) => {
-    const [themeMode, setThemeMode] = useState<ThemeMode>('light');
+// Inicialize Ionic React para este componente, se for o único que o usa
+// Embora já esteja sendo chamado no App.tsx, reforçar aqui não causa problema
+// se este componente for carregado de forma isolada em outros contextos.
+setupIonicReact();
 
-    const theme = React.useMemo(
-        () =>
-            deepmerge(
-                themeMode === 'light' ? lightTheme : darkTheme,
-                {},
-            ),
-        [themeMode],
-    );
-
-    return (
-        <DarkModeContext.Provider value={{ themeMode, setThemeMode }}>
-            <ThemeProvider theme={theme}>
-                <CssBaseline />
-                {children}
-            </ThemeProvider>
-        </DarkModeContext.Provider>
-    );
+const GohanTreinamentosHomePage: React.FC = () => {
+  return (
+    <Box className="p-4">
+      <Typography variant="h4" gutterBottom>Gohan Treinamentos Home Page (Ionic Placeholder)</Typography>
+      <Typography paragraph>This page is intended to host Ionic/React components.</Typography>
+      <Typography paragraph className="text-red-500 font-bold">
+        Lembre-se: Misturar Ionic com Material UI e Tailwind CSS pode causar conflitos visuais.
+      </Typography>
+    </Box>
+  );
 };
 
-// --- Main App Component ---
+export default GohanTreinamentosHomePage;
+EOF
+
+cat << EOF > src/views/pages/AppProdutivdadePage.tsx
+import React from 'react';
+import { Box, Typography } from '@mui/material';
+
+const AppProdutivdade: React.FC = () => {
+  return (
+    <Box className="p-4">
+      <Typography variant="h4" gutterBottom>App Produtividade Page</Typography>
+      <Typography paragraph>This is a placeholder for App Produtividade content.</Typography>
+    </Box>
+  );
+};
+
+export default AppProdutivdade;
+EOF
+
+# 10. Cria o arquivo principal src/App.tsx
+cat << 'EOF' > src/App.tsx
+// App.tsx - Arquivo único com todos os componentes
+import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { setupIonicReact } from '@ionic/react';
+
+// Context Providers
+import { ToastProvider } from './contexts/ToastContext';
+import { SessionProvider } from './contexts/SessionContext';
+import { DarkModeProvider } from './contexts/DarkModeContext';
+
+// Layout Component
+import { MainLayout } from './components/MainLayout';
+
+// Page Components
+import { HomePage } from './views/pages/HomePage';
+import { ProfilePage } from './views/pages/ProfilePage';
+import { SettingsPage } from './views/pages/SettingsPage';
+import { WorkoutPage } from './views/pages/WorkoutPage';
+import { NotFoundPage } from './views/pages/NotFoundPage';
+import StockManagerpage from './views/pages/StockManagerPage';
+import GohanTreinamentosHomePage from './views/pages/GohanTreinamentosPage';
+import AppProdutivdade from './views/pages/AppProdutivdadePage';
+
+// Inicializa o Ionic React uma vez na raiz da aplicação
+setupIonicReact();
+
 const App = () => (
     <DarkModeProvider>
         <SessionProvider>
@@ -899,12 +1066,9 @@ const App = () => (
                             <Route path="/home" element={<GohanTreinamentosHomePage />} />
                             <Route path="/app_produtividade" element={<AppProdutivdade />} />
                             {/* Uncomment the following line to enable Agenda Contatos page */}
-                            
                             {/* <Route path="/agenda-contatos" element={<AgendaContatosPage />} /> */}
-
-                            <Route path="/stock-manager" element={<StockManagerpage />} /> 
+                            <Route path="/stock-manager" element={<StockManagerpage />} />
                             {/* <Route path="/lembrete_app" element={<LembreteApp />} /> */}
-
                             <Route path="*" element={<NotFoundPage />} />
                         </Routes>
                     </MainLayout>
@@ -915,3 +1079,38 @@ const App = () => (
 );
 
 export default App;
+EOF
+
+# 11. Modifica src/main.tsx para renderizar o App
+cat << EOF > src/main.tsx
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App.tsx';
+import './index.css';
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+);
+EOF
+
+echo "Configuração completa. Acesse a pasta do projeto e inicie o servidor de desenvolvimento:"
+echo "cd $PROJECT_NAME"
+echo "npm run dev"
+echo ""
+echo ""
+echo "Configuração do Projeto Ionic + Material UI + Tailwind CSS"
+echo "--------------------------------------------------"
+echo "O projeto foi criado com sucesso!"
+echo "Certifique-se de instalar as dependências do projeto:"
+echo "LEMBRETE IMPORTANTE:"
+echo "--------------------"
+echo "Você está misturando Ionic, Material UI e Tailwind CSS."
+echo "Isso causará FORTES CONFLITOS de estilo e comportamento visual."
+echo "É ALTAMENTE RECOMENDADO que você escolha APENAS um framework de componentes (Material UI OU Ionic)"
+echo "e combine-o com Tailwind CSS, se desejar."
+echo "Se você continuar com os três, esteja preparado para lidar com muitos bugs de UI e sobreposições de estilos."
+echo "Os estilos globais do Ionic NÃO foram importados no 'index.css' para tentar mitigar o erro ':host-context', mas isso pode afetar a aparência dos componentes Ionic."
+echo "Considere fortemente migrar as páginas 'GohanTreinamentosHomePage' e 'AppProdutividade' para usar exclusivamente Material UI e Tailwind."
+echo "--------------------"
