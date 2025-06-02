@@ -27,24 +27,30 @@ import { deepmerge } from '@mui/utils';
 import StockManagerpage from './views/pages/StockManagerPage';
 import AgendaContatosPage from './views/screens/AgendaContatos';
 
-// Add support for JSX files in TypeScript by updating the tsconfig.json
-// No need to declare modules manually in the code
+
+/* CSS */
+import '@ionic/react/css/core.css';
+import '@ionic/react/css/normalize.css';
+import '@ionic/react/css/structure.css';
+import '@ionic/react/css/typography.css';
+import '@ionic/react/css/padding.css';
+import '@ionic/react/css/float-elements.css';
+import '@ionic/react/css/text-alignment.css';
+import '@ionic/react/css/text-transformation.css';
+import '@ionic/react/css/flex-utils.css';
+import '@ionic/react/css/display.css';
+import '@ionic/react/css/palettes/dark.system.css';
+
+import {  setupIonicReact } from '@ionic/react';
+setupIonicReact();
+
+import GohanTreinamentosHomePage from './views/pages/GohanTreinamentosPage';
+import AppProdutivdade from './views/pages/AppProdutividadePage';
+
 
 
 //import LembreteApp from "../src/views/MyCompnent"; 
 
-
-
-
-// export const appRoutes = [
-//     { path: '/home', component: GohanTreinamentosHomePage, label: 'Home', icon: homeOutline },
-//     { path: '/calistenia', component: CalisthenicsApp, label: 'Calistenia', icon: barbellOutline },
-//     { path: '/treinos', component: GohanTreinamentosGeradorTreinoPage, label: 'Treinos', icon: settingsOutline },
-//     { path: '/quizz', component: QuizGamePage, label: 'Quizz', icon: peopleOutline },
-//     { path: '/tasks', component: TaskManagerPage, label: 'Tarefas', icon: listOutline },
-//     { path: '/alarme', component: AlarmeClockPage, label: 'Alarme', icon: analyticsOutline },
-//     { path: '/checklist', component: MarkdownChecklist, label: 'Checklist', icon: notificationsOutline },
-// ];
 
 
 
@@ -261,12 +267,17 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             </Typography>
             <List>
                 {[
-                    { text: 'Inbox', path: '/inbox', icon: <InboxIcon /> },
-                    { text: 'Mail', path: '/mail', icon: <MailIcon /> },
+                    { text: 'Gohan Treinamentos', path: '/home', icon: <HomeIcon /> },
+                     { text: 'App Produtividade', path: '/app_produtividade', icon: <SettingsIcon /> },
+
                     { text: 'Home', path: '/', icon: <HomeIcon /> },
                     { text: 'Profile', path: '/profile', icon: <PersonIcon /> },
                     { text: 'Settings', path: '/settings', icon: <SettingsIcon /> },
                     { text: 'Workout', path: '/workout', icon: <FitnessCenterIcon /> },
+                    { text: 'Stock Manager', path: '/stock-manager', icon: <SettingsIcon /> },
+                    { text: 'Agenda Contatos', path: '/agenda-contatos', icon: <PersonIcon /> }
+
+
                 ].map((item) => (
                     <ListItem key={item.text} disablePadding>
                         <ListItemButton onClick={() => handleNavigation(item.path)}>
@@ -883,9 +894,11 @@ const App = () => (
                             <Route path="/profile" element={<ProfilePage />} />
                             <Route path="/settings" element={<SettingsPage />} />
                             <Route path="/workout" element={<WorkoutPage />} />
-
+                            <Route path="/home" element={<GohanTreinamentosHomePage />} />
+                            <Route path="/app_produtividade" element={<AppProdutivdade />} />
+                            {/* Uncomment the following line to enable Agenda Contatos page */}
                             
-                            {/* <Route path="/agenda" element={<AgendaContatosPage />} /> */}
+                            {/* <Route path="/agenda-contatos" element={<AgendaContatosPage />} /> */}
 
                             <Route path="/stock-manager" element={<StockManagerpage />} /> 
                             {/* <Route path="/lembrete_app" element={<LembreteApp />} /> */}

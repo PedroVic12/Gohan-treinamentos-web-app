@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+
 /* Adicione quaisquer estilos globais personalizados aqui */
 body {
   font-family: 'Inter', sans-serif; /* Exemplo: Garante fonte consistente */
