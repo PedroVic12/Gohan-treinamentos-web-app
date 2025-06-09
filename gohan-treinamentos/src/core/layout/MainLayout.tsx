@@ -44,6 +44,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         { text: 'Home', path: '/', icon: <HomeIcon /> },
         { text: 'Gohan Treinamentos', path: '/home', icon: <FitnessCenterIcon /> },
         { text: 'App Produtividade', path: '/app_produtividade', icon: <AppsIcon /> },
+        { text: 'Dashboard Produtividade', path: '/dashboard', icon: <AppsIcon /> },
+        { text: 'Calistenia App', path: '/workout', icon: <FitnessCenterIcon /> },
+
     ];
 
     const userNavItems = [
