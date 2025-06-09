@@ -4,12 +4,24 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from datetime import datetime, timedelta
 import pandas as pd
-import json
 import os
-from werkzeug.utils import secure_filename
 
 
-#!
+#! pip install flask flask_sqlalchemy pandas
+
+
+"""
+Escalabilidade do Backend Flask
+Seu backend Flask atual é um bom começo. Para garantir que ele também seja escalável, considere no futuro:
+
+- Banco de Dados: Para produção, migrar de SQLite para um banco de dados mais robusto como PostgreSQL ou MySQL.
+- Workers e Filas: Usar Gunicorn ou uWSGI para rodar sua aplicação Flask com múltiplos workers. Para tarefas demoradas (como o processamento do CSV, se ele se tornar muito grande), usar filas de tarefas assíncronas (Celery com Redis/RabbitMQ).
+- Caching: Implementar caching (ex: Flask-Caching com Redis ou Memcached) para endpoints frequentemente acessados e que não mudam muito.
+- Containerização: Usar Docker para empacotar sua aplicação e facilitar o deploy e a escalabilidade horizontal.
+- Orquestração: Para gerenciar múltiplos containers, Kubernetes ou serviços como AWS ECS/EKS, Google Kubernetes Engine.
+- Load Balancer: Distribuir o tráfego entre múltiplas instâncias da sua aplicação.
+
+"""
 
 
 app = Flask(__name__)
