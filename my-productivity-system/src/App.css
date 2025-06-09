@@ -1,0 +1,25 @@
+/* frontend/src/styles/globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom scrollbar for better aesthetics */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #44475a; /* Dracula current line */
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+    background: #6272a4; /* Dracula comment color */
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #bd93f9; /* Dracula purple */
+}
+
+/* Ensure body uses Inter font */
+body {
+    font-family: 'Inter', sans-serif;
+}
