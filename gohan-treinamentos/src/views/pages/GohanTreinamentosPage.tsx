@@ -26,7 +26,7 @@ import "./appbar.css"
 // Widgets
 const CustomText = ({ props }: { props: { text: string } }) => {
   return (
-    <Typography variant="subtitle1" align="center" gutterBottom color="primary">
+    <Typography variant="subtitle1" align="center" gutterBottom color="primary" >
       {props.text}
     </Typography>
   );
@@ -112,10 +112,15 @@ function GohanTreinamentosHomePage() {
     <>
       <title>Gohan Treinamentos 2025</title>
       <IonPage className="appbar-container">
-        <CustomText props={{ text: "Gohan Treinamentos 2025" }} />
+          
+          <div style={{ padding: '16px' }}>
+                <CustomText props={{ text: "Gohan Treinamentos 2025" }} />
 
-        <IonHeader mode="ios">
-          <IonToolbar color="tertiary" className="custom-toolbar">
+          </div>
+
+          
+          <IonHeader mode="ios">
+            <IonToolbar color="tertiary" className="custom-toolbar">
             <IonButtons slot="start">
               <IonMenuButton className="custom-menu-button"></IonMenuButton>
             </IonButtons>
@@ -124,29 +129,29 @@ function GohanTreinamentosHomePage() {
 
             <IonButtons slot="end">
               <IonButton onClick={handleRefresh} className="custom-refresh-button">
-                <IonIcon icon={refreshOutline} className="custom-refresh-icon" />
+              <IonIcon icon={refreshOutline} className="custom-refresh-icon" />
               </IonButton>
             </IonButtons>
-          </IonToolbar>
-        </IonHeader>
+            </IonToolbar>
+          </IonHeader>
 
-        <IonContent className="ion-padding">
-          <Box sx={{ flexGrow: 1 }}>
+          <IonContent className="ion-padding">
+            <Box sx={{ flexGrow: 1 }}>
             <Container maxWidth="md" sx={{ overflowY: 'auto', maxHeight: '80vh' }}>
               <Typography variant="h5" align="center" gutterBottom>
-                {formatDate()}
+              {formatDate()}
               </Typography>
 
               <HobbiesSection />
 
               <List>
-                {tasks.map((task) => (
-                  <TaskItem
-                    key={task.id}
-                    task={task}
-                    onIncrement={handleIncrement}
-                  />
-                ))}
+              {tasks.map((task) => (
+                <TaskItem
+                key={task.id}
+                task={task}
+                onIncrement={handleIncrement}
+                />
+              ))}
               </List>
 
               <ProgressBar totalCount={totalCount} maxCount={maxWeeklyCount} />
@@ -161,9 +166,9 @@ function GohanTreinamentosHomePage() {
               <br />
 
             </Container>
-          </Box>
-        </IonContent>
-      </IonPage>
+            </Box>
+          </IonContent>
+          </IonPage>
     </>
   );
 }

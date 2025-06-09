@@ -1,3 +1,5 @@
+
+
 // frontend/src/pages/index.tsx
 import React, { useState, useEffect, useCallback } from 'react';
 import Head from 'next/head';

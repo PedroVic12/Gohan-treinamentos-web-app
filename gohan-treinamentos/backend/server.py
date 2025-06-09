@@ -11,7 +11,7 @@ import os
 
 
 """
-Escalabilidade do Backend Flask
+1) Escalabilidade do Backend Flask
 Seu backend Flask atual é um bom começo. Para garantir que ele também seja escalável, considere no futuro:
 
 - Banco de Dados: Para produção, migrar de SQLite para um banco de dados mais robusto como PostgreSQL ou MySQL.
@@ -20,6 +20,44 @@ Seu backend Flask atual é um bom começo. Para garantir que ele também seja es
 - Containerização: Usar Docker para empacotar sua aplicação e facilitar o deploy e a escalabilidade horizontal.
 - Orquestração: Para gerenciar múltiplos containers, Kubernetes ou serviços como AWS ECS/EKS, Google Kubernetes Engine.
 - Load Balancer: Distribuir o tráfego entre múltiplas instâncias da sua aplicação.
+
+
+2) Configure o Proxy no Vite: Durante o desenvolvimento, seu frontend Vite rodará em uma porta (ex: localhost:5173) e seu backend Flask em outra (ex: localhost:5000). Para simplificar as chamadas de API do frontend e evitar problemas de CORS, você pode configurar o Vite para atuar como um proxy.
+
+Edite (ou crie) o arquivo vite.config.js (ou vite.config.ts) na raiz da sua pasta frontend:
+
+// frontend/vite.config.ts (ou .js)
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react' // ou o plugin para Vue, Svelte, etc.
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [react()],
+  server: {
+    port: 5173, // Porta para o servidor de desenvolvimento do Vite (opcional, padrão é 5173)
+    proxy: {
+      // Redireciona requisições que começam com '/api' para o seu backend Flask
+      '/api': {
+        target: 'http://localhost:5000', // URL do seu backend Flask
+        changeOrigin: true, // Necessário para evitar erros de CORS e para virtual hosted sites
+        // Não é necessário 'rewrite' aqui, pois suas rotas Flask já começam com /api
+        // Se suas rotas Flask fossem, por exemplo, '/daily_wins' e você quisesse
+        // chamá-las como '/api/daily_wins' no frontend, você usaria:
+        // rewrite: (path) => path.replace(/^\/api/, '')
+      }
+    }
+  }
+})
+
+3) Considerações para Produção
+Para produção, o fluxo é um pouco diferente:
+
+- Build do Frontend: Você compilará seu projeto Vite usando npm run build na pasta frontend. Isso gerará uma pasta dist (ou similar) com arquivos HTML, CSS e JavaScript estáticos.
+
+- Servir os Arquivos Estáticos: Você tem algumas opções:
+    -  Configurar o Flask para servir esses arquivos estáticos: Você pode adicionar rotas no Flask para servir o index.html da pasta dist do frontend e os assets estáticos.
+    - Usar um servidor web dedicado (Nginx, Apache): Configurar o Nginx (ou similar) para servir os arquivos estáticos do frontend e para fazer proxy reverso para sua API Flask em produção. Esta é uma abordagem comum e robusta.
+    - Hospedar o frontend em uma CDN/Plataforma de Hospedagem Estática (Vercel, Netlify, S3): E configurar sua API Flask para rodar separadamente (ex: em um servidor VPS, Heroku, AWS EC2/ECS).
 
 """
 

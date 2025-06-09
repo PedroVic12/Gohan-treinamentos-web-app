@@ -13,7 +13,6 @@ import {
   IconButton,
   Typography,
 } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
 import { Bar } from "react-chartjs-2";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip } from "chart.js";
 
@@ -472,7 +471,6 @@ export default function HomePage() {
             aria-label="menu"
             onClick={() => stateController.setMenuOpen(true)}
           >
-            <MenuIcon />
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             OmniCore - Sistema de Produtividade

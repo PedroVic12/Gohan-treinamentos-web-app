@@ -48,6 +48,7 @@ import StockManagerpage from './views/pages/StockManagerPage';
 
 import GohanTreinamentosHomePage from './views/pages/GohanTreinamentosPage';
 import AppProdutivdade from './views/pages/AppProdutividadePage';
+import DashboardProdutividadePage from './views/pages/DashboardProdutividade';
 
 
 
@@ -899,7 +900,8 @@ const App = () => (
                             <Route path="/home" element={<GohanTreinamentosHomePage />} />
                             <Route path="/app_produtividade" element={<AppProdutivdade />} />
                             {/* Uncomment the following line to enable Agenda Contatos page */}
-                            
+                            <Route path="/dashboard" element={<DashboardProdutividadePage />} />
+
                             {/* <Route path="/agenda-contatos" element={<AgendaContatosPage />} /> */}
 
                             <Route path="/stock-manager" element={<StockManagerpage />} /> 
