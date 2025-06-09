@@ -51,8 +51,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         { text: 'Profile', path: '/profile', icon: <PersonIcon /> },
         { text: 'Settings', path: '/settings', icon: <SettingsIcon /> },
         { text: 'Workout', path: '/workout', icon: <FitnessCenterIcon /> },
-        { text: 'Stock Manager', path: '/stock-manager', icon: <SettingsIcon /> },
-        { text: 'Agenda Contatos', path: '/agenda-contatos', icon: <PersonIcon /> }
+       // { text: 'Stock Manager', path: '/stock-manager', icon: <SettingsIcon /> },
+       //{ text: 'Agenda Contatos', path: '/agenda-contatos', icon: <PersonIcon /> }
     ];
 
     return (

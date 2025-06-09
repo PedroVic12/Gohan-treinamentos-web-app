@@ -1,16 +1,14 @@
 import React, { createContext, useContext, ReactNode, useState, useEffect } from 'react';
-import { Snackbar, Alert as MuiAlert, IconButton } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+import { Snackbar, Alert as MuiAlert } from '@mui/material';
 
 interface ToastMessage {
     id: number;
     message: string;
     severity: 'success' | 'error' | 'warning' | 'info';
-    action?: ReactNode;
 }
 
 interface ToastContextType {
-    addToast: (message: string, severity: ToastMessage['severity'], action?: ReactNode) => void;
+    addToast: (message: string, severity: ToastMessage['severity']) => void;
 }
 
 const ToastContext = createContext<ToastContextType | null>(null);
@@ -23,18 +21,13 @@ export const useToast = () => {
     return context;
 };
 
-interface ToastProviderProps {
-    children: ReactNode;
-}
-
-export const ToastProvider = ({ children }: ToastProviderProps) => {
+export const ToastProvider = ({ children }: { children: ReactNode }) => {
     const [toasts, setToasts] = useState<ToastMessage[]>([]);
     const [currentToast, setCurrentToast] = useState<ToastMessage | null>(null);
     const [open, setOpen] = useState(false);
 
-    const addToast = (message: string, severity: ToastMessage['severity'], action?: ReactNode) => {
-        const newToast: ToastMessage = { id: Date.now(), message, severity, action };
-        setToasts((prevToasts) => [...prevToasts, newToast]);
+    const addToast = (message: string, severity: ToastMessage['severity']) => {
+        setToasts((prev) => [...prev, { id: Date.now(), message, severity }]);
     };
 
     useEffect(() => {
@@ -42,10 +35,8 @@ export const ToastProvider = ({ children }: ToastProviderProps) => {
             setCurrentToast(toasts[0]);
             setToasts((prev) => prev.slice(1));
             setOpen(true);
-        } else if (toasts.length === 0 && open) {
-            // If queue is empty but snackbar is open, let it close naturally
         }
-    }, [toasts, currentToast, open]);
+    }, [toasts, currentToast]);
 
     const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
         if (reason === 'clickaway') {
@@ -69,26 +60,7 @@ export const ToastProvider = ({ children }: ToastProviderProps) => {
                     TransitionProps={{ onExited: handleExited }}
                     anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
                 >
-                    <MuiAlert
-                        elevation={6}
-                        variant="filled"
-                        severity={currentToast.severity}
-                        onClose={handleClose}
-                        action={
-                            <>
-                                {currentToast.action}
-                                <IconButton
-                                    size="small"
-                                    aria-label="close"
-                                    color="inherit"
-                                    onClick={handleClose}
-                                >
-                                    <CloseIcon fontSize="small" />
-                                </IconButton>
-                            </>
-                        }
-                        sx={{ width: '100%' }}
-                    >
+                    <MuiAlert elevation={6} variant="filled" severity={currentToast.severity} onClose={handleClose} sx={{ width: '100%' }}>
                         {currentToast.message}
                     </MuiAlert>
                 </Snackbar>

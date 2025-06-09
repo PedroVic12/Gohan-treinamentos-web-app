@@ -1,5 +1,7 @@
+// index.tsx
+
 import React from 'react';
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, HashRouter } from 'react-router-dom';
 import { DarkModeProvider } from './core/provider/DarkModeProvider';
 import { SessionProvider } from './core/provider/SessionContext';
 import { ToastProvider } from './core/provider/ToastContext';
@@ -35,7 +37,7 @@ const App: React.FC = () => (
     <DarkModeProvider>
         <SessionProvider>
             <ToastProvider>
-                <BrowserRouter>
+                <HashRouter>
                     <MainLayout>
                         <Routes>
                             <Route path="/" element={<HomePage />} />
@@ -48,7 +50,7 @@ const App: React.FC = () => (
                             <Route path="*" element={<NotFoundPage />} />
                         </Routes>
                     </MainLayout>
-                </BrowserRouter>
+                </HashRouter>
             </ToastProvider>
         </SessionProvider>
     </DarkModeProvider>

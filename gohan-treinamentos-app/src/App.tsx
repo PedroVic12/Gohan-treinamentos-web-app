@@ -31,6 +31,7 @@ import AlarmeClockPage from './app/pages/clockPage/alarm_clock_page';
 import TaskManagerPage from './app/pages/todoList/task_manager';
 import CalisthenicsApp from './app/pages/calistenia_app/pages/calistenia_app_mui';
 import MarkdownChecklist from './app/pages/CheckListMarkdown/MarkdownCheckList';
+
 import SidebarMenu from './app/widgets/side_menu';
 
 /* CSS */

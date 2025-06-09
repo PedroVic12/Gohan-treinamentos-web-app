@@ -15,13 +15,8 @@ export const useSession = () => {
     return context;
 };
 
-interface SessionProviderProps {
-    children: ReactNode;
-}
-
-export const SessionProvider = ({ children }: SessionProviderProps) => {
-    const [drawerOpen, setDrawerOpen] = useState(false);
-
+export const SessionProvider = ({ children }: { children: ReactNode }) => {
+    const [drawerOpen, setDrawerOpen] = useState(true);
     return (
         <SessionContext.Provider value={{ drawerOpen, setDrawerOpen }}>
             {children}

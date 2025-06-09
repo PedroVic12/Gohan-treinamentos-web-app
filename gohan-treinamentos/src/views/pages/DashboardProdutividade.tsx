@@ -237,6 +237,7 @@ const AntiRecidivismMantraSection: React.FC = () => {
 
 // RoutineAndFinanceSection Component
 const RoutineAndFinanceSection: React.FC<RoutineAndFinanceSectionProps> = ({ dailyWins, setDailyWins }) => {
+    const XP_PER_WIN = 20;
     const [monthlyIncome, setMonthlyIncome] = useState<string>('');
     const [fixedExpenses, setFixedExpenses] = useState<string>('');
     const [variableExpenses, setVariableExpenses] = useState<string>('');
