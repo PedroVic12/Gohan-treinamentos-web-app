@@ -8,6 +8,10 @@ import json
 import os
 from werkzeug.utils import secure_filename
 
+
+#!
+
+
 app = Flask(__name__)
 # Configuração do banco de dados SQLite
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///productivity.db'
@@ -243,6 +247,14 @@ def create_crud_routes(model, name):
 create_crud_routes(DailyWin, 'daily_wins')
 create_crud_routes(Project, 'projects')
 create_crud_routes(Task, 'tasks')
+
+
+# config endpoints
+@app.route("/channels")
+def channel():
+    return {
+        "canal": ["canal 1", "canal 2", "canal 3"]
+    }
 
 # Endpoint para exportar todos os dados para CSV
 @app.route('/api/export_all_csv', methods=['GET'])
