@@ -31,28 +31,33 @@ export interface PomodoroSession {
 }
 
 export const CATEGORIES = {
-  'ons': { emoji: '📂', label: 'Relatórios Técnicos ONS', color: 'bg-blue-100 text-blue-800' },
   'uff': { emoji: '🧪', label: 'Estudos UFF', color: 'bg-purple-100 text-purple-800' },
-  'python': { emoji: '⚙️', label: 'Projetos Python', color: 'bg-green-100 text-green-800' },
-  'web': { emoji: '🚀', label: 'MVP de Aplicações Web', color: 'bg-orange-100 text-orange-800' },
-  'spiritual': { emoji: '🧘‍♂️', label: 'Alinhamento Espiritual', color: 'bg-pink-100 text-pink-800' },
-  'ons-estagio': { emoji: '🏢', label: 'ONS - Estágio', color: 'bg-indigo-100 text-indigo-800' }
+  'python': { emoji: '⚙️', label: 'Projetos Python - Automação, Web, Dados, IA, Eng Eletrica', color: 'bg-green-100 text-green-800' },
+  'web': { emoji: '🚀', label: 'MVP de Aplicações Web (NextJS, Flutter, Flask/FastAPI templates)', color: 'bg-orange-100 text-orange-800' },
+  'spiritual': { emoji: '🧘‍♂️', label: 'Alinhamento Espiritual e Diário', color: 'bg-pink-100 text-pink-800' },
+  'ons-estagio': { emoji: '🏢', label: 'ONS - Estágio 2025', color: 'bg-indigo-100 text-indigo-800' }
 };
 
 export const STATUS_COLUMNS = {
-  'to do': { id: 'todo', title: 'Em Rascunho', emoji: '✏️' },
-  'in progress': { id: 'progress', title: 'Em Análise', emoji: '🔍' },
-  'projetos parados': { id: 'paused', title: 'Projetos Parados', emoji: '⏸️' },
-  'agentes (c3po, jarvis)': { id: 'agents', title: 'Agentes IA', emoji: '🤖' },
+
   'uff - 2025': { id: 'uff2025', title: 'UFF 2025', emoji: '🎓' },
-  'concluido': { id: 'completed', title: 'Concluído', emoji: '✅' },
-  'ons - estagio': { id: 'ons-internship', title: 'ONS - Estágio', emoji: '🏢' }
+  'ons - estagio': { id: 'ons-internship', title: 'ONS - Estágio', emoji: '🏢' },
+  'agentes (c3po, jarvis)': { id: 'agents', title: 'Agentes IA', emoji: '🤖' },
+
+  'projetos parados': { id: 'paused', title: 'Projetos Parados', emoji: '⏸️' },
+  'to do': { id: 'todo', title: 'TODO', emoji: '✏️' },
+  'in progress': { id: 'progress', title: 'IN PROGRESS', emoji: '🔍' },
+
+
+
+
+  'concluido': { id: 'completed', title: 'CONCLUIDO', emoji: '✅' },
 };
 
 export const INITIAL_DATA: ProjectItem[] = [
   {
     id: '868d3j5vf',
-    title: 'Minicurso Circuitos Eletricos CC',
+    title: 'Estudos Sinais e Sistemas, Eletromagnetismo 1 e 2, Circuitos Eletricos CC, Circuitos Digitais, Linguagem de programção, Sistemas de Potencia ONS',
     status: 'to do',
     category: 'uff',
     content: '# Minicurso Circuitos Elétricos CC\n\n## Objetivos\n- [ ] Fundamentos de circuitos CC\n- [ ] Análise nodal e de malhas\n- [x] Teoremas de circuitos\n\n## Cronograma\n- [ ] Preparar material teórico\n- [ ] Criar exercícios práticos\n- [ ] Desenvolver simulações',
@@ -85,7 +90,7 @@ export const INITIAL_DATA: ProjectItem[] = [
     title: 'Backend Developer - Python (FastAPI + DJANGO + NODEJS API RESTFULL)',
     status: 'projetos parados',
     category: 'python',
-    content: '# Backend Development Stack\n\n## APIs\n- [ ] FastAPI setup\n- [ ] Django REST framework\n- [ ] Node.js Express\n\n## Features\n- [ ] Authentication\n- [ ] Database integration\n- [ ] API documentation',
+    content: '# Backend Development Stack\n\n## APIs\n- [ ] Flask/FastAPI setup\n- [ ] Django REST framework \n- [ ] Dart Vaden framework - Fullstack Flutter\n- [ ] Node.js Express NextJS\n\n## Features\n- [ ] Authentication\n- [ ] Database integration\n- [ ] API documentation',
     createdAt: new Date('2024-01-03'),
     updatedAt: new Date('2024-01-10'),
     files: []
@@ -95,7 +100,7 @@ export const INITIAL_DATA: ProjectItem[] = [
     title: 'FrontEnd Developer - React + javascript + Flutter',
     status: 'in progress',
     category: 'web',
-    content: '# Frontend Development\n\n## Technologies\n- [x] React.js\n- [ ] JavaScript ES6+\n- [ ] Flutter\n\n## Projects\n- [x] Portfolio website\n- [ ] Mobile app\n- [ ] Dashboard interface',
+    content: '# Frontend Development\n\n## Technologies\n- [x] React.js\n- [ ] Nextjs \n- [ ] Flutter\n\n## Projects\n- [x] Mobile app template\n- [x] Dashboard interface\n- [x] Kyogre PDV app \n- [x] Todo List 3 CURD APPs \n- [ ] Controle de Estoque APPsss',
     createdAt: new Date('2024-01-02'),
     updatedAt: new Date('2024-01-16'),
     files: []
@@ -191,6 +196,13 @@ export class DataRepository {
 
   // Storage methods
   private loadFromStorage(): void {
+
+      if (typeof window === 'undefined') {
+        // SSR: não faz nada, evita erro
+        this.projects = INITIAL_DATA;
+        return;
+      }
+
     try {
       const projectsData = localStorage.getItem('kanban-projects');
       const filesData = localStorage.getItem('kanban-files');

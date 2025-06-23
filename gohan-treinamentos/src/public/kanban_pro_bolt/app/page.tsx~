@@ -849,6 +849,18 @@ export default function App() {
   };
 
   const KanbanScreen = () => {
+  const [darkMode, setDarkMode] = useState(false);
+
+  useEffect(() => {
+    const root = window.document.documentElement;
+    if (darkMode) {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+  }, [darkMode]);
+
+
     const columns = Object.entries(STATUS_COLUMNS).map(([status, info]) => ({
       ...info,
       status,
@@ -856,17 +868,27 @@ export default function App() {
     }));
 
     return (
-      <div className="p-4 lg:p-6">
-        <div className="mb-6">
-          <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">Kanban Board</h1>
+
+    <div className={`p-4 lg:p-6 ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}`}>
+        
+
+
+       <div className="mb-6" id ="appBar">
+          <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2 bg-gray-900 bg-gray-900 text-white bg-white text-black">Kanban Board</h1>
           <p className="text-gray-600">Organize seus projetos visualmente</p>
+              <button
+                onClick={() => setDarkMode(!darkMode)}
+                className="px-4 py-2 rounded bg-gray-400 dark:bg-gray-500 dark:text-white"
+              >
+                Toggle {darkMode ? 'Light' : 'Dark'} Mode
+              </button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-7 gap-4 overflow-x-auto">
           {columns.map((column) => (
             <div
               key={column.status}
-              className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 min-w-80 md:min-w-0"
+              className="bg-white rounded-xl shadow-sm border border-gray-500 p-2 min-w-300 md:min-w-0"
               onDragOver={handleDragOver}
               onDrop={(e) => handleDrop(e, column.status)}
             >
@@ -874,17 +896,20 @@ export default function App() {
                 <div className="flex items-center gap-2">
                   <span className="text-xl">{column.emoji}</span>
                   <h2 className="font-semibold text-gray-900 text-sm">{column.title}</h2>
-                  <span className="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">
+                  <span className="bg-gray-900 text-gray-100 text-xs px-2 py-1 rounded-full">
                     {column.items.length}
                   </span>
                 </div>
                 <button
                   onClick={() => createNewItem(column.status)}
-                  className="p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded transition-colors"
+                  className="p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-500 rounded transition-colors"
                 >
-                  <Plus size={16} />
+                  <Plus size={24} />
                 </button>
+
               </div>
+
+
 
               <div className="space-y-3">
                 {column.items.map((item) => {
@@ -896,11 +921,11 @@ export default function App() {
                       draggable
                       onDragStart={(e) => handleDragStart(e, item)}
                       onClick={() => openItemEditor(item)}
-                      className="bg-gray-50 rounded-lg p-3 cursor-pointer hover:bg-gray-100 transition-all duration-200 hover:shadow-md border border-gray-100 group"
+                      className="bg-orange-500 rounded-lg p-3 cursor-pointer hover:bg-gray-100 transition-all duration-200 hover:shadow-md border border-gray-500 group"
                     >
                       <div className="flex items-start justify-between mb-2">
                         <div className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${categoryInfo.color}`}>
-                          <span>{categoryInfo.emoji}</span>
+                          <p>{categoryInfo.emoji}</p>
                         </div>
                         <div className="flex items-center space-x-1">
                           <button
@@ -908,13 +933,13 @@ export default function App() {
                               e.stopPropagation();
                               startPomodoroForProject(item);
                             }}
-                            className="p-1 text-purple-600 hover:bg-purple-50 rounded-md transition-colors opacity-0 group-hover:opacity-100"
+                            className="p-1 text-purple-700 hover:bg-purple-50 rounded-md transition-colors opacity-0 group-hover:opacity-100"
                             title="Iniciar Pomodoro"
                           >
-                            <Timer size={12} />
+                            <Timer size={24} />
                           </button>
                           <GripVertical 
-                            size={14} 
+                            size={36} 
                             className="text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity cursor-move" 
                           />
                         </div>
@@ -924,13 +949,13 @@ export default function App() {
                         {item.title}
                       </h3>
                       
-                      <p className="text-xs text-gray-600 line-clamp-2 mb-2">
+                      <p className="text-xs text-gray-500 line-clamp-2 mb-2">
                         {(item.content || '').replace(/[#*`\[\]]/g, '').substring(0, 80)}...
                       </p>
                       
                       {item.content && <ChecklistProgress content={item.content} />}
                       
-                      <div className="flex items-center justify-between text-xs text-gray-500 mt-2">
+                      <div className="flex items-center justify-between text-xs text-gray-900 mt-2">
                         <div className="flex items-center space-x-2">
                           <span>{item.updatedAt.toLocaleDateString('pt-BR')}</span>
                           {projectFiles.length > 0 && (
@@ -1497,8 +1522,9 @@ export default function App() {
 
 Exemplo de checklist:
 - [ ] Tarefa pendente
+- [ ] Outra tarefa
 - [x] Tarefa concluída
-- [ ] Outra tarefa"
+"
                   />
                 </div>
 
