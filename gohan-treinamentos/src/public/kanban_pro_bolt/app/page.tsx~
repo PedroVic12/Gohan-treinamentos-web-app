@@ -1,14 +1,24 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { LayoutDashboard, Table, FileText, Kanban, Menu, X, Plus, Edit3, Save, Eye, EyeOff, Trash2, GripVertical, Upload, Download, FolderSync as Sync, BarChart3, TrendingUp, Users, Clock, Search, Filter, MoreVertical, FileImage, FileSpreadsheet, File as FilePdf, Play, Pause, RotateCcw, Timer, Maximize2, Minimize2, Image, FileDown } from 'lucide-react';
+import { Sun, Moon, LayoutDashboard, Table, FileText, Kanban, Menu, X, Plus, Edit3, Save, Eye, EyeOff, Trash2, GripVertical, Upload, Download, FolderSync as Sync, BarChart3, TrendingUp, Users, Clock, Search, Filter, MoreVertical, FileImage, FileSpreadsheet, File as FilePdf, Play, Pause, RotateCcw, Timer, Maximize2, Minimize2, Image, FileDown } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import * as XLSX from 'xlsx';
 import { DataRepository, ProjectItem, FileAttachment, PomodoroSession, CATEGORIES, STATUS_COLUMNS } from '@/lib/repository';
 
+function formatDate(date: Date | string) {
+  const d = typeof date === 'string' ? new Date(date) : date;
+  return d.toLocaleDateString('pt-BR');
+}
+
 // Functional Components
-const Sidebar = ({ currentScreen, setCurrentScreen, sidebarOpen, setSidebarOpen, onExport, onImport, onSync }: {
+
+const Sidebar = ({
+  currentScreen, setCurrentScreen, sidebarOpen, setSidebarOpen,
+  onExport, onImport, onSync,
+  darkMode, onToggleDarkMode
+}: {
   currentScreen: string;
   setCurrentScreen: (screen: string) => void;
   sidebarOpen: boolean;
@@ -16,6 +26,8 @@ const Sidebar = ({ currentScreen, setCurrentScreen, sidebarOpen, setSidebarOpen,
   onExport: () => void;
   onImport: () => void;
   onSync: () => void;
+  darkMode: boolean;
+  onToggleDarkMode: () => void;
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -24,12 +36,22 @@ const Sidebar = ({ currentScreen, setCurrentScreen, sidebarOpen, setSidebarOpen,
       <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 lg:static lg:inset-0`}>
         <div className="flex items-center justify-between h-16 px-4 border-b border-gray-200">
           <h1 className="text-xl font-bold text-gray-900">Kanban Pro</h1>
-          <button
-            onClick={() => setSidebarOpen(false)}
-            className="lg:hidden p-2 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100"
-          >
-            <X size={20} />
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={onToggleDarkMode}
+              className="p-2 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100"
+              title="Alternar tema"
+            >
+              {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+            </button>
+            <button
+              onClick={() => setSidebarOpen(false)}
+              className="lg:hidden p-2 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100"
+              title="Fechar menu"
+            >
+              <X size={20} />
+            </button>
+          </div>
         </div>
         
         <nav className="mt-8 px-4">
@@ -177,9 +199,11 @@ const FileViewer = ({ file, onDelete, expanded, onToggleExpand }: {
       {expanded && (
         <div className="border-t border-gray-200 p-4 bg-gray-50">
           <div className="space-y-2 text-sm text-gray-600 mb-4">
+            <p><strong>Detalhes do Arquivo:</strong></p>
+            <p><strong>Nome:</strong> {file.name}</p>
             <p><strong>Tipo:</strong> {file.type.toUpperCase()}</p>
             <p><strong>Tamanho:</strong> {formatFileSize(file.size)}</p>
-            <p><strong>Upload:</strong> {file.uploadedAt.toLocaleString('pt-BR')}</p>
+            <p><strong>Upload:</strong> {formatDate(file.uploadedAt || 'Nenhum')}</p>
           </div>
           
           {file.type === 'image' && (
@@ -232,13 +256,13 @@ const ChecklistProgress = ({ content }: { content: string }) => {
   
   return (
     <div className="mt-2">
-      <div className="flex items-center justify-between text-xs text-gray-600 mb-1">
+      <div className="flex items-center justify-between text-xs text-blue-900 mb-1">
         <span>Progresso</span>
         <span>{completedItems.length}/{checklistItems.length}</span>
       </div>
-      <div className="w-full bg-gray-200 rounded-full h-1.5">
+      <div className="w-full bg-gray-200 rounded-full h-2.5">
         <div 
-          className="bg-blue-600 h-1.5 rounded-full transition-all duration-300" 
+          className="bg-blue-900 h-2.5 rounded-full transition-all duration-300" 
           style={{ width: `${progress}%` }}
         />
       </div>
@@ -260,7 +284,7 @@ const PomodoroTimer = ({
 }: {
   isActive: boolean;
   timeLeft: number;
-  currentSession: 'work' | 'short-break' | 'long-break';
+  currentSession: 'work' | 'short-break' | 'long-break' | 'hiperfoco' | 'simulado';
   onStart: () => void;
   onPause: () => void;
   onReset: () => void;
@@ -283,7 +307,8 @@ const PomodoroTimer = ({
     }
   };
 
-  const progress = ((getSessionDuration() - timeLeft) / getSessionDuration()) * 100;
+  const sessionDuration = getSessionDuration() ?? 1;
+  const progress = ((sessionDuration - timeLeft) / sessionDuration) * 100;
 
   return (
     <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
@@ -392,7 +417,7 @@ export default function App() {
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState('');
   const [editTitle, setEditTitle] = useState('');
-  const [editCategory, setEditCategory] = useState<keyof typeof CATEGORIES>('ons');
+  const [editCategory, setEditCategory] = useState<keyof typeof CATEGORIES>('python');
   const [showPreview, setShowPreview] = useState(true);
   
   // Drag and drop
@@ -408,7 +433,7 @@ export default function App() {
   // Pomodoro states
   const [pomodoroActive, setPomodoroActive] = useState(false);
   const [pomodoroTimeLeft, setPomodoroTimeLeft] = useState(25 * 60);
-  const [pomodoroSession, setPomodoroSession] = useState<'work' | 'short-break' | 'long-break'>('work');
+  const [pomodoroSession, setPomodoroSession] = useState<'work' | 'short-break' | 'long-break' | 'hiperfoco' | 'simulado'>('work');
   const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null);
   const pomodoroIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -462,10 +487,19 @@ export default function App() {
       setPomodoroSessions(repository.getPomodoroSessions());
     }
     
-    // Auto switch to break
+    // Auto switch to next session based on current session
     if (pomodoroSession === 'work') {
       setPomodoroSession('short-break');
-      setPomodoroTimeLeft(5 * 60);
+      setPomodoroTimeLeft(15 * 60); // break = 15 min
+    } else if (pomodoroSession === 'short-break') {
+      setPomodoroSession('work');
+      setPomodoroTimeLeft(25 * 60); // work = 25 min
+    } else if (pomodoroSession === 'hiperfoco') {
+      setPomodoroSession('short-break');
+      setPomodoroTimeLeft(15 * 60); // break after hiperfoco
+    } else if (pomodoroSession === 'simulado') {
+      setPomodoroSession('short-break');
+      setPomodoroTimeLeft(15 * 60); // break after simulado
     } else {
       setPomodoroSession('work');
       setPomodoroTimeLeft(25 * 60);
@@ -478,6 +512,8 @@ export default function App() {
         icon: '/favicon.ico'
       });
     }
+
+
   };
 
   const startPomodoro = () => {
@@ -561,7 +597,7 @@ export default function App() {
       title: 'Novo Item',
       status,
       category: 'ons',
-      content: '# Novo Item\n\n## Tarefas\n- [ ] Tarefa 1\n- [ ] Tarefa 2\n- [ ] Tarefa 3\n\nDescreva aqui o conteúdo...',
+      content: '# Lista de Definição\n\n## Assunto\nTitulo\n: Descrição do assunto e texto informativo\n\ns## Tarefas\n- [ ] Tarefa 1\n- [ ] Tarefa 2\n- [ ] Tarefa 3\n\nDescreva aqui o conteúdo...',
       createdAt: new Date(),
       updatedAt: new Date(),
       files: []
@@ -696,6 +732,18 @@ export default function App() {
     const completedProjects = projects.filter(p => p.status === 'concluido').length;
     const progressRate = totalProjects > 0 ? (completedProjects / totalProjects) * 100 : 0;
 
+
+    const [todayPomodoroTime, setTodayPomodoroTime] = useState('');
+
+  useEffect(() => {
+    const today = new Date().toISOString().split('T')[0];
+    const todaySessions = repository.getPomodoroSessionsByDate(today);
+    const totalMinutes = todaySessions.reduce((acc, session) => acc + (session.duration || 0), 0);
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    setTodayPomodoroTime(`Tempo total: ${hours > 0 ? `${hours}h ` : ''}${minutes}min`);
+  }, [repository, pomodoroSessions]);
+
     return (
       <div className="p-4 lg:p-6">
         <div className="mb-6">
@@ -705,50 +753,52 @@ export default function App() {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+
+          <div className="bg-gray-400 rounded-xl p-6 shadow-sm border border-gray-400">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Total de Projetos</p>
-                <p className="text-2xl font-bold text-gray-900">{totalProjects}</p>
+          <p className="text-sm font-medium text-gray-900">Total de Projetos</p>
+          <p className="text-2xl font-bold text-gray-900">{totalProjects}</p>
               </div>
-              <div className="p-3 bg-blue-100 rounded-lg">
-                <BarChart3 className="h-6 w-6 text-blue-600" />
+              <div className="p-3 bg-green-200 rounded-lg">
+          <BarChart3 className="h-6 w-6 text-green-600" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+          <div className="bg-blue-500 rounded-xl p-6 shadow-sm border border-gray-400">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Em Progresso</p>
-                <p className="text-2xl font-bold text-gray-900">{statusStats['in progress'] || 0}</p>
+          <p className="text-sm font-medium text-gray-900">Em Progresso</p>
+          <p className="text-2xl font-bold text-gray-900">{statusStats['in progress'] || 0}</p>
               </div>
               <div className="p-3 bg-orange-100 rounded-lg">
-                <Clock className="h-6 w-6 text-orange-600" />
+          <Clock className="h-6 w-6 text-orange-600" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+          <div className="bg-green-500 rounded-xl p-6 shadow-sm border border-gray-400">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Concluídos</p>
-                <p className="text-2xl font-bold text-gray-900">{completedProjects}</p>
+          <p className="text-sm font-medium text-gray-900">Concluídos</p>
+          <p className="text-2xl font-bold text-gray-900">{completedProjects}</p>
               </div>
               <div className="p-3 bg-green-100 rounded-lg">
-                <TrendingUp className="h-6 w-6 text-green-600" />
+          <TrendingUp className="h-6 w-6 text-green-600" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+          <div className="bg-orange-400 rounded-xl p-6 shadow-sm border border-gray-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Pomodoros Hoje</p>
-                <p className="text-2xl font-bold text-gray-900">{pomodoroStats.today}</p>
+          <p className="text-sm font-medium text-gray-900">Pomodoros Hoje</p>
+          <p className="text-2xl font-bold text-gray-900">{pomodoroStats.today}</p>
+            <p className="text-gray-900">{todayPomodoroTime}</p>
               </div>
               <div className="p-3 bg-purple-100 rounded-lg">
-                <Timer className="h-6 w-6 text-purple-600" />
+          <Timer className="h-6 w-6 text-purple-600" />
               </div>
             </div>
           </div>
@@ -808,7 +858,7 @@ export default function App() {
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Projetos Recentes</h3>
           <div className="space-y-3">
             {projects.slice(0, 5).map((project) => {
-              const categoryInfo = CATEGORIES[project.category as keyof typeof CATEGORIES] || CATEGORIES.ons;
+              const categoryInfo = CATEGORIES[project.category as keyof typeof CATEGORIES] ;
               const projectFiles = repository.getFilesByProject(project.id);
               return (
                 <div key={project.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
@@ -817,7 +867,7 @@ export default function App() {
                     <div>
                       <p className="font-medium text-gray-900">{project.title}</p>
                       <div className="flex items-center space-x-4 text-sm text-gray-500">
-                        <span>Atualizado em {project.updatedAt.toLocaleDateString('pt-BR')}</span>
+                        <span>{formatDate(project.updatedAt)}</span>
                         {projectFiles.length > 0 && (
                           <span className="flex items-center">
                             <FileText size={12} className="mr-1" />
@@ -874,7 +924,7 @@ export default function App() {
 
 
        <div className="mb-6" id ="appBar">
-          <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2 bg-gray-900 bg-gray-900 text-white bg-white text-black">Kanban Board</h1>
+          <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2  bg-gray-900 text-black bg-white text-black">Kanban Board</h1>
           <p className="text-gray-600">Organize seus projetos visualmente</p>
               <button
                 onClick={() => setDarkMode(!darkMode)}
@@ -888,7 +938,7 @@ export default function App() {
           {columns.map((column) => (
             <div
               key={column.status}
-              className="bg-white rounded-xl shadow-sm border border-gray-500 p-2 min-w-300 md:min-w-0"
+              className="bg-gray-200 rounded-xl shadow-sm border border-gray-500 p-2 min-w-400 md:min-w-0"
               onDragOver={handleDragOver}
               onDrop={(e) => handleDrop(e, column.status)}
             >
@@ -896,7 +946,7 @@ export default function App() {
                 <div className="flex items-center gap-2">
                   <span className="text-xl">{column.emoji}</span>
                   <h2 className="font-semibold text-gray-900 text-sm">{column.title}</h2>
-                  <span className="bg-gray-900 text-gray-100 text-xs px-2 py-1 rounded-full">
+                  <span className="bg-gray-500 text-gray-100 text-xs px-2 py-1 rounded-full">
                     {column.items.length}
                   </span>
                 </div>
@@ -913,7 +963,7 @@ export default function App() {
 
               <div className="space-y-3">
                 {column.items.map((item) => {
-                  const categoryInfo = CATEGORIES[item.category as keyof typeof CATEGORIES] || CATEGORIES.ons;
+                  const categoryInfo = CATEGORIES[item.category as keyof typeof CATEGORIES] || CATEGORIES.spiritual;
                   const projectFiles = repository.getFilesByProject(item.id);
                   return (
                     <div
@@ -949,15 +999,15 @@ export default function App() {
                         {item.title}
                       </h3>
                       
-                      <p className="text-xs text-gray-500 line-clamp-2 mb-2">
+                      <h4 className="text-xs text-white line-clamp-2 mb-2">
                         {(item.content || '').replace(/[#*`\[\]]/g, '').substring(0, 80)}...
-                      </p>
+                      </h4>
                       
                       {item.content && <ChecklistProgress content={item.content} />}
                       
                       <div className="flex items-center justify-between text-xs text-gray-900 mt-2">
                         <div className="flex items-center space-x-2">
-                          <span>{item.updatedAt.toLocaleDateString('pt-BR')}</span>
+                    <span>{formatDate(item.updatedAt)}</span>
                           {projectFiles.length > 0 && (
                             <span className="flex items-center">
                               <FileText size={10} className="mr-1" />
@@ -1037,7 +1087,7 @@ export default function App() {
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {filteredProjects.map((project) => {
-                  const categoryInfo = CATEGORIES[project.category as keyof typeof CATEGORIES] || CATEGORIES.ons;
+                  const categoryInfo = CATEGORIES[project.category as keyof typeof CATEGORIES] || CATEGORIES.spiritual;
                   const statusInfo = STATUS_COLUMNS[project.status as keyof typeof STATUS_COLUMNS];
                   const projectFiles = repository.getFilesByProject(project.id);
                   
@@ -1090,7 +1140,17 @@ export default function App() {
                         </div>
                       </td>
                       <td className="px-4 py-4 text-sm text-gray-900">
-                        {project.updatedAt.toLocaleDateString('pt-BR')}
+                        <span>{formatDate(project.updatedAt)}</span>
+                        {formatDate(project.createdAt) !== formatDate(project.updatedAt) && (
+                          <span className="text-xs text-gray-500 ml-2">Criado em: {formatDate(project.createdAt)}</span>
+                        )}
+                      </td>
+                      <td className="px-4 py-4">
+                        <span className="text-xs text-gray-500">
+
+                         {formatDate(project.updatedAt)}
+                        </span>
+
                       </td>
                       <td className="px-4 py-4">
                         <div className="flex items-center space-x-2">
@@ -1370,9 +1430,12 @@ export default function App() {
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
         onExport={exportToExcel}
-        onImport={importFromExcel}
-        onSync={syncData}
-      />
+        // onImport={importFromExcel}
+        onSync={syncData} onImport={function (): void {
+          throw new Error('Function not implemented.');
+        } } darkMode={false} onToggleDarkMode={function (): void {
+          throw new Error('Function not implemented.');
+        } }      />
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col lg:ml-0">

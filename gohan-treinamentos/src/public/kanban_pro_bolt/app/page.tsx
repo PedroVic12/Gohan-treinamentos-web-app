@@ -766,7 +766,7 @@ export default function App() {
             </div>
           </div>
 
-          <div className="bg-blue-400 rounded-xl p-6 shadow-sm border border-gray-400">
+          <div className="bg-blue-500 rounded-xl p-6 shadow-sm border border-gray-400">
             <div className="flex items-center justify-between">
               <div>
           <p className="text-sm font-medium text-gray-900">Em Progresso</p>
@@ -790,7 +790,7 @@ export default function App() {
             </div>
           </div>
 
-          <div className="bg-orange-500 rounded-xl p-6 shadow-sm border border-gray-200">
+          <div className="bg-orange-400 rounded-xl p-6 shadow-sm border border-gray-200">
             <div className="flex items-center justify-between">
               <div>
           <p className="text-sm font-medium text-gray-900">Pomodoros Hoje</p>
@@ -936,6 +936,9 @@ export default function App() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-7 gap-4 overflow-x-auto">
           {columns.map((column) => (
+
+
+            //Color  KanBan card
             <div
               key={column.status}
               className="bg-gray-200 rounded-xl shadow-sm border border-gray-500 p-2 min-w-400 md:min-w-0"
