@@ -1,12 +1,37 @@
-# React + Vite
+# App Produtividade TDAH - Gohan Treinamentos
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Funcionalidades Principais:
+🎯 Menu Lateral Responsivo
 
-Currently, two official plugins are available:
+Dashboard: Visão geral com cards de status e projetos recentes
+Tabelas: Gestão completa dos projetos com CRUD
+Arquivos: Área para upload de PDFs, Excel e imagens + links úteis
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+📱 Mobile-First Design
 
-## Expanding the ESLint configuration
+Menu hamburger para mobile
+Layout responsivo com Tailwind CSS
+Sidebar colapsável
+Cards e tabelas adaptativas
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+💾 Gestão de Dados
+
+Estado React para persistência durante a sessão
+Exportar Backup: Gera arquivo CSV com todos os projetos
+Importar Dados: Restaura projetos de arquivo CSV
+Botões de sincronização no menu lateral
+
+📊 Funcionalidades de Projeto
+
+CRUD Completo: Criar, editar, visualizar e deletar projetos
+Filtros: Busca por texto e filtro por status
+Status com Cores: Cada status tem cor e emoji específicos
+Categorização: Organização por categorias (desenvolvimento, estudos, IA, etc.)
+
+🎨 Interface Moderna
+
+Design limpo com Tailwind CSS
+Ícones Lucide React
+Modais para edição
+Hover effects e transições suaves
+Cards informativos
