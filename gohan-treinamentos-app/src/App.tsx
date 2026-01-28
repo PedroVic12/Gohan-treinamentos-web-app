@@ -13,6 +13,8 @@ import {
 import { IonReactRouter } from '@ionic/react-router';
 import { Redirect, Route, useLocation } from 'react-router-dom';
 
+
+
 import {
   analyticsOutline,
   barbellOutline,
@@ -52,11 +54,19 @@ setupIonicReact();
 
 
 export const appRoutes = [
+
+  //Home
   { path: '/home', component: GohanTreinamentosHomePage, label: 'Home', icon: homeOutline },
+  
+  // Calistenia App V1
   { path: '/calistenia', component: CalisthenicsApp, label: 'Calistenia', icon: barbellOutline },
   { path: '/treinos', component: GohanTreinamentosGeradorTreinoPage, label: 'Treinos', icon: settingsOutline },
+  
+  // Quiz App AI otimizado com estudos em arquivos .json de perguntas e respostas
   { path: '/quizz', component: QuizGamePage, label: 'Quizz', icon: peopleOutline },
   { path: '/tasks', component: TaskManagerPage, label: 'Tarefas', icon: listOutline },
+
+  //Pomodoro Timer Taskk Manager
   { path: '/alarme', component: AlarmeClockPage, label: 'Alarme', icon: analyticsOutline },
   { path: '/checklist', component: MarkdownChecklist, label: 'Checklist', icon: notificationsOutline },
 ];
