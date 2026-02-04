@@ -2,11 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { Plus, RotateCcw, Dumbbell, Brain, Lightbulb, Sparkles, BookOpen, Menu } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { Plus, RotateCcw, Dumbbell, Brain, Lightbulb, Sparkles, BookOpen, Menu, X } from "lucide-react"
 
 interface Task {
   id: string
@@ -99,15 +95,16 @@ const getTaskMessage = (taskId: string): string => {
 }
 
 const getBackgroundClass = (count: number): string => {
-  if (count > 10) return "bg-purple-500/20 border-purple-500/50"
-  if (count > 7) return "bg-yellow-500/20 border-yellow-500/50"
-  if (count > 4) return "bg-green-500/20 border-green-500/50"
-  return "bg-card border-border"
+  if (count > 10) return "bg-purple-500/20 border-purple-500"
+  if (count > 7) return "bg-yellow-500/20 border-yellow-500"
+  if (count > 4) return "bg-green-500/20 border-green-500"
+  return "bg-white border-gray-200"
 }
 
 export default function HomePage() {
   const [tasks, setTasks] = useState<Task[]>(initialTasks)
   const [toast, setToast] = useState<string | null>(null)
+  const [menuOpen, setMenuOpen] = useState(false)
   const maxWeeklyCount = 40
 
   useEffect(() => {
@@ -128,6 +125,7 @@ export default function HomePage() {
   }, [tasks])
 
   const totalCount = tasks.reduce((sum, task) => sum + task.count, 0)
+  const progressPercent = (totalCount / maxWeeklyCount) * 100
 
   const showToast = (message: string) => {
     setToast(message)
@@ -170,107 +168,130 @@ export default function HomePage() {
   ]
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-border bg-primary">
-        <div className="container mx-auto flex h-14 items-center justify-between px-4">
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="text-primary-foreground">
-                <Menu className="h-5 w-5" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left" className="w-64">
-              <nav className="mt-8 flex flex-col gap-2">
-                {navItems.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className="rounded-lg px-4 py-2 text-foreground transition-colors hover:bg-accent"
-                  >
-                    {item.label}
-                  </Link>
-                ))}
-              </nav>
-            </SheetContent>
-          </Sheet>
-          <h1 className="text-lg font-bold text-primary-foreground">Gohan Treinamentos 2025</h1>
-          <Button
-            variant="ghost"
-            size="icon"
+      <header className="sticky top-0 z-50 bg-orange-500 shadow-md">
+        <div className="flex h-14 items-center justify-between px-4">
+          <button
+            onClick={() => setMenuOpen(true)}
+            className="flex h-10 w-10 items-center justify-center rounded-lg text-white active:bg-orange-600"
+          >
+            <Menu className="h-6 w-6" />
+          </button>
+          <h1 className="text-lg font-bold text-white">Gohan Treinamentos 2025</h1>
+          <button
             onClick={handleRefresh}
-            className="text-primary-foreground"
+            className="flex h-10 w-10 items-center justify-center rounded-lg text-white active:bg-orange-600"
           >
             <RotateCcw className="h-5 w-5" />
-          </Button>
+          </button>
         </div>
       </header>
 
+      {/* Mobile Menu Overlay */}
+      {menuOpen && (
+        <div className="fixed inset-0 z-50 flex">
+          <div
+            className="absolute inset-0 bg-black/50"
+            onClick={() => setMenuOpen(false)}
+          />
+          <div className="relative z-10 h-full w-64 bg-white p-4 shadow-xl">
+            <div className="mb-6 flex items-center justify-between">
+              <h2 className="text-lg font-bold text-orange-500">Menu</h2>
+              <button
+                onClick={() => setMenuOpen(false)}
+                className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <nav className="flex flex-col gap-1">
+              {navItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setMenuOpen(false)}
+                  className="rounded-lg px-4 py-3 text-gray-700 transition-colors hover:bg-orange-50 hover:text-orange-500 active:bg-orange-100"
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
+          </div>
+        </div>
+      )}
+
       {/* Toast */}
       {toast && (
-        <div className="fixed bottom-4 left-1/2 z-50 -translate-x-1/2 transform rounded-lg bg-foreground px-4 py-2 text-background shadow-lg">
+        <div className="fixed bottom-4 left-4 right-4 z-50 rounded-lg bg-gray-900 px-4 py-3 text-center text-sm text-white shadow-lg">
           {toast}
         </div>
       )}
 
       {/* Content */}
-      <div className="container mx-auto max-w-2xl px-4 py-6">
+      <div className="px-4 py-6">
         {/* Date */}
-        <p className="mb-6 text-center text-lg capitalize text-muted-foreground">{formatDate()}</p>
+        <p className="mb-6 text-center text-base capitalize text-gray-500">{formatDate()}</p>
 
         {/* Hobbies Section */}
-        <div className="mb-8 text-center">
-          <h2 className="text-2xl font-bold text-primary">You Only Need 5 hobbies</h2>
-          <p className="text-muted-foreground">(Corpo x Mente x Espirito)</p>
+        <div className="mb-6 text-center">
+          <h2 className="text-xl font-bold text-orange-500">You Only Need 5 hobbies</h2>
+          <p className="text-sm text-gray-500">(Corpo x Mente x Espirito)</p>
         </div>
 
         {/* Tasks List */}
-        <div className="mb-8 flex flex-col gap-4">
-          {tasks.map((task) => (
-            <Card
-              key={task.id}
-              className={`transition-all hover:-translate-y-0.5 hover:shadow-lg ${getBackgroundClass(task.count)}`}
-            >
-              <CardContent className="flex items-start gap-4 p-4">
-                <div className="flex-1">
-                  <div className="mb-1 flex items-center gap-2">
-                    <task.icon className="h-5 w-5 text-primary" />
-                    <h3 className="font-semibold text-card-foreground">{task.title}</h3>
+        <div className="mb-6 flex flex-col gap-3">
+          {tasks.map((task) => {
+            const Icon = task.icon
+            return (
+              <div
+                key={task.id}
+                className={`rounded-xl border-2 p-4 shadow-sm transition-all ${getBackgroundClass(task.count)}`}
+              >
+                <div className="flex items-start gap-3">
+                  <div className="flex-1">
+                    <div className="mb-1 flex items-center gap-2">
+                      <Icon className="h-5 w-5 text-orange-500" />
+                      <h3 className="text-sm font-semibold text-gray-800">{task.title}</h3>
+                    </div>
+                    <p className="text-xs leading-relaxed text-gray-600">{task.description}</p>
                   </div>
-                  <p className="text-sm text-muted-foreground">{task.description}</p>
+                  <div className="flex shrink-0 items-center gap-2 rounded-full bg-gray-100 px-3 py-1">
+                    <span className="text-sm font-medium text-gray-700">{task.count}/15</span>
+                    <button
+                      onClick={() => handleIncrement(task.id)}
+                      disabled={task.count >= 15}
+                      className="flex h-7 w-7 items-center justify-center rounded-full bg-orange-500 text-white disabled:bg-gray-300"
+                    >
+                      <Plus className="h-4 w-4" />
+                    </button>
+                  </div>
                 </div>
-                <div className="flex shrink-0 items-center gap-2 rounded-full bg-muted px-3 py-1">
-                  <span className="text-sm font-medium">{task.count}/15</span>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-6 w-6"
-                    onClick={() => handleIncrement(task.id)}
-                    disabled={task.count >= 15}
-                  >
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+              </div>
+            )
+          })}
         </div>
 
         {/* Progress Section */}
-        <div className="mb-8">
-          <h3 className="mb-2 text-lg font-semibold text-destructive">
+        <div className="mb-6">
+          <h3 className="mb-2 text-base font-semibold text-red-500">
             Desempenho da semana: {totalCount}/{maxWeeklyCount}
           </h3>
-          <Progress value={(totalCount / maxWeeklyCount) * 100} className="h-6" />
+          <div className="h-6 w-full overflow-hidden rounded-full bg-gray-200">
+            <div
+              className="h-full rounded-full bg-orange-500 transition-all duration-300"
+              style={{ width: `${progressPercent}%` }}
+            />
+          </div>
         </div>
 
         {/* Motivational Text */}
-        <div className="rounded-lg bg-card p-4 text-card-foreground">
-          <p className="mb-4">
+        <div className="rounded-xl bg-white p-4 shadow-sm">
+          <p className="mb-3 text-sm text-gray-700">
             Importante cuidar das suas Habilidades (trabalho), Saude mental (estudos), saude
             emocional (relacionamentos) e saude fisica (treinos)!
           </p>
-          <p className="font-medium text-primary">
+          <p className="text-sm font-medium text-orange-500">
             Hora de se tornar um Super Sayajin em 2025 e sua melhor versao: Lindo, Inteligente e
             Gostoso!
           </p>
