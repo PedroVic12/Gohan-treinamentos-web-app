@@ -135,6 +135,7 @@ const AppContent = () => {
             borderBottomRightRadius: '14px',
             zIndex: 9999,
             display: 'flex',
+            justifyContent: 'center',
             alignItems: 'center',
             pointerEvents: 'none'
           }}>
