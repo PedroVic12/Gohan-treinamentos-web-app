@@ -92,10 +92,22 @@ function GohanTreinamentosHomePage() {
     alert("Rotinas resetadas! Tenha um ótimo início de semana! Lembre-se dos seus objetivos e metas!");
   };
 
+  useEffect(() => {
+    const handleThemeToggle = () => {
+      const saved = localStorage.getItem('gohan_dark_mode');
+      if (saved !== null) {
+        setDarkMode(JSON.parse(saved));
+      }
+    };
+    window.addEventListener('theme-changed', handleThemeToggle);
+    return () => window.removeEventListener('theme-changed', handleThemeToggle);
+  }, []);
+
   const toggleDarkMode = () => {
     setDarkMode(prev => {
       const newVal = !prev;
       localStorage.setItem('gohan_dark_mode', JSON.stringify(newVal));
+      window.dispatchEvent(new Event('theme-changed'));
       return newVal;
     });
   };

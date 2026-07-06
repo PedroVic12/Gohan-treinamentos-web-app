@@ -25,6 +25,9 @@ import {
   settingsOutline
 } from 'ionicons/icons';
 
+import { useState, useEffect, useMemo } from 'react';
+import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
+
 /* Páginas */
 import GohanTreinamentosGeradorTreinoPage from './app/pages/geradorTreinoPage';
 import GohanTreinamentosHomePage from './app/pages/HomePage/gohan_treinamentos_homepage';
@@ -47,7 +50,7 @@ import '@ionic/react/css/text-alignment.css';
 import '@ionic/react/css/text-transformation.css';
 import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
-import '@ionic/react/css/palettes/dark.system.css';
+import '@ionic/react/css/palettes/dark.class.css';
 import './theme/variables.css';
 
 setupIonicReact();
@@ -75,39 +78,82 @@ const AppContent = () => {
   const location = useLocation();
 
   return (
-    <IonTabs>
-      {/* Força re-render com key baseada na location.pathname */}
-      <IonRouterOutlet key={location.pathname}>
-        {appRoutes.map((route, index) => (
-          <Route key={index} exact path={route.path} component={route.component} />
-        ))}
-        <Redirect exact from="/" to="/home" />
-      </IonRouterOutlet>
+    <div style={{ display: 'flex', justifyContent: 'center', width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.05)' }}>
+      <div style={{ width: '100%', maxWidth: '480px', height: '100%', display: 'flex', flexDirection: 'column', position: 'relative', boxShadow: '0 0 24px rgba(0, 0, 0, 0.15)', borderLeft: '1px solid rgba(255,255,255,0.05)', borderRight: '1px solid rgba(255,255,255,0.05)' }}>
+        <IonTabs>
+          {/* Força re-render com key baseada na location.pathname */}
+          <IonRouterOutlet key={location.pathname}>
+            {appRoutes.map((route, index) => (
+              <Route key={index} exact path={route.path} component={route.component} />
+            ))}
+            <Redirect exact from="/" to="/home" />
+          </IonRouterOutlet>
 
-      <IonTabBar slot="bottom">
-        {appRoutes.map((route, index) => (
-          <IonTabButton key={index} tab={route.label} href={route.path}>
-            <IonIcon icon={route.icon} />
-            <IonLabel>{route.label}</IonLabel>
-          </IonTabButton>
-        ))}
-      </IonTabBar>
-    </IonTabs>
+          <IonTabBar slot="bottom">
+            {appRoutes.map((route, index) => (
+              <IonTabButton key={index} tab={route.label} href={route.path}>
+                <IonIcon icon={route.icon} />
+                <IonLabel>{route.label}</IonLabel>
+              </IonTabButton>
+            ))}
+          </IonTabBar>
+        </IonTabs>
+      </div>
+    </div>
   );
 };
 
 const App: React.FC = () => {
+  const [darkMode, setDarkMode] = useState<boolean>(() => {
+    const saved = localStorage.getItem('gohan_dark_mode');
+    return saved ? JSON.parse(saved) : true;
+  });
+
+  useEffect(() => {
+    // Sincroniza a classe do Ionic no body
+    document.documentElement.classList.toggle('ion-palette-dark', darkMode);
+    
+    // Listener para mudanças manuais de tema disparadas de outras telas
+    const handleThemeToggle = () => {
+      const saved = localStorage.getItem('gohan_dark_mode');
+      if (saved !== null) {
+        setDarkMode(JSON.parse(saved));
+      }
+    };
+    window.addEventListener('theme-changed', handleThemeToggle);
+    return () => window.removeEventListener('theme-changed', handleThemeToggle);
+  }, [darkMode]);
+
+  const theme = useMemo(() => createTheme({
+    palette: {
+      mode: darkMode ? 'dark' : 'light',
+      primary: {
+        main: '#3b82f6',
+      },
+      background: {
+        default: darkMode ? '#0f172a' : '#f8fafc',
+        paper: darkMode ? '#1e293b' : '#ffffff',
+      },
+    },
+    typography: {
+      fontFamily: 'Outfit, Inter, sans-serif',
+    },
+  }), [darkMode]);
+
   return (
-    <IonApp>
-      <IonReactRouter>
-        <IonSplitPane contentId="main">
-          <SidebarMenu />
-          <IonRouterOutlet id="main">
-            <Route path="/" component={AppContent} />
-          </IonRouterOutlet>
-        </IonSplitPane>
-      </IonReactRouter>
-    </IonApp>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <IonApp>
+        <IonReactRouter>
+          <IonSplitPane contentId="main">
+            <SidebarMenu />
+            <IonRouterOutlet id="main">
+              <Route path="/" component={AppContent} />
+            </IonRouterOutlet>
+          </IonSplitPane>
+        </IonReactRouter>
+      </IonApp>
+    </ThemeProvider>
   );
 };
 
