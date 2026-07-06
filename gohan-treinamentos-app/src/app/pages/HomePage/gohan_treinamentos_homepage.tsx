@@ -22,7 +22,8 @@ import { initialTasks } from '../../public/data/initialTasks';
 import { formatDate } from '../../public/utils/dateUtils';
 import { getTaskMessage } from '../../public/data/taskMessages';
 import { Task } from '../../public/types/Task';
-import { IonPage, menuController } from '@ionic/react';
+import { IonPage } from '@ionic/react';
+import { menuController } from '@ionic/core';
 
 // Widgets
 const HobbiesSection: React.FC = () => {
