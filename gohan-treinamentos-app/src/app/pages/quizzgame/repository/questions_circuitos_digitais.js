@@ -118,5 +118,53 @@ export const digitalQuestions = [
       d: "O FF2 entra em estado inválido com saídas complementares iguais."
     },
     correctAnswer: "c"
+  },
+  {
+    id: 11,
+    question: "Ao simplificar a expressão booleana F(A, B, C) = Ʃm(0, 2, 4, 6) utilizando um Mapa de Karnaugh de 3 variáveis, qual é a forma simplificada resultante?",
+    difficulty: "Fácil",
+    options: {
+      a: "F = C",
+      b: "F = C_bar",
+      c: "F = A + B",
+      d: "F = A_bar"
+    },
+    correctAnswer: "b"
+  },
+  {
+    id: 12,
+    question: "Para projetar um multiplexador 8:1 (oito entradas de dados para uma saída), quantas linhas de seleção (endereço) são necessárias?",
+    difficulty: "Fácil",
+    options: {
+      a: "2 linhas de seleção",
+      b: "3 linhas de seleção",
+      c: "4 linhas de seleção",
+      d: "8 linhas de seleção"
+    },
+    correctAnswer: "b"
+  },
+  {
+    id: 13,
+    question: "Qual é a função básica de um Demultiplexador (Demux) de 1 para 4 saídas?",
+    difficulty: "Médio",
+    options: {
+      a: "Converter um código binário de 2 bits em 4 saídas ativas.",
+      b: "Direcionar uma única linha de entrada para uma de quatro saídas possíveis com base em 2 bits de controle.",
+      c: "Selecionar uma de quatro entradas de dados e enviá-la para uma única saída.",
+      d: "Realizar a soma lógica de 4 entradas binárias."
+    },
+    correctAnswer: "b"
+  },
+  {
+    id: 14,
+    question: "Em um display de 7 segmentos de catodo comum (onde o nível lógico 1 acende o segmento), qual sinal lógico deve ser enviado ao segmento 'a' para representar o algarismo '0'?",
+    difficulty: "Fácil",
+    options: {
+      a: "Nível lógico 0 (desligado)",
+      b: "Nível lógico 1 (ligado)",
+      c: "Um sinal de clock pulsante",
+      d: "Nível de alta impedância (Z)"
+    },
+    correctAnswer: "b"
   }
 ];

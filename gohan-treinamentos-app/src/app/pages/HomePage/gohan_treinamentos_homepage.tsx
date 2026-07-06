@@ -1,13 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import {
   Container,
   Typography,
   List,
   Box,
   IconButton,
-  Menu,
-  MenuItem,
+  AppBar,
+  Toolbar,
+  ThemeProvider,
+  createTheme,
+  CssBaseline,
 } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import LightModeIcon from '@mui/icons-material/LightMode';
+import RefreshIcon from '@mui/icons-material/Refresh';
 
 import { TaskItem } from '../../public/components/TaskItem';
 import { ProgressBar } from '../../public/components/ProgressBar';
@@ -15,36 +22,23 @@ import { initialTasks } from '../../public/data/initialTasks';
 import { formatDate } from '../../public/utils/dateUtils';
 import { getTaskMessage } from '../../public/data/taskMessages';
 import { Task } from '../../public/types/Task';
-import { IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonMenuButton, IonPage, IonTitle, IonToolbar, useIonToast } from '@ionic/react';
-import SidebarMenu from '../../widgets/side_menu';
-import { refreshOutline } from 'ionicons/icons';
-
-import "./appbar.css"
+import { IonPage, menuController } from '@ionic/react';
 
 // Widgets
-const CustomText = ({ props }: { props: { text: string } }) => {
-  return (
-    <Typography variant="subtitle1" align="center" gutterBottom color="primary">
-      {props.text}
-    </Typography>
-  );
-}
-
 const HobbiesSection: React.FC = () => {
   return (
-    <div style={{ textAlign: 'center', margin: '20px 0' }}>
-      <Typography variant="h5" gutterBottom color="primary">
-        You Only Need 5 hobbies
+    <Box sx={{ textAlign: 'center', my: 3 }}>
+      <Typography variant="h4" fontWeight="bold" gutterBottom color="primary">
+        You Only Need 5 Hobbies
       </Typography>
-      <Typography variant="subtitle1" gutterBottom color="primary">
-        (Corpo x Mente x Espirito)
+      <Typography variant="subtitle1" gutterBottom color="text.secondary">
+        (Corpo x Mente x Espírito)
       </Typography>
-
-    </div>
+    </Box>
   );
 };
 
-// src/app/utils/LocalDatabase.ts
+// Local storage helper
 class LocalDatabase {
   static getTasks() {
     const savedTasks = localStorage.getItem('tasks');
@@ -57,26 +51,18 @@ class LocalDatabase {
 }
 
 function GohanTreinamentosHomePage() {
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-  const [present] = useIonToast();
-
-  const SnackBar = (message: string, position: 'top' | 'middle' | 'bottom' = 'bottom') => {
-    present({
-      message: message, // Usa o parâmetro message
-      duration: 2500,
-      position: position,
-    });
-  };
-
+  const [darkMode, setDarkMode] = useState<boolean>(() => {
+    const saved = localStorage.getItem('gohan_dark_mode');
+    return saved ? JSON.parse(saved) : true; // Default to dark mode
+  });
 
   const [tasks, setTasks] = useState<Task[]>(() => {
-    return LocalDatabase.getTasks() || initialTasks; // Usa LocalDatabase para carregar tarefas
+    return LocalDatabase.getTasks() || initialTasks;
   });
   const maxWeeklyCount = 40;
 
   useEffect(() => {
-    LocalDatabase.saveTasks(tasks); // Usa LocalDatabase para salvar tarefas
+    LocalDatabase.saveTasks(tasks);
   }, [tasks]);
 
   const totalCount = tasks.reduce((sum, task) => sum + task.count, 0);
@@ -90,8 +76,8 @@ function GohanTreinamentosHomePage() {
             alert(getTaskMessage(taskId));
           }
 
-          if (totalCount == 25) {
-            alert("Parabens meu jovem Padawan! Voce esta com a energia vibrando alto! Busque a paz e equilibrio! Que a força esteja com você, Pedro Victor!!");
+          if (totalCount === 25) {
+            alert("Parabéns meu jovem Padawan! Você está com a energia vibrando alto! Busque a paz e equilíbrio! Que a força esteja com você, Pedro Victor!!");
           }
           return { ...task, count: newCount };
         }
@@ -102,68 +88,110 @@ function GohanTreinamentosHomePage() {
 
   const handleRefresh = () => {
     setTasks(initialTasks);
-
-    SnackBar("Rotinas resetadas! Tenha um otimo inicio de semana! Lembre-se dos seus objetivos e metas!", "middle");
+    alert("Rotinas resetadas! Tenha um ótimo início de semana! Lembre-se dos seus objetivos e metas!");
   };
 
+  const toggleDarkMode = () => {
+    setDarkMode(prev => {
+      const newVal = !prev;
+      localStorage.setItem('gohan_dark_mode', JSON.stringify(newVal));
+      return newVal;
+    });
+  };
+
+  const handleOpenMenu = async () => {
+    await menuController.open('first');
+  };
+
+  // Tema MUI Customizado (Material Design 3 aesthetic)
+  const theme = useMemo(() => createTheme({
+    palette: {
+      mode: darkMode ? 'dark' : 'light',
+      primary: {
+        main: '#3b82f6', // Bright, premium blue
+      },
+      background: {
+        default: darkMode ? '#0f172a' : '#f8fafc',
+        paper: darkMode ? '#1e293b' : '#ffffff',
+      },
+    },
+    typography: {
+      fontFamily: 'Outfit, Inter, sans-serif',
+    },
+    components: {
+      MuiAppBar: {
+        styleOverrides: {
+          root: {
+            backgroundColor: darkMode ? '#1e293b' : '#3b82f6',
+            backgroundImage: 'none',
+          }
+        }
+      }
+    }
+  }), [darkMode]);
+
   return (
-    <>
-
-      <SidebarMenu></SidebarMenu>
-
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
       <IonPage id="main-content">
-
-        <IonHeader mode="ios">
-          <IonToolbar color="tertiary" className="custom-toolbar">
-            <IonButtons slot="start">
-              <IonMenuButton className="custom-menu-button"></IonMenuButton>
-            </IonButtons>
-
-            <IonTitle className="custom-title">Gohan Treinamentos 2025</IonTitle>
-
-            <IonButtons slot="end">
-              <IonButton onClick={handleRefresh} className="custom-refresh-button">
-                <IonIcon icon={refreshOutline} className="custom-refresh-icon" />
-              </IonButton>
-            </IonButtons>
-          </IonToolbar>
-        </IonHeader>
-
-        <IonContent className="ion-padding">
-          <Box sx={{ flexGrow: 1 }}>
-            <Container maxWidth="md" sx={{ overflowY: 'auto', maxHeight: '80vh' }}>
-              <Typography variant="h5" align="center" gutterBottom>
-                {formatDate()}
-              </Typography>
-
-              <HobbiesSection />
-
-              <List>
-                {tasks.map((task) => (
-                  <TaskItem
-                    key={task.id}
-                    task={task}
-                    onIncrement={handleIncrement}
-                  />
-                ))}
-              </List>
-
-              <ProgressBar totalCount={totalCount} maxCount={maxWeeklyCount} />
-              <Typography variant="body1" gutterBottom color="primary">
-              Importante cuidar da suas Habilidades (trabalho), Saúde mental(estudos), saude emocional(relacionamentos) e saude física (treinos)!
-              <br></br>
-              <br></br>
-              Hora de se tornar um Super Sayajin em 2025 e sua melhor versão: Lindo, Inteligente e Gostoso!
+        {/* MUI AppBar header replacing Ionic header */}
+        <AppBar position="sticky" elevation={0} sx={{ borderBottom: '1px solid', borderColor: 'divider' }}>
+          <Toolbar>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              edge="start"
+              onClick={handleOpenMenu}
+              sx={{ mr: 2 }}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontWeight: 'bold' }}>
+              Gohan Treinamentos
             </Typography>
-            
-              <br />
-              <br />
+            <IconButton onClick={toggleDarkMode} color="inherit" sx={{ mr: 1 }}>
+              {darkMode ? <LightModeIcon /> : <DarkModeIcon />}
+            </IconButton>
+            <IconButton onClick={handleRefresh} color="inherit">
+              <RefreshIcon />
+            </IconButton>
+          </Toolbar>
+        </AppBar>
 
-            </Container>
-          </Box>
-        </IonContent>
+        {/* MUI Container replacing IonContent scroll area */}
+        <Box sx={{ overflowY: 'auto', height: 'calc(100vh - 64px)', py: 3, bgcolor: 'background.default' }}>
+          <Container maxWidth="md">
+            <Typography variant="h6" align="center" color="text.secondary" gutterBottom>
+              {formatDate()}
+            </Typography>
+
+            <HobbiesSection />
+
+            <List disablePadding>
+              {tasks.map((task) => (
+                <TaskItem
+                  key={task.id}
+                  task={task}
+                  onIncrement={handleIncrement}
+                />
+              ))}
+            </List>
+
+            <ProgressBar totalCount={totalCount} maxCount={maxWeeklyCount} />
+            
+            <Box sx={{ mt: 4, p: 3, borderRadius: 4, bgcolor: 'background.paper', border: '1px solid', borderColor: 'divider' }}>
+              <Typography variant="body1" color="text.primary" sx={{ lineHeight: 1.6 }}>
+                Importante cuidar da suas Habilidades (trabalho), Saúde mental (estudos), saúde emocional (relacionamentos) e saúde física (treinos)!
+                <br /><br />
+                Hora de se tornar um Super Sayajin em 2025 e sua melhor versão: Lindo, Inteligente e Gostoso!
+              </Typography>
+            </Box>
+            
+            <Box sx={{ height: 60 }} /> {/* Bottom padding */}
+          </Container>
+        </Box>
       </IonPage>
-    </>
+    </ThemeProvider>
   );
 }
 
