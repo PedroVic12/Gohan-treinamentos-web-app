@@ -412,7 +412,7 @@ export default function CalisthenicsApp() {
 
                       {isCompleted && (
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1.5, color: 'success.main' }}>
-                          <CheckCircleIcon size="small" />
+                          <CheckCircleIcon fontSize="small" />
                           <Typography variant="body2" fontWeight="bold">Séries Completadas!</Typography>
                         </Box>
                       )}

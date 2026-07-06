@@ -458,7 +458,7 @@ function AlarmeClockPage() {
                 {alarms.map((alarm: any) => (
                   <Slide key={alarm.id} direction="up" in={true} mountOnEnter unmountOnExit>
                     <IonItemSliding>
-                      <IonItem sx={{ borderLeft: '5px solid #3b82f6', mb: 1, borderRadius: 2 }}>
+                      <IonItem style={{ borderLeft: '5px solid #3b82f6', marginBottom: '8px', borderRadius: '8px' }}>
                         <IonLabel>
                           <Typography variant="h5" fontWeight="bold">{alarm.time}</Typography>
                           <Typography variant="caption" color="text.secondary">Som: {alarm.soundName}</Typography>
