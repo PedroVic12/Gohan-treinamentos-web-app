@@ -76,10 +76,73 @@ export const appRoutes = [
 
 const AppContent = () => {
   const location = useLocation();
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 480);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 480);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const outerContainerStyles: React.CSSProperties = isMobile ? {
+    width: '100%',
+    height: '100%',
+    display: 'block',
+    backgroundColor: 'var(--ion-background-color)'
+  } : {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100vw',
+    height: '100vh',
+    background: 'radial-gradient(circle, #334155 0%, #0f172a 100%)',
+    overflow: 'hidden'
+  };
+
+  const deviceWrapperStyles: React.CSSProperties = isMobile ? {
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    position: 'relative'
+  } : {
+    width: '420px',
+    height: '88vh',
+    display: 'flex',
+    flexDirection: 'column',
+    position: 'relative',
+    border: '12px solid #1e293b',
+    borderRadius: '36px',
+    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.6)',
+    backgroundColor: 'var(--ion-background-color)',
+    overflow: 'hidden'
+  };
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.05)' }}>
-      <div style={{ width: '100%', maxWidth: '480px', height: '100%', display: 'flex', flexDirection: 'column', position: 'relative', boxShadow: '0 0 24px rgba(0, 0, 0, 0.15)', borderLeft: '1px solid rgba(255,255,255,0.05)', borderRight: '1px solid rgba(255,255,255,0.05)' }}>
+    <div style={outerContainerStyles}>
+      <div style={deviceWrapperStyles}>
+        {/* Smartphone Notch Bar (only on desktop mockup view) */}
+        {!isMobile && (
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: '140px',
+            height: '22px',
+            backgroundColor: '#1e293b',
+            borderBottomLeftRadius: '14px',
+            borderBottomRightRadius: '14px',
+            zIndex: 9999,
+            display: 'flex',
+            alignItems: 'center',
+            pointerEvents: 'none'
+          }}>
+            {/* Camera speaker line */}
+            <div style={{ width: '40px', height: '4px', backgroundColor: '#334155', borderRadius: '2px' }} />
+          </div>
+        )}
+
         <IonTabs>
           {/* Força re-render com key baseada na location.pathname */}
           <IonRouterOutlet key={location.pathname}>
