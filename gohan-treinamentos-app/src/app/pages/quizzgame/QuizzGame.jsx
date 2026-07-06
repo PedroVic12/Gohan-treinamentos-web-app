@@ -38,7 +38,7 @@ const quizCategories = [
   }
 ];
 
-const QuestionHeader = ({ currentQuestion, totalQuestions, correctAnswers, difficulty, onBack }) => {
+const QuestionHeader = ({ currentQuestion, totalQuestions, correctAnswers, difficulty, source, onBack }) => {
   const getDifficultyColor = (diff) => {
     switch (diff) {
       case 'Fácil': return 'success';
@@ -65,6 +65,9 @@ const QuestionHeader = ({ currentQuestion, totalQuestions, correctAnswers, diffi
         </IonText>
         <IonText color={getDifficultyColor(difficulty)}>
           <h2>Dificuldade: {difficulty}</h2>
+        </IonText>
+        <IonText color="medium">
+          <h2>Origem: {source || 'Fonte Própria'}</h2>
         </IonText>
       </div>
     </div>
@@ -250,6 +253,7 @@ const QuizGamePage = () => {
           totalQuestions={activeQuestions.length}
           correctAnswers={correctAnswers}
           difficulty={activeQuestions[currentQuestion].difficulty}
+          source={activeQuestions[currentQuestion].source}
           onBack={exitQuiz}
         />
         <QuestionCard

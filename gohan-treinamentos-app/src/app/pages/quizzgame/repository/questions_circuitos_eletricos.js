@@ -3,6 +3,7 @@ export const electricQuestions = [
     id: 1,
     question: "Qual é a unidade de medida da resistência elétrica?",
     difficulty: "Fácil",
+    source: "Lista de Exercícios",
     options: {
       a: "Ampere (A)",
       b: "Volt (V)",
@@ -15,6 +16,7 @@ export const electricQuestions = [
     id: 2,
     question: "Pela Lei de Ohm, se a tensão (V) aumenta mantendo a resistência (R) constante, o que acontece com a corrente (I)?",
     difficulty: "Fácil",
+    source: "Lista de Exercícios",
     options: {
       a: "Diminui proporcionalmente",
       b: "Aumenta proporcionalmente",
@@ -27,6 +29,7 @@ export const electricQuestions = [
     id: 3,
     question: "Qual é a lei física que afirma que a soma das correntes que entram em um nó é igual à soma das que saem?",
     difficulty: "Médio",
+    source: "Prova P1",
     options: {
       a: "Lei de Ohm",
       b: "Lei das Tensões de Kirchhoff (LTK)",
