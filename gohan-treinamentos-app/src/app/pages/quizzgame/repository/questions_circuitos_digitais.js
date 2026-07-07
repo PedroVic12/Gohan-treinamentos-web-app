@@ -129,6 +129,95 @@ export const digitalQuestions = [
     },
     correctAnswer: "c"
   },
-
-
+  {
+    id: 11,
+    question: "Qual circuito sequencial básico é amplamente utilizado na indústria para eliminar o fenômeno da trepidação de contatos mecânicos (contact bounce) em botões e chaves?",
+    difficulty: "Fácil",
+    source: "Aula UFF (Pág. 32)",
+    options: {
+      a: "Flip-Flop D ativo por borda.",
+      b: "Latch SR (NAND ou NOR).",
+      c: "Contador assíncrono Módulo-2.",
+      d: "Registrador de deslocamento de 4 estágios."
+    },
+    correctAnswer: "b"
+  },
+  {
+    id: 12,
+    question: "A arquitetura interna típica de um Flip-Flop disparado por borda (edge-triggered) é dividida em três blocos principais. Quais são eles?",
+    difficulty: "Médio",
+    source: "Aula UFF (Pág. 64)",
+    options: {
+      a: "Multiplexador, Unidade Aritmética e Lógica (ULA), e Registrador.",
+      b: "Latch básico (NAND/NOR), Circuito direcionador/encaminhador de pulsos, e Circuito detector de borda.",
+      c: "Contador assíncrono, Decodificador de 7 segmentos, e Latch D.",
+      d: "Circuito de clock interno, Porta lógica XOR de realimentação, e Schmitt Trigger."
+    },
+    correctAnswer: "b"
+  },
+  {
+    id: 13,
+    question: "Um circuito detector de borda positiva clássico utiliza uma porta NOT e uma porta AND em paralelo. Como esse circuito gera o pulso estreito (spike) na saída (CLK*)?",
+    difficulty: "Difícil",
+    source: "Aula UFF (Pág. 71-72)",
+    options: {
+      a: "Aproveitando a carga e descarga capacitiva do pino de clock.",
+      b: "Através da oscilação forçada por realimentação positiva direta.",
+      c: "Aproveitando o atraso de propagação (propagation delay) inerente da porta NOT para manter ambas as entradas da porta AND em nível alto por uma fração de nanosegundos.",
+      d: "Pela comutação de nível dinâmico de um gerador de corrente constante."
+    },
+    correctAnswer: "c"
+  },
+  {
+    id: 14,
+    question: "Em um Flip-Flop JK com clock e entradas assíncronas de Preset (PR) e Clear (CLR) ativas em nível baixo, o que ocorre se ambas as entradas síncronas forem J=1, K=1 e o pino CLR for colocado em 0 (LOW) na borda ativa do clock?",
+    difficulty: "Médio",
+    source: "Aula UFF (Pág. 93, 97)",
+    options: {
+      a: "A saída Q alterna seu estado lógico (Toggle).",
+      b: "A saída Q vai imediatamente para 0 (Reset assíncrono), ignorando as entradas J, K e a transição de clock.",
+      c: "O Flip-Flop entra em estado de metastabilidade permanente.",
+      d: "A saída Q vai para 1 (Set assíncrono) porque Preset é prioritário sobre o Clear."
+    },
+    correctAnswer: "b"
+  },
+  {
+    id: 15,
+    question: "Em um sistema digital de transferência de dados em paralelo usando 3 Flip-Flops D, o que acontece com os dados presentes nas entradas X, Y e Z no momento em que ocorre a borda ativa do sinal comum de clock?",
+    difficulty: "Fácil",
+    source: "Aula UFF (Pág. 100)",
+    options: {
+      a: "São transferidos serialmente, bit a bit, a cada período do clock.",
+      b: "São transferidos simultaneamente (em paralelo) para as saídas Q1, Q2 e Q3 dos respectivos Flip-Flops.",
+      c: "São perdidos se o pino de habilitar transferência estiver em nível alto.",
+      d: "São somados aritmeticamente e o resultado é armazenado na saída Q2."
+    },
+    correctAnswer: "b"
+  },
+  {
+    id: 16,
+    question: "Para realizar a transferência completa de uma palavra binária de N bits entre dois registradores de deslocamento (shift registers) conectados de forma serial, quantos tempos/pulsos de clock são estritamente necessários?",
+    difficulty: "Médio",
+    source: "Aula UFF (Pág. 108)",
+    options: {
+      a: "Apenas 1 pulso de clock.",
+      b: "N/2 pulsos de clock.",
+      c: "Exatamente N pulsos de clock.",
+      d: "2N pulsos de clock."
+    },
+    correctAnswer: "c"
+  },
+  {
+    id: 17,
+    question: "No projeto de uma máquina de vendas (vending machine) de chicletes que aceita moedas de 5 centavos (C) e 10 centavos (D) e libera o produto ao atingir 15 centavos, quantos estados estáveis de contagem são necessários para representar o acúmulo de saldo?",
+    difficulty: "Difícil",
+    source: "Aula UFF (Pág. 156)",
+    options: {
+      a: "2 estados (0c e 15c).",
+      b: "3 estados (0c, 5c e 10c).",
+      c: "4 estados (0c, 5c, 10c e 15c [liberar]).",
+      d: "5 estados (0c, 5c, 10c, 15c e 20c)."
+    },
+    correctAnswer: "c"
+  }
 ];
