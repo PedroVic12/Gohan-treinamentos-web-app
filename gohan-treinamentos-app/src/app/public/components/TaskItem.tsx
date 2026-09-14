@@ -46,7 +46,7 @@ interface TaskItemProps {
 export const TaskItem: React.FC<TaskItemProps> = ({ task, onIncrement }) => {
   return (
     <Paper
-      elevation={30}
+      elevation={50}
       sx={{
         mb: 2,
         ...getGlassStyles(getBackgroundColor(task.count))

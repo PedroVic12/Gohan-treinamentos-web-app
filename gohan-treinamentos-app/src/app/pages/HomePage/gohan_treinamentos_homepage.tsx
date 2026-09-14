@@ -194,7 +194,7 @@ function GohanTreinamentosHomePage() {
   const handleSaveWeek = () => {
     const today = new Date();
     const currentWeekStr = getWeekYearString(today);
-    
+
     const newLog: WeeklyLog = {
       week: currentWeekStr,
       date: today.toLocaleDateString('pt-BR'),
@@ -271,7 +271,7 @@ function GohanTreinamentosHomePage() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <IonPage id="main-content">
-        
+
         {/* MUI Header bar */}
         <AppBar position="sticky" elevation={0} sx={{ borderBottom: '1px solid', borderColor: 'divider' }}>
           <Toolbar>
@@ -307,7 +307,7 @@ function GohanTreinamentosHomePage() {
         {/* Main Content Area */}
         <Box sx={{ overflowY: 'auto', height: 'calc(100vh - 112px)', py: 2, bgcolor: 'background.default' }}>
           <Container maxWidth="md">
-            
+
             {activeTab === 0 ? (
               // Tab 1: Hábitos Tracker
               <Box>
@@ -328,10 +328,10 @@ function GohanTreinamentosHomePage() {
                 </List>
 
                 <ProgressBar totalCount={totalCount} maxCount={maxWeeklyCount} />
-                
+
                 <Box sx={{ mt: 3, p: 2.5, borderRadius: 4, bgcolor: 'background.paper', border: '1px solid', borderColor: 'divider' }}>
                   <Typography variant="body2" color="text.secondary" align="center">
-                    Goku Habits Tracker — Construa um corpo de ferro e uma mente blindada dia após dia.
+                    Goku Habits Tracker — Construa um corpo de ferro e uma mente blindada dia após dia e um Espirito guiado pelo Espírito Santo e Deus.
                   </Typography>
                 </Box>
               </Box>
@@ -353,7 +353,7 @@ function GohanTreinamentosHomePage() {
                   </Box>
                 ) : (
                   <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                    
+
                     {/* Resumo Cards */}
                     <Grid container spacing={2}>
                       <Grid item xs={6}>
@@ -441,7 +441,7 @@ function GohanTreinamentosHomePage() {
           </DialogTitle>
           <DialogContent>
             <DialogContentText>
-              Hoje é domingo! Você acumulou **{totalCount}** conclusões nesta semana. 
+              Hoje é domingo! Você acumulou **{totalCount}** conclusões nesta semana.
               Deseja salvar esse progresso no seu Histórico/Dashboard e reiniciar os contadores de hábitos para a próxima semana?
             </DialogContentText>
           </DialogContent>

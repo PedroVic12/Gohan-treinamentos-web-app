@@ -4,7 +4,7 @@ export const initialTasks: Task[] = [
   {
     id: '1',
     title: 'One to make your Money 💰 ',
-    description: 'Trabalhar em alguma tarefa gere renda.\nProjetos Tech: Chatbots, Sites, Aplicativos, automação e modelos IA',
+    description: 'JOBS: Data Science + Engenharia Elétrica + Desenvolvimento de Software + Consultoria em Engenharia Elétrica + Consultoria em Data Science + Consultoria em Desenvolvimento de Software',
     count: 0,
   },
   {
@@ -16,7 +16,7 @@ export const initialTasks: Task[] = [
   {
     id: '3',
     title: 'One to build Knowledge 🧠',
-    description: '2 Disciplinas da UFF por Dia, 2 Aulas + 5 Exercicios',
+    description: '2 Disciplinas da UFF por Dia, 2 Aulas + 4 Exercicios',
     count: 0,
   },
   {
@@ -31,4 +31,20 @@ export const initialTasks: Task[] = [
     description: 'Ler um livro, refletir ou estudar algo de valor interno. Assistir a documentários, explorar o universo, atividades de inovação ou algo artístico. Estudar coisas que estão fora da sua zona de conforto e abrir sua mente para o novo',
     count: 0,
   },
+
+  {
+    id: '6',
+    title: 'One to Stay Healthy 🥗',
+    description: 'Manter uma alimentação saudável, Acordar Cedo e tomar um banho gelado, beber 2L de Água, tomar sol de manhã, cuidar da saúde mental e física.',
+    count: 0,
+  },
+
+  {
+    id: '7',
+    title: 'One to Stay Disciplined 🎯',
+    description: 'Manter o foco em suas metas e objetivos. Ler pelo menos 30 páginas por dia ou por 30 minutos, Orar ou meditar por 10 minutos, Usar o diário de bordo e agradecer por 3 coisas todos os dias. Praticar a meditação e a respiração para melhorar a concentração.',
+    count: 0,
+  }
+
+
 ];
