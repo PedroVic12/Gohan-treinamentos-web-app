@@ -16,7 +16,7 @@ export const initialTasks: Task[] = [
   {
     id: '3',
     title: 'One to build Knowledge 🧠',
-    description: '2 Disciplinas da UFF por Dia, 2 Aulas + 4 Exercicios',
+    description: '2 Disciplinas da UFF por Dia + 4 Exercicios',
     count: 0,
   },
   {
