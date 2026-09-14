@@ -20,6 +20,7 @@ import PauseIcon from '@mui/icons-material/Pause';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import GeradorTreinoPage from '../../geradorTreinoPage';
 import {
   Bar,
   BarChart,
@@ -33,7 +34,6 @@ import {
   XAxis,
   YAxis
 } from 'recharts';
-import geradorTreinoPage from '../../geradorTreinoPage';
 
 type WorkoutHistoryEntry = {
   id: string;
@@ -667,6 +667,7 @@ export default function CalisthenicsApp() {
         <Tab label="💪 Rotinas Calistenia" />
         <Tab label="📋 Gerador de Treinos" />
         <Tab label="📊 Resumo" />
+        <Tab label="🏋️ Ficha Avançada" />
       </Tabs>
 
       {false && (activeRootTab === 0 ? (
@@ -899,7 +900,7 @@ export default function CalisthenicsApp() {
       {activeRootTab === 0 && renderCalisteniaTab()}
       {activeRootTab === 1 && renderGeradorTab()}
       {activeRootTab === 2 && renderResumoTab()}
-      {activeRootTab === 3 && geradorTreinoPage()}
+      {activeRootTab === 3 && <GeradorTreinoPage />}
 
     </Container>
   );

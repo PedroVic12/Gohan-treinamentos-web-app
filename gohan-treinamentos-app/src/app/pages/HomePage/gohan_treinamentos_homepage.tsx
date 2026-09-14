@@ -3,6 +3,10 @@ import {
   Container,
   Typography,
   List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Checkbox,
   Box,
   IconButton,
   AppBar,
@@ -61,6 +65,13 @@ interface WeeklyLog {
     mindset: number;
     creative: number;
   };
+}
+
+
+// 1. Definimos a tipagem para o TypeScript não reclamar
+interface ChecklistItem {
+  text: string;
+  checked: boolean;
 }
 
 // Helper to get week number
@@ -228,6 +239,33 @@ function GohanTreinamentosHomePage() {
     await menuController.open('first');
   };
 
+  // 2. Iniciamos o estado com as suas frases sobre os neurotransmissores
+  const [checklist, setChecklist] = useState<ChecklistItem[]>([
+    {
+      text: "O Sistema de XP e Check-ins (Dopamina): A dopamina é a substância responsável pela sensação de recompensa e paixão. Toda vez que você clica no checkbox do app e vê a barra de XP subir, seu cérebro libera pequenos picos de dopamina. Isso condiciona a sua mente a buscar o próximo check-in em vez de buscar alívios artificiais rápidos.",
+      checked: false
+    },
+    {
+      text: "O Ciclo de 7 Dias (Serotonina): Bater a meta semanal de XP gera um sentimento de conquista. A serotonina é o neurotransmissor que atua diretamente na sua satisfação, autoestima e força de vontade. Fechar um ciclo de 7 dias perfeito recarrega a sua força de vontade para a semana seguinte.",
+      checked: false
+    },
+    {
+      text: "O Bloco de Meditação/Gratidão (GABA): Ao incluir a missão de orar/meditar por 5 minutos, o app força uma pausa que estimula a produção de GABA, essencial para o controle, foco e ação antiestresse. Isso é vital para controlar impulsividade e frustrações.",
+      checked: false
+    },
+    {
+      text: "O Bloco de Exercícios (Endorfina): A missão de 20-30 minutos de atividade física garante a liberação de endorfinas, que trazem alívio, calma e euforia natural, ajudando a regular o humor após um dia exaustivo de programação.",
+      checked: false
+    }
+  ]);
+
+  // 3. Função para alternar o estado do checkbox
+  const handleChecklistChange = (index: number) => {
+    const newChecklist = [...checklist];
+    newChecklist[index].checked = !newChecklist[index].checked;
+    setChecklist(newChecklist);
+  };
+
   // Convert history array for Recharts rendering
   const chartData = useMemo(() => {
     return history.map(item => ({
@@ -338,6 +376,25 @@ function GohanTreinamentosHomePage() {
             ) : (
               // Tab 2: Recharts Stats Dashboard
               <Box className="space-y-6">
+
+                <Typography variant="h6" align="center" color="text.secondary" gutterBottom>
+                  A gamificação em ciclos de 7 dias é uma estratégia brutalmente eficiente porque ela "sequestra" o sistema de recompensa do seu cérebro de forma natural. Quando você transforma a rotina em um jogo, o seu corpo começa a produzir os compostos químicos que você precisa para manter o foco e a calma. Veja como as funcionalidades do seu app vão mapear a linguagem do seu cérebro:
+                </Typography>
+
+                <List>
+                  {checklist.map((item, index) => (
+                    <ListItem key={index}>
+                      <ListItemIcon>
+                        <Checkbox
+                          checked={item.checked}
+                          onChange={() => handleChecklistChange(index)}
+                        />
+                      </ListItemIcon>
+                      <ListItemText primary={item.text} />
+                    </ListItem>
+                  ))}
+                </List>
+
                 <Typography variant="h5" fontWeight="bold" align="center" color="primary" gutterBottom sx={{ mt: 1 }}>
                   📈 Meu Desempenho de Hábitos
                 </Typography>
@@ -454,6 +511,11 @@ function GohanTreinamentosHomePage() {
             </Button>
           </DialogActions>
         </Dialog>
+
+
+        <Typography variant="body2" color="text.secondary" align="center" sx={{ py: 2 }}>
+          Ao limitar o desafio para bater a meta de XP em apenas 7 dias por vez, você reduz a carga cognitiva. O objetivo nunca é o mês inteiro; o objetivo é só chegar no domingo com a barra de XP cheia. Quando o ciclo reseta na segunda-feira, você já está fisicamente mais equilibrado pelos hormônios que produziu na semana anterior.
+        </Typography>
 
       </IonPage>
     </ThemeProvider>
