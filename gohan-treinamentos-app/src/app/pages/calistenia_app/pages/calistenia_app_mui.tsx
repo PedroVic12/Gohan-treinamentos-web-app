@@ -20,7 +20,8 @@ import PauseIcon from '@mui/icons-material/Pause';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import GeradorTreinoPage from '../../geradorTreinoPage';
+import geradorTreinoPage from '../../geradorTreinoPage';
+
 import {
   Bar,
   BarChart,
