@@ -67,7 +67,7 @@ class Exercise {
   }
 }
 
-// Initial default routines
+//! Initial default routines
 const defaultCalisthenicsData: Record<string, Array<{ treino: string; exercises: Exercise[] }>> = {
   push: [
     {
@@ -90,7 +90,7 @@ const defaultCalisthenicsData: Record<string, Array<{ treino: string; exercises:
       treino: 'Pull Treino 1',
       exercises: [
         new Exercise('Pull Treino 1', 'Pull ups (Barra Fixa)', 4, '8-10', 'Normal', 'https://www.youtube.com/watch?v=poyr8KenUfc'),
-        new Exercise('Pull Treino 1', 'Chin ups', 4, '10', 'Normal', 'https://www.youtube.com/watch?v=poyr8KenUfc'),
+        new Exercise('Pull-up Treino 2', 'Chin ups', 4, '10', 'Normal', 'https://www.youtube.com/watch?v=poyr8KenUfc'),
       ]
     }
   ],
@@ -99,7 +99,7 @@ const defaultCalisthenicsData: Record<string, Array<{ treino: string; exercises:
       treino: 'Legs Treino 1',
       exercises: [
         new Exercise('Legs Treino 1', 'Squats (Agachamento)', 5, '20', 'Normal', 'https://www.youtube.com/watch?v=qLPrPVz4NzQ'),
-        new Exercise('Legs Treino 1', 'Lunges (Passada)', 4, '15 (cada perna)', 'Normal', 'https://www.youtube.com/watch?v=qLPrPVz4NzQ'),
+        new Exercise('Legs Treino 2', 'Lunges (Passada)', 4, '15 (cada perna)', 'Normal', 'https://www.youtube.com/watch?v=qLPrPVz4NzQ'),
       ]
     }
   ],
@@ -108,11 +108,22 @@ const defaultCalisthenicsData: Record<string, Array<{ treino: string; exercises:
       treino: 'Abs Treino 1',
       exercises: [
         new Exercise('Abs Treino 1', 'Abdominal Infra', 4, '15', 'Fácil', 'https://www.youtube.com/watch?v=TIMghHu6QFU'),
-        new Exercise('Abs Treino 1', 'Plank (Prancha)', 3, '1 min', 'Normal', 'https://www.youtube.com/watch?v=xRXhpMsLaXo'),
+        new Exercise('Abs Treino 2', 'Plank (Prancha)', 3, '1 min', 'Normal', 'https://www.youtube.com/watch?v=xRXhpMsLaXo'),
       ]
     }
   ]
 };
+
+
+
+
+
+
+
+
+
+
+
 
 // YouTube player component
 const YouTubeVideo: React.FC<{ title: string; youtubeUrl: string }> = ({ title, youtubeUrl }) => {
