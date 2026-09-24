@@ -35,6 +35,7 @@ import {
   XAxis,
   YAxis
 } from 'recharts';
+import GeradorTreinoPage from '../../geradorTreinoPage';
 
 type WorkoutHistoryEntry = {
   id: string;
