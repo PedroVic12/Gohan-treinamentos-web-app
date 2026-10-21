@@ -34,7 +34,7 @@ import GohanTreinamentosHomePage from './app/pages/HomePage/gohan_treinamentos_h
 import QuizGamePage from './app/pages/quizzgame/QuizzGame';
 import AlarmeClockPage from './app/pages/clockPage/alarm_clock_page';
 import TaskManagerPage from './app/pages/todoList/task_manager';
-import CalisthenicsApp from './app/pages/calistenia_app/pages/calistenia_app_mui';
+import CalisteniaPage from './app/pages/calistenia_app/pages/CalisteniaPage';
 import MarkdownChecklist from './app/pages/CheckListMarkdown/MarkdownCheckList';
 
 import SidebarMenu from './app/widgets/side_menu';
@@ -62,7 +62,7 @@ export const appRoutes = [
   { path: '/home', component: GohanTreinamentosHomePage, label: 'Home', icon: homeOutline },
 
   // Calistenia App V1
-  { path: '/calistenia', component: CalisthenicsApp, label: 'Calistenia', icon: barbellOutline },
+  { path: '/calistenia', component: CalisteniaPage, label: 'Calistenia', icon: barbellOutline },
   //{ path: '/treinos', component: GohanTreinamentosGeradorTreinoPage, label: 'Treinos', icon: settingsOutline },
 
   // Quiz App AI otimizado com estudos em arquivos .json de perguntas e respostas

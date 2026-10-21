@@ -17,5 +17,6 @@
     "jsx": "react-jsx"
   },
   "include": ["src"],
+  "exclude": ["src/app/pages/calistenia_app/pages/legacy"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
