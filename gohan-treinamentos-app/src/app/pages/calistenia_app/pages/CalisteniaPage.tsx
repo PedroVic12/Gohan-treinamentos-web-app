@@ -33,12 +33,17 @@ import {
 } from 'recharts';
 
 import { loadWorkoutCatalog } from '../data/defaultWorkouts';
+import { loadVideoLibrary } from '../data/defaultVideos';
 import { usePersistentState } from '../hooks/usePersistentState';
 import { useRestTimer } from '../hooks/useRestTimer';
 import { buildPeriodBuckets, filterHistoryByPeriod } from '../services/historyPeriod.strategy';
 import type { CustomChecklist, HistoryFilter, WorkoutCatalog, WorkoutHistoryEntry } from '../types/workout.types';
+import type { WorkoutVideo } from '../types/video.types';
 import { RestTimerBar } from '../components/RestTimerBar';
 import { YouTubeLazy } from '../components/YouTubeLazy';
+import { ReelsView } from '../views/ReelsView';
+import { VideoCarouselView } from '../views/VideoCarouselView';
+import { DataHubView } from '../views/DataHubView';
 
 const GeradorTreinoPage = React.lazy(() => import('../../geradorTreinoPage'));
 
@@ -65,19 +70,44 @@ const CalisteniaPage: React.FC = () => {
   const [newTreinoName, setNewTreinoName] = useState('');
   const [newTreinoItems, setNewTreinoItems] = useState('');
   const [snackOpen, setSnackOpen] = useState(false);
+  const [snackMsg, setSnackMsg] = useState('⏰ Descanso concluído — próxima série!');
 
   const [workouts, setWorkouts] = usePersistentState<WorkoutCatalog>('gohan_workouts_custom', loadWorkoutCatalog());
   const [checkedSets, setCheckedSets] = usePersistentState<Record<string, boolean[]>>('gohan_checked_sets', {});
   const [customWorkouts, setCustomWorkouts] = usePersistentState<CustomChecklist[]>('gohan_custom_checklists', DEFAULT_CHECKLISTS);
   const [completedItems, setCompletedItems] = usePersistentState<Record<string, boolean>>('gohan_custom_completed', {});
   const [workoutHistory, setWorkoutHistory] = usePersistentState<WorkoutHistoryEntry[]>('gohan_workout_history', []);
+  const [videos, setVideos] = usePersistentState<WorkoutVideo[]>('gohan_video_library', loadVideoLibrary());
 
-  const onTimerComplete = useCallback(() => setSnackOpen(true), []);
+  const onTimerComplete = useCallback(() => {
+    setSnackMsg('⏰ Descanso concluído — próxima série!');
+    setSnackOpen(true);
+  }, []);
   const { timerTime, timerActive, toggle, reset, startRest } = useRestTimer(onTimerComplete);
+
+  const reloadFromStorage = useCallback(() => {
+    setWorkouts(loadWorkoutCatalog());
+    setVideos(loadVideoLibrary());
+    try {
+      const checks = localStorage.getItem('gohan_custom_checklists');
+      if (checks) setCustomWorkouts(JSON.parse(checks));
+      const hist = localStorage.getItem('gohan_workout_history');
+      if (hist) setWorkoutHistory(JSON.parse(hist));
+      const sets = localStorage.getItem('gohan_checked_sets');
+      if (sets) setCheckedSets(JSON.parse(sets));
+      const done = localStorage.getItem('gohan_custom_completed');
+      if (done) setCompletedItems(JSON.parse(done));
+    } catch {
+      /* ignore */
+    }
+    setSnackMsg('Dados atualizados do localStorage');
+    setSnackOpen(true);
+  }, [setWorkouts, setVideos, setCustomWorkouts, setWorkoutHistory, setCheckedSets, setCompletedItems]);
 
   useEffect(() => {
     setWorkouts(loadWorkoutCatalog());
-  }, [setWorkouts]);
+    setVideos(loadVideoLibrary());
+  }, [setWorkouts, setVideos]);
 
   useEffect(() => {
     const categoryWorkouts = workouts[selectedCategory] || [];
@@ -150,31 +180,66 @@ const CalisteniaPage: React.FC = () => {
     return { filtered, periodData, sourceData };
   }, [workoutHistory, historyFilter]);
 
-  const tabLabels = ['💪 Rotinas', '📋 Fichas', '📊 Resumo', '🏋️ Avançada'];
+  const tabLabels = ['💪 Rotinas', '🎬 Reels', '🎠 Vídeos', '📋 Fichas', '📊 Resumo', '💾 Dados', '🏋️+'];
 
   return (
     <IonPage>
-      <IonContent fullscreen className="ion-padding" style={{ '--padding-bottom': 'calc(16px + env(safe-area-inset-bottom))' }}>
-        <Box sx={{ maxWidth: 720, mx: 'auto', pb: 4 }}>
+      <IonContent
+        fullscreen
+        className="ion-padding"
+        style={{
+          '--padding-start': '12px',
+          '--padding-end': '12px',
+          '--padding-top': '8px',
+          '--padding-bottom': 'calc(72px + env(safe-area-inset-bottom))',
+        }}
+      >
+        <Box
+          sx={{
+            maxWidth: 720,
+            mx: 'auto',
+            pb: 2,
+            width: '100%',
+            boxSizing: 'border-box',
+          }}
+        >
           <Tabs
             value={activeRootTab}
             onChange={(_, v) => setActiveRootTab(v)}
             variant="scrollable"
             scrollButtons="auto"
-            sx={{ borderBottom: 1, borderColor: 'divider', mb: 2, position: 'sticky', top: 0, zIndex: 3, bgcolor: 'background.default' }}
+            allowScrollButtonsMobile
+            sx={{
+              borderBottom: 1,
+              borderColor: 'divider',
+              mb: 2,
+              position: 'sticky',
+              top: 0,
+              zIndex: 5,
+              bgcolor: 'background.default',
+              minHeight: 44,
+              '& .MuiTab-root': {
+                minHeight: 44,
+                minWidth: 'auto',
+                px: 1.25,
+                fontSize: { xs: '0.7rem', sm: '0.8rem' },
+                textTransform: 'none',
+                fontWeight: 700,
+              },
+            }}
           >
             {tabLabels.map((label, i) => (
-              <Tab key={i} label={label} sx={{ minHeight: 48, fontSize: { xs: '0.75rem', sm: '0.875rem' } }} />
+              <Tab key={i} label={label} />
             ))}
           </Tabs>
 
           {activeRootTab === 0 && (
             <Box>
-              <Typography variant="h6" fontWeight="black" align="center" color="primary" gutterBottom>
+              <Typography variant="h6" fontWeight="black" align="center" color="primary" gutterBottom sx={{ fontSize: { xs: '1.05rem', sm: '1.25rem' } }}>
                 Treino Goku Sayajin
               </Typography>
               <RestTimerBar timerTime={timerTime} timerActive={timerActive} onToggle={toggle} onReset={reset} />
-              <Box sx={{ display: 'flex', gap: 1, mb: 2, overflowX: 'auto', pb: 0.5, flexWrap: 'nowrap' }}>
+              <Box sx={{ display: 'flex', gap: 1, mb: 2, overflowX: 'auto', pb: 0.5, flexWrap: 'nowrap', WebkitOverflowScrolling: 'touch' }}>
                 {CATEGORIES.map((cat) => (
                   <Button
                     key={cat}
@@ -186,7 +251,7 @@ const CalisteniaPage: React.FC = () => {
                   </Button>
                 ))}
               </Box>
-              <Box sx={{ display: 'flex', gap: 1, mb: 2, overflowX: 'auto', pb: 0.5 }}>
+              <Box sx={{ display: 'flex', gap: 1, mb: 2, overflowX: 'auto', pb: 0.5, WebkitOverflowScrolling: 'touch' }}>
                 {currentCategoryWorkouts.map((w) => (
                   <Chip
                     key={w.treino}
@@ -204,8 +269,8 @@ const CalisteniaPage: React.FC = () => {
                   const isCompleted = checked.filter(Boolean).length === exercise.sets;
                   return (
                     <Card key={exercise.id} sx={{ borderRadius: 3, mb: 2, border: '1px solid', borderColor: isCompleted ? 'success.main' : 'divider' }}>
-                      <CardContent>
-                        <Typography variant="h6" fontWeight="bold">{exercise.name}</Typography>
+                      <CardContent sx={{ '&:last-child': { pb: 2 } }}>
+                        <Typography variant="subtitle1" fontWeight="bold">{exercise.name}</Typography>
                         <Typography variant="body2" color="text.secondary">
                           Séries: {exercise.sets} | Reps: {exercise.reps}
                         </Typography>
@@ -221,7 +286,7 @@ const CalisteniaPage: React.FC = () => {
                                 />
                               }
                               label={`S${index + 1}`}
-                              sx={{ minHeight: 44 }}
+                              sx={{ minHeight: 44, mr: 0.5 }}
                             />
                           ))}
                         </Box>
@@ -229,7 +294,9 @@ const CalisteniaPage: React.FC = () => {
                         {isCompleted && (
                           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: 'success.main', mt: 1 }}>
                             <CheckCircleIcon fontSize="small" />
-                            <Typography variant="body2" fontWeight="bold">Completo!</Typography>
+                            <Typography variant="body2" fontWeight="bold">
+                              Completo!
+                            </Typography>
                           </Box>
                         )}
                       </CardContent>
@@ -244,14 +311,16 @@ const CalisteniaPage: React.FC = () => {
             </Box>
           )}
 
-          {activeRootTab === 1 && (
+          {activeRootTab === 1 && <ReelsView videos={videos} />}
+
+          {activeRootTab === 2 && <VideoCarouselView videos={videos} />}
+
+          {activeRootTab === 3 && (
             <Box>
               <Typography variant="h6" fontWeight="black" align="center" color="primary" gutterBottom>
                 Minhas Fichas
               </Typography>
-              {totalCustomItems > 0 && (
-                <LinearProgress variant="determinate" value={progressPercent} sx={{ height: 8, borderRadius: 4, mb: 2 }} />
-              )}
+              {totalCustomItems > 0 && <LinearProgress variant="determinate" value={progressPercent} sx={{ height: 8, borderRadius: 4, mb: 2 }} />}
               <Card sx={{ mb: 3, borderRadius: 3 }}>
                 <CardContent>
                   <form onSubmit={handleAddCustomTreino}>
@@ -267,8 +336,10 @@ const CalisteniaPage: React.FC = () => {
                 <Card key={workout.id} sx={{ mb: 2, borderRadius: 3 }}>
                   <CardContent>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                      <Typography fontWeight="bold" color="primary">{workout.name}</Typography>
-                      <IconButton size="small" color="error" onClick={() => setCustomWorkouts((p) => p.filter((c) => c.id !== workout.id))}>
+                      <Typography fontWeight="bold" color="primary">
+                        {workout.name}
+                      </Typography>
+                      <IconButton size="small" color="error" onClick={() => setCustomWorkouts((p) => p.filter((c) => c.id !== workout.id))} sx={{ minWidth: 44, minHeight: 44 }}>
                         <DeleteIcon />
                       </IconButton>
                     </Box>
@@ -290,7 +361,7 @@ const CalisteniaPage: React.FC = () => {
             </Box>
           )}
 
-          {activeRootTab === 2 && (
+          {activeRootTab === 4 && (
             <Box>
               <Box sx={{ display: 'flex', gap: 1, mb: 2, flexWrap: 'wrap' }}>
                 {([['day', 'Hoje'], ['week', 'Semana'], ['month', 'Mês']] as const).map(([value, label]) => (
@@ -300,24 +371,24 @@ const CalisteniaPage: React.FC = () => {
                 ))}
               </Box>
               <Typography variant="body2" color="text.secondary" gutterBottom>
-                Conclusões: {dashboard.filtered.length} | Exercícios cadastrados: {totalExercises}
+                Conclusões: {dashboard.filtered.length} | Exercícios: {totalExercises} | Vídeos: {videos.length}
               </Typography>
-              <Box sx={{ width: '100%', height: 260, mt: 2 }}>
+              <Box sx={{ width: '100%', height: { xs: 220, sm: 260 }, mt: 2 }}>
                 <ResponsiveContainer>
                   <BarChart data={dashboard.periodData}>
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="label" interval={historyFilter === 'month' ? 4 : 0} />
-                    <YAxis allowDecimals={false} />
+                    <XAxis dataKey="label" interval={historyFilter === 'month' ? 4 : 0} tick={{ fontSize: 11 }} />
+                    <YAxis allowDecimals={false} width={28} />
                     <Tooltip />
                     <Bar dataKey="completed" fill="#1976d2" radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </Box>
               {dashboard.sourceData.length > 0 && (
-                <Box sx={{ width: '100%', height: 240, mt: 2 }}>
+                <Box sx={{ width: '100%', height: 220, mt: 2 }}>
                   <ResponsiveContainer>
                     <PieChart>
-                      <Pie data={dashboard.sourceData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
+                      <Pie data={dashboard.sourceData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={70} label>
                         {dashboard.sourceData.map((item) => (
                           <Cell key={item.name} fill={item.color} />
                         ))}
@@ -331,14 +402,16 @@ const CalisteniaPage: React.FC = () => {
             </Box>
           )}
 
-          {activeRootTab === 3 && (
-            <Suspense fallback={<Typography align="center">Carregando ficha avançada…</Typography>}>
+          {activeRootTab === 5 && <DataHubView videos={videos} onVideosChange={setVideos} onDataReloaded={reloadFromStorage} />}
+
+          {activeRootTab === 6 && (
+            <Suspense fallback={<Typography align="center">Carregando…</Typography>}>
               <GeradorTreinoPage />
             </Suspense>
           )}
         </Box>
 
-        <Snackbar open={snackOpen} autoHideDuration={4000} onClose={() => setSnackOpen(false)} message="⏰ Descanso concluído — próxima série!" />
+        <Snackbar open={snackOpen} autoHideDuration={3500} onClose={() => setSnackOpen(false)} message={snackMsg} />
       </IonContent>
     </IonPage>
   );
