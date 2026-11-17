@@ -181,7 +181,7 @@ export function exportPdfPrintable() {
   }
 }
 
-function normHeader(h: unknown): string {
+export function normHeader(h: unknown): string {
   return String(h ?? '')
     .trim()
     .toLowerCase()
@@ -189,7 +189,7 @@ function normHeader(h: unknown): string {
     .replace(/\p{Diacritic}/gu, '');
 }
 
-function sheetToObjects(sheet: XLSX.WorkSheet): Record<string, unknown>[] {
+export function sheetToObjects(sheet: XLSX.WorkSheet): Record<string, unknown>[] {
   const rows = XLSX.utils.sheet_to_json<Record<string, unknown>>(sheet, { defval: '' });
   return rows.map((row) => {
     const out: Record<string, unknown> = {};
@@ -198,7 +198,7 @@ function sheetToObjects(sheet: XLSX.WorkSheet): Record<string, unknown>[] {
   });
 }
 
-function slug(s: string): string {
+export function slug(s: string): string {
   return s
     .toLowerCase()
     .normalize('NFD')

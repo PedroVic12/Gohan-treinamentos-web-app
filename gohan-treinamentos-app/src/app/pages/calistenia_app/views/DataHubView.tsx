@@ -24,6 +24,7 @@ import {
   importExcelFile,
   importJsonBackup,
 } from '../services/spreadsheet.service';
+import { getLastExcelMeta, saveLastExcel } from '../services/lastExcel.repository';
 
 type Props = {
   videos: WorkoutVideo[];
@@ -36,6 +37,7 @@ export const DataHubView: React.FC<Props> = ({ videos, onVideosChange, onDataRel
   const [mode, setMode] = useState<'merge' | 'replace'>('merge');
   const [msg, setMsg] = useState<{ type: 'success' | 'error' | 'info'; text: string } | null>(null);
   const [busy, setBusy] = useState(false);
+  const [lastExcel, setLastExcel] = useState(getLastExcelMeta());
 
   const [form, setForm] = useState({
     title: '',
@@ -51,6 +53,10 @@ export const DataHubView: React.FC<Props> = ({ videos, onVideosChange, onDataRel
       const isJson = file.name.toLowerCase().endsWith('.json');
       const result = isJson ? await importJsonBackup(file) : await importExcelFile(file, mode);
       if (result.ok) {
+        if (!isJson) {
+          await saveLastExcel(file);
+          setLastExcel(getLastExcelMeta());
+        }
         setMsg({ type: 'success', text: result.summary });
         onDataReloaded();
       } else {
@@ -113,6 +119,11 @@ export const DataHubView: React.FC<Props> = ({ videos, onVideosChange, onDataRel
           <Typography fontWeight="bold" gutterBottom>
             Importar planilhas
           </Typography>
+          {lastExcel && (
+            <Alert severity="info" sx={{ mb: 1.5 }}>
+              Última planilha: <b>{lastExcel.name}</b> ({new Date(lastExcel.loadedAt).toLocaleString('pt-BR')})
+            </Alert>
+          )}
           <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
             Abas sugeridas: <b>Exercicios</b> (category, treino, name, sets, reps, difficulty, youtubeUrl),{' '}
             <b>Fichas</b> (checklistName, item), <b>Videos</b> (title, category, label, youtubeUrl).
